@@ -1,0 +1,6 @@
+c:\users\alex\documents\visual studio 2012\Projects\Plants\Plants\bin\Debug\Planting.exe.config
+c:\users\alex\documents\visual studio 2012\Projects\Plants\Plants\obj\Debug\Planting.csprojResolveAssemblyReference.cache
+c:\users\alex\documents\visual studio 2012\Projects\Plants\Plants\bin\Debug\Planting.exe
+c:\users\alex\documents\visual studio 2012\Projects\Plants\Plants\bin\Debug\Planting.pdb
+c:\users\alex\documents\visual studio 2012\Projects\Plants\Plants\obj\Debug\Planting.exe
+c:\users\alex\documents\visual studio 2012\Projects\Plants\Plants\obj\Debug\Planting.pdb
