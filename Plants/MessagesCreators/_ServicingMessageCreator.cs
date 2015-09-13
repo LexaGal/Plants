@@ -4,40 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Planting.MeasuringsProviding;
-using Planting.PlantRequirements;
-using Planting.SchedulingSystems;
+using Planting.Messenging;
+using Planting.PlantsRequirements;
 
 namespace Planting.MessagesCreators
 {
-    public class SchedulingMessageCreator
+    public class ServicingMessageCreator
     {
-        public IList<MeasuringMessage> MeasuringMessages { get; private set; }
+        public MeasuringMessage MeasuringMessage { get; private set; }
         public string PlantsAreaId { get; private set; }
 
-        public SchedulingMessageCreator(IList<MeasuringMessage> measuringMessages, string plantsAreaId)
+        public ServicingMessageCreator(MeasuringMessage measuringMessage, string plantsAreaId)
         {
-            MeasuringMessages = measuringMessages;
+            MeasuringMessage = measuringMessage;
             PlantsAreaId = plantsAreaId;
         }
 
-        public SchedulingMessage CreateMessage()
+        public ServicingMessage CreateMessage()
         {
-            IDictionary<MeasurableTypesEnum, IEnumerable<int>> measuringsDictionary =
-                new Dictionary<MeasurableTypesEnum, IEnumerable<int>>();
+            KeyValuePair<MeasurableTypesEnum, double> measuring =
+                new KeyValuePair<MeasurableTypesEnum, double>(MeasuringMessage.MeasurableType, );
+                
 
-            IEnumerable<int> temperatureInts = MeasuringMessages
+            IEnumerable<double> temperatureInts = MeasuringMessages
                 .Where(m => m.MeasurableType == MeasurableTypesEnum.Temperature)
                 .Select(m => m.ParameterValue);
 
-            IEnumerable<int> soilPhInts = MeasuringMessages
+            IEnumerable<double> soilPhInts = MeasuringMessages
                 .Where(m => m.MeasurableType == MeasurableTypesEnum.SoilPh)
                 .Select(m => m.ParameterValue);
 
-            IEnumerable<int> nutrientInts = MeasuringMessages
+            IEnumerable<double> nutrientInts = MeasuringMessages
                 .Where(m => m.MeasurableType == MeasurableTypesEnum.Nutrient)
                 .Select(m => m.ParameterValue);
 
-            IEnumerable<int> humidityInts = MeasuringMessages
+            IEnumerable<double> humidityInts = MeasuringMessages
                 .Where(m => m.MeasurableType == MeasurableTypesEnum.Humidity)
                 .Select(m => m.ParameterValue);
 
@@ -46,7 +47,7 @@ namespace Planting.MessagesCreators
             measuringsDictionary.Add(MeasurableTypesEnum.Nutrient, nutrientInts);
             measuringsDictionary.Add(MeasurableTypesEnum.Humidity, humidityInts);
 
-            return new SchedulingMessage(DateTime.Now, PlantsAreaId, measuringsDictionary);
+            return new ServicingMessage(DateTime.Now, PlantsAreaId, measuringsDictionary);
         }
     }
 }

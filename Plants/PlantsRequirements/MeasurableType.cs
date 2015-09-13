@@ -1,4 +1,4 @@
-﻿namespace Planting.PlantRequirements
+﻿namespace Planting.PlantsRequirements
 {
     public enum MeasurableTypesEnum
     {

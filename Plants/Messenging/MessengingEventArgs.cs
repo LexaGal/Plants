@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Planting.MeasuringsProviding
+namespace Planting.Messenging
 {
     public class MessengingEventArgs<T> : EventArgs where T: class
     {

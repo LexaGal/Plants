@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Timers;
 using Planting.MeasuringsProviding;
-using Planting.Observing;
-using Planting.PlantRequirements;
+using Planting.Observation;
 using Planting.Plants;
-using Planting.SchedulingSystems;
+using Planting.PlantsRequirements;
 using Planting.Sensors;
-using Planting.Timer;
+using Planting.ServiceProvidingSystems;
+using Planting.Timers;
+using Planting.WeatherTypes;
 
 namespace Planting
 {
@@ -21,14 +23,13 @@ namespace Planting
         private static SensorsCollection _sensorsCollection;
         private static Observer _observer;
         private static SensorsMeasuringsProvider _sensorsMeasuringsProvider;
-        private static SchedulingSystem _schedulingSystem;
-        private static Schedule _schedule;
-
+        private static ServiceProvidingSystem _schedulingSystem;
+        
         private static DateTime _beginDateTime;
         
         public static void Initialize()
         {
-            _plant = new Plant(new Temperature(25, 15, 35), new Humidity(60, 40, 90),
+            _plant = new Plant(new Temperature(25, 20, 30), new Humidity(60, 40, 90),
                 new SoilPh(5, 4, 7), new Nutrient(14, 11, 20), DateTime.Now.AddMonths(1));
             
             _plantsArea = new PlantsArea();
@@ -37,27 +38,42 @@ namespace Planting
             _plantsAreas = new PlantsAreas();
             _plantsAreas.AddPlantsArea(_plantsArea);
 
-            _sensor = new HumiditySensor(new Tuple<int, int>(1, 1), _plantsArea,
-                new TimeSpan(2*TimeSpan.TicksPerSecond), _plant.Humidity);
+            _sensor = new NutrientSensor(new Tuple<int, int>(1, 1), _plantsArea,
+                new TimeSpan(3*TimeSpan.TicksPerSecond), _plant.Nutrient);
+            Sensor s = new TemperatureSensor(new Tuple<int, int>(1, 1), _plantsArea,
+                new TimeSpan(2*TimeSpan.TicksPerSecond), _plant.Temperature);
 
             _sensorsCollection = new SensorsCollection();
             _sensorsCollection.AddSensor(_sensor);
+            _sensorsCollection.AddSensor(s);
 
             _sensorsMeasuringsProvider = new SensorsMeasuringsProvider(_sensorsCollection);
             
             _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
 
-            _schedule = new Schedule(_plantsArea.Id, 1000, 300, _plant);
-            _schedulingSystem = new SchedulingSystem(_observer, new List<Schedule>{_schedule});
+            _schedulingSystem = new WaterSystem(_observer);
 
             _beginDateTime = DateTime.Now;
         }
 
         public static void Send(object sender, ElapsedEventArgs args)
         {
-           if (_sensorsMeasuringsProvider != null)
-           {
-               TimeSpan timeSpan = args.SignalTime.Subtract(_beginDateTime);
+            if (_sensorsMeasuringsProvider != null)
+            {
+                TimeSpan timeSpan = args.SignalTime.Subtract(_beginDateTime);
+
+                if (timeSpan.TotalSeconds > SystemTimer.RestartTimeSpan.TotalSeconds)
+                {
+                    _beginDateTime = _beginDateTime.Add(SystemTimer.RestartTimeSpan);
+
+                    timeSpan = new TimeSpan(0, 0, (int) (timeSpan.TotalSeconds%SystemTimer.RestartTimeSpan.TotalSeconds));
+
+                    //restarting timer and reseting all functions values to base values (new day after night sleep)
+                    SystemTimer.Restart();
+                    _sensorsCollection.AllSensors.ToList().ForEach(s => s.Function.ResetFunction());
+                }
+
+                SystemTimer.CurrentTimeSpan = timeSpan;
                 _sensorsMeasuringsProvider.SendMessages(timeSpan);
             }
         }
@@ -65,7 +81,9 @@ namespace Planting
         static void Main(string[] args)
         {
             Initialize();
-            MessageTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
+            Weather.SetWeather(WeatherTypesEnum.Rainy);
+            SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
+            
         }
     }
 }

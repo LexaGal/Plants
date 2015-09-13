@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Planting.Plants;
+﻿using Planting.Plants;
 
-namespace Planting.SchedulingSystems
+namespace Planting.ServiceProvidingSystems
 {
     public class Schedule
     {

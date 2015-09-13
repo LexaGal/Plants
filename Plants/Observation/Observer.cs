@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Planting.MeasuringsProviding;
 using Planting.MessagesCreators;
-using Planting.PlantRequirements;
+using Planting.Messenging;
 using Planting.Plants;
-using Planting.SchedulingSystems;
+using Planting.Timers;
 
-namespace Planting.Observing
+namespace Planting.Observation
 {
-    public class Observer : IReciever, ISender<SchedulingMessage>
+    public class Observer : IReciever, ISender<MeasuringMessage>
     {
         public ISender<MeasuringMessage> Sender { get; private set; }
         public PlantsAreas PlantsAreas { get; private set; }
         public IDictionary<string, IList<MeasuringMessage>> MessagesDictionary;
-        public const int MessagesLimit = 2;
+        public const int MessagesLimit = 10;
 
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)
         {
@@ -32,41 +31,38 @@ namespace Planting.Observing
         //recieving
         public void RecieveMessage(object sender, EventArgs eventArgs)
         {
-            MessengingEventArgs<MeasuringMessage> messengingEventArgs = eventArgs as MessengingEventArgs<MeasuringMessage>;
+            MessengingEventArgs<MeasuringMessage> messengingEventArgs =
+                eventArgs as MessengingEventArgs<MeasuringMessage>;
             if (messengingEventArgs != null)
             {
                 MeasuringMessage recievedMessage = messengingEventArgs.Object;
                 MessagesDictionary[recievedMessage.PlantsAreaId].Add(recievedMessage);
 
+                Console.WriteLine(recievedMessage.ToString());
+                Console.WriteLine("Message is accepted (Observer)! {0}\n", SystemTimer.CurrentTimeSpan.Seconds);
+
                 if (recievedMessage.MessageType == MessageTypesEnum.CriticalInfo)
                 {
-                    Console.WriteLine(recievedMessage.ToString());
-                    Console.WriteLine("Message is accepted (Observer)!");
+                    //sending to scheduler
+                    OnMessageSending(recievedMessage);
                 }
 
-                if (MessagesDictionary[recievedMessage.PlantsAreaId]
-                    .Count(m => m.MessageType == MessageTypesEnum.CriticalInfo) >= MessagesLimit)
+                if (MessagesDictionary[recievedMessage.PlantsAreaId].Count >= MessagesLimit)
                 {
-                    SchedulingMessageCreator schedulingMessageCreator = 
-                        new SchedulingMessageCreator(MessagesDictionary[recievedMessage.PlantsAreaId], recievedMessage.PlantsAreaId);
-
-                    SchedulingMessage messageToSend = schedulingMessageCreator.CreateMessage();
-                    //sending to scheduler
-                    OnMessageSending(messageToSend);
-
                     MessagesDictionary[recievedMessage.PlantsAreaId].Clear();
+                    // to Db
                 }
             }
         }
 
         public event EventHandler MessageSending;
         
-        public void OnMessageSending(SchedulingMessage message)
+        public void OnMessageSending(MeasuringMessage message)
         {
             EventHandler handler = MessageSending;
             if (handler != null)
             {
-                handler(this, new MessengingEventArgs<SchedulingMessage>(message));
+                handler(this, new MessengingEventArgs<MeasuringMessage>(message));
             }
         }
     }

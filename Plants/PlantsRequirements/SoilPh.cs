@@ -1,8 +1,8 @@
-﻿namespace Planting.PlantRequirements
+﻿namespace Planting.PlantsRequirements
 {
     public class SoilPh : MeasurableParameter
     {
-        public SoilPh(uint optimalSoilPh, uint minSoilPh, uint maxSoilPh)
+        public SoilPh(int optimalSoilPh, int minSoilPh, int maxSoilPh)
             : base(optimalSoilPh, minSoilPh, maxSoilPh)
         {
             Type = MeasurableTypesEnum.SoilPh;

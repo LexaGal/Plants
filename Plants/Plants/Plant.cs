@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Planting.PlantRequirements;
+using Planting.PlantsRequirements;
 
 namespace Planting.Plants
 {

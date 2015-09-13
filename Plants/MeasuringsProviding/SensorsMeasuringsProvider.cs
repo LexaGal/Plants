@@ -1,5 +1,6 @@
 ﻿using System;
 using Planting.MessagesCreators;
+using Planting.Messenging;
 using Planting.Sensors;
 
 namespace Planting.MeasuringsProviding
@@ -21,7 +22,7 @@ namespace Planting.MeasuringsProviding
                 {
                     MeasuringMessageCreator measuringMessageCreator =
                         new MeasuringMessageCreator(sensor.MeasurableParameter,
-                            sensor.PlantsArea.Id, sensor.CurrentMeasuring);
+                            sensor.PlantsArea.Id, sensor.GetCurrentMeasuring);
 
                     MeasuringMessage message = measuringMessageCreator.CreateMessage();
                     //sending to observer

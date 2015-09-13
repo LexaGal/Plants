@@ -4,15 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Planting.MeasuringsProviding;
+using Planting.Messenging;
 using Planting.Plants;
 
-namespace Planting.SchedulingSystems
+namespace Planting.ServiceProvidingSystems
 {
-    public class WaterSchedulingSystem : SchedulingSystem
+    public class TemperatureSystem : ServiceProvidingSystem
     {
-        public WaterSchedulingSystem(ISender<SchedulingMessage> sender, PlantsAreas plantsAreas)
+        public TemperatureSystem(ISender<MeasuringMessage> sender)
             : base(sender)
         {
         }
-    }
+    };
+
 }

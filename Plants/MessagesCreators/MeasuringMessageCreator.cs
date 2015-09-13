@@ -1,6 +1,7 @@
 ﻿using System;
 using Planting.MeasuringsProviding;
-using Planting.PlantRequirements;
+using Planting.Messenging;
+using Planting.PlantsRequirements;
 
 namespace Planting.MessagesCreators
 {
@@ -8,9 +9,9 @@ namespace Planting.MessagesCreators
     {
         public MeasurableParameter MeasurableParameter { get; set; }
         public string PlantsAreaId { get; private set; }
-        public int ParameterValue { get; private set; }
+        public double ParameterValue { get; private set; }
 
-        public MeasuringMessageCreator(MeasurableParameter measurableValue, string plantsAreaId, int measuringValue)
+        public MeasuringMessageCreator(MeasurableParameter measurableValue, string plantsAreaId, double measuringValue)
         {
             MeasurableParameter = measurableValue;
             PlantsAreaId = plantsAreaId;

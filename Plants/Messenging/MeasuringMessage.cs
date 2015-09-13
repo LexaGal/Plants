@@ -1,12 +1,12 @@
 ﻿using System;
-using Planting.PlantRequirements;
+using Planting.PlantsRequirements;
 
-namespace Planting.MeasuringsProviding
+namespace Planting.Messenging
 {
     public class MeasuringMessage
     {
         public MeasuringMessage(DateTime dateTime, MessageTypesEnum messageType,
-            MeasurableTypesEnum measurableType, string plantsAreaId, int parameterValue)
+            MeasurableTypesEnum measurableType, string plantsAreaId, double parameterValue)
         {
             DateTime = dateTime;
             MessageType = messageType;
@@ -19,12 +19,13 @@ namespace Planting.MeasuringsProviding
         public MessageTypesEnum MessageType { get; private set; }
         public MeasurableTypesEnum MeasurableType { get; private set; }
         public string PlantsAreaId { get; private set; }
-        public int ParameterValue { get; private set; }
+        public double ParameterValue { get; private set; }
 
         public override string ToString()
         {
-            return string.Format("[{0} {1}] Level: {2}, {3} at {4} PlantsArea: {5}", DateTime.ToLongDateString(),
-                DateTime.ToLongTimeString(), MessageType, MeasurableType, PlantsAreaId, ParameterValue);
+            return string.Format("[{0}] Level: {1}, {2} at {3} PlantsArea: {4}",
+                DateTime.ToLongTimeString(), MessageType, MeasurableType,
+                PlantsAreaId, ParameterValue.ToString("F2"));
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace Planting.MeasuringsProviding
+namespace Planting.Messenging
 {
     public enum MessageTypesEnum
     {

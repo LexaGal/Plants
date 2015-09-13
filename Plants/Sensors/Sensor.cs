@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Planting.PlantRequirements;
+using Planting.ParametersFunctions;
 using Planting.Plants;
+using Planting.PlantsRequirements;
+using Planting.Timers;
 
 namespace Planting.Sensors
 {
-    public class Sensor
+    public abstract class Sensor
     {
         public string Id { get; private set; }
-        
-        public Sensor(Tuple<int, int> location, PlantsArea plantsArea, 
+        public ParameterFunction Function { get; set; }
+
+        protected Sensor(Tuple<int, int> location, PlantsArea plantsArea, 
             TimeSpan measuringTimeout, MeasurableParameter measurableParameter)
         {
             Id = Guid.NewGuid().ToString().Substring(0, 8);
@@ -22,9 +25,9 @@ namespace Planting.Sensors
             MeasurableParameter = measurableParameter;
         }
 
-        public int CurrentMeasuring
+        public double GetCurrentMeasuring
         {
-            get { return MeasurableParameter.RandomValue; }
+            get { return Function.NewFunctionValue(); }
         }
 
         public Tuple<int, int> Location { get; private set; }
