@@ -9,14 +9,16 @@ namespace Planting.Plants
 {
     public class Plant
     {
-        public Plant(Temperature temperature, Humidity humidity,
-            SoilPh soilPh, Nutrient nutrient, DateTime growingTime)
+        public Plant(Temperature temperature, Humidity humidity, SoilPh soilPh,
+            Nutrient nutrient, DateTime growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan)
         {
             Temperature = temperature;
             Humidity = humidity;
             SoilPh = soilPh;
             Nutrient = nutrient;
             GrowingTimeLimit = growingTime;
+            WateringSpan = wateringSpan;
+            NutrientingSpan = nutrientingSpan;
         }
 
         public Temperature Temperature { get; private set; }
@@ -24,5 +26,7 @@ namespace Planting.Plants
         public SoilPh SoilPh { get; private set; }
         public Nutrient Nutrient { get; private set; }
         public DateTime GrowingTimeLimit { get; private set; }
+        public TimeSpan WateringSpan { get; private set; }
+        public TimeSpan NutrientingSpan { get; private set; }
     }
 }

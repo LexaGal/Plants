@@ -8,7 +8,7 @@ using Planting.Observation;
 using Planting.Plants;
 using Planting.PlantsRequirements;
 using Planting.Sensors;
-using Planting.ServiceProvidingSystems;
+using Planting.ServiceSystems;
 using Planting.Timers;
 using Planting.WeatherTypes;
 
@@ -23,14 +23,14 @@ namespace Planting
         private static SensorsCollection _sensorsCollection;
         private static Observer _observer;
         private static SensorsMeasuringsProvider _sensorsMeasuringsProvider;
-        private static ServiceProvidingSystem _schedulingSystem;
-        
+
         private static DateTime _beginDateTime;
         
         public static void Initialize()
         {
             _plant = new Plant(new Temperature(25, 20, 30), new Humidity(60, 40, 90),
-                new SoilPh(5, 4, 7), new Nutrient(14, 11, 20), DateTime.Now.AddMonths(1));
+                new SoilPh(5, 4, 7), new Nutrient(14, 11, 20), DateTime.Now.AddMonths(1),
+                new TimeSpan(0, 0, 2), new TimeSpan(0, 0, 1));
             
             _plantsArea = new PlantsArea();
             _plantsArea.AddPlant(_plant);
@@ -38,8 +38,8 @@ namespace Planting
             _plantsAreas = new PlantsAreas();
             _plantsAreas.AddPlantsArea(_plantsArea);
 
-            _sensor = new NutrientSensor(new Tuple<int, int>(1, 1), _plantsArea,
-                new TimeSpan(3*TimeSpan.TicksPerSecond), _plant.Nutrient);
+            _sensor = new TemperatureSensor(new Tuple<int, int>(1, 1), _plantsArea,
+                new TimeSpan(3*TimeSpan.TicksPerSecond), _plant.Temperature);
             Sensor s = new TemperatureSensor(new Tuple<int, int>(1, 1), _plantsArea,
                 new TimeSpan(2*TimeSpan.TicksPerSecond), _plant.Temperature);
 
@@ -51,7 +51,7 @@ namespace Planting
             
             _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
 
-            _schedulingSystem = new WaterSystem(_observer);
+            ServiceProvider provider = new ServiceProvider(_observer, _plantsAreas);
 
             _beginDateTime = DateTime.Now;
         }
@@ -83,7 +83,6 @@ namespace Planting
             Initialize();
             Weather.SetWeather(WeatherTypesEnum.Rainy);
             SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
-            
         }
     }
 }

@@ -65,9 +65,10 @@
     <Compile Include="Plants\PlantsArea.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceProvidingSystems\TemperatureSystem.cs" />
-    <Compile Include="ServiceProvidingSystems\NutrientSystem.cs" />
-    <Compile Include="ServiceProvidingSystems\WaterSystem.cs" />
+    <Compile Include="ServiceSystems\ServiceSystem.cs" />
+    <Compile Include="ServiceSystems\TemperatureSystem.cs" />
+    <Compile Include="ServiceSystems\NutrientSystem.cs" />
+    <Compile Include="ServiceSystems\WaterSystem.cs" />
     <Compile Include="Sensors\HumiditySensor.cs" />
     <Compile Include="Sensors\NutrientSensor.cs" />
     <Compile Include="Sensors\TemperatureSensor.cs" />
@@ -75,7 +76,7 @@
     <Compile Include="Sensors\Sensor.cs" />
     <Compile Include="Sensors\SoilPhSensor.cs" />
     <Compile Include="Timers\SystemTimer.cs" />
-    <Compile Include="ServiceProvidingSystems\ServiceProvidingSystem.cs" />
+    <Compile Include="ServiceSystems\ServiceProvider.cs" />
     <Compile Include="WeatherTypes\ColdWeatherMeasurer.cs" />
     <Compile Include="WeatherTypes\HotWeatherMeasurer.cs" />
     <Compile Include="WeatherTypes\RainyWeatherMeasurer.cs" />
