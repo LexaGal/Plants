@@ -30,8 +30,7 @@ namespace Planting.ServiceSystems
             if (messengingEventArgs != null)
             {
                 MeasuringMessage recievedMessage = messengingEventArgs.Object;
-                Console.WriteLine("Message is accepted (ServiceProvider)!\n");
-
+                
                 ServiceSystem serviceSystem = GetServiceSystem(recievedMessage.MeasurableType, 
                     recievedMessage.ParameterValue, PlantsAreas.AllPlantsAreas.First(pa =>
                         pa.Id == recievedMessage.PlantsAreaId));
@@ -49,20 +48,20 @@ namespace Planting.ServiceSystems
                     case MeasurableTypesEnum.Temperature:
                         return new TemperatureSystem(MeasurableTypesEnum.Temperature, parameterValue, plantsArea);
                     case MeasurableTypesEnum.Humidity:
-                        return new TemperatureSystem(MeasurableTypesEnum.Humidity, parameterValue, plantsArea);
+                        return new WaterSystem(MeasurableTypesEnum.Humidity, parameterValue, plantsArea);
                     case MeasurableTypesEnum.Nutrient:
-                        return new TemperatureSystem(MeasurableTypesEnum.Nutrient, parameterValue, plantsArea);
+                        return new NutrientSystem(MeasurableTypesEnum.Nutrient, parameterValue, plantsArea);
                     case MeasurableTypesEnum.SoilPh:
-                        return new TemperatureSystem(MeasurableTypesEnum.SoilPh, parameterValue, plantsArea);
+                        return new NutrientSystem(MeasurableTypesEnum.SoilPh, parameterValue, plantsArea);
             }
             return null;
         }
 
 
-        public TimeSpan GetServiceTime(TimeSpan timeSpan)
+        public ServiceMessage GetServiceTime(ServiceMessage serviceMessage)
         {
-            Console.WriteLine(timeSpan.TotalSeconds);
-            return timeSpan;
+            Console.WriteLine("\n{0}\n", serviceMessage);
+            return serviceMessage;
         }
     }
 }

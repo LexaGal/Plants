@@ -9,6 +9,8 @@ namespace Planting.Plants
 {
     public class Plant
     {
+        public IList<MeasurableParameter> MeasurableParameters { get; private set; }
+
         public Plant(Temperature temperature, Humidity humidity, SoilPh soilPh,
             Nutrient nutrient, DateTime growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan)
         {
@@ -19,6 +21,19 @@ namespace Planting.Plants
             GrowingTimeLimit = growingTime;
             WateringSpan = wateringSpan;
             NutrientingSpan = nutrientingSpan;
+
+            MeasurableParameters = new List<MeasurableParameter>
+            {
+                Temperature,
+                Humidity,
+                SoilPh,
+                Nutrient
+            };
+        }
+
+        public MeasurableParameter GetMeasurableParameter(MeasurableTypesEnum type)
+        {
+            return MeasurableParameters.First(mp => mp.Type == type);
         }
 
         public Temperature Temperature { get; private set; }

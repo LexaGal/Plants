@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Planting.Sensors;
 
 namespace Planting.Plants
 {
@@ -10,6 +11,7 @@ namespace Planting.Plants
     {
         public string Id { get; private set; }
         public IList<Plant> Plants { get; private set; }
+        public IList<Sensor> Sensors { get; private set; }
 
         public PlantsArea(IList<Plant> plants)
         {
@@ -30,6 +32,15 @@ namespace Planting.Plants
                 Plants = new List<Plant>();
             }
             Plants.Add(plant);
+        }
+
+        public void AddSensor(Sensor sensor)
+        {
+            if (Sensors == null)
+            {
+                Sensors = new List<Sensor>();
+            }
+            Sensors.Add(sensor);
         }
 
         public Plant PlantRequirements

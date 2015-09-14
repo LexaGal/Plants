@@ -28,7 +28,7 @@ namespace Planting
         
         public static void Initialize()
         {
-            _plant = new Plant(new Temperature(25, 20, 30), new Humidity(60, 40, 90),
+            _plant = new Plant(new Temperature(25, 22, 28), new Humidity(60, 53, 66),
                 new SoilPh(5, 4, 7), new Nutrient(14, 11, 20), DateTime.Now.AddMonths(1),
                 new TimeSpan(0, 0, 2), new TimeSpan(0, 0, 1));
             
@@ -38,14 +38,14 @@ namespace Planting
             _plantsAreas = new PlantsAreas();
             _plantsAreas.AddPlantsArea(_plantsArea);
 
-            _sensor = new TemperatureSensor(new Tuple<int, int>(1, 1), _plantsArea,
-                new TimeSpan(3*TimeSpan.TicksPerSecond), _plant.Temperature);
-            Sensor s = new TemperatureSensor(new Tuple<int, int>(1, 1), _plantsArea,
-                new TimeSpan(2*TimeSpan.TicksPerSecond), _plant.Temperature);
+            _sensor = new HumiditySensor(new Tuple<int, int>(1, 1), _plantsArea,
+                new TimeSpan(3*TimeSpan.TicksPerSecond), _plant.Humidity);
+            //Sensor s = new TemperatureSensor(new Tuple<int, int>(1, 1), _plantsArea,
+            //    new TimeSpan(2*TimeSpan.TicksPerSecond), _plant.Temperature);
 
             _sensorsCollection = new SensorsCollection();
             _sensorsCollection.AddSensor(_sensor);
-            _sensorsCollection.AddSensor(s);
+            //_sensorsCollection.AddSensor(s);
 
             _sensorsMeasuringsProvider = new SensorsMeasuringsProvider(_sensorsCollection);
             

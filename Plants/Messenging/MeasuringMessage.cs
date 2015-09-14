@@ -23,7 +23,7 @@ namespace Planting.Messenging
 
         public override string ToString()
         {
-            return string.Format("[{0}] Level: {1}, {2} at {3} PlantsArea: {4}",
+            return string.Format("[{0}] Level: {1}, {2} at {3} PlantsArea: {4}.",
                 DateTime.ToLongTimeString(), MessageType, MeasurableType,
                 PlantsAreaId, ParameterValue.ToString("F2"));
         }

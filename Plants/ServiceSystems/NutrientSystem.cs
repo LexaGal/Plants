@@ -13,12 +13,23 @@ namespace Planting.ServiceSystems
 
         public override TimeSpan ComputeTimeForService()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void StartService(TimeSpan timeSpan, Func<TimeSpan, TimeSpan> func1)
-        {
-            throw new NotImplementedException();
+            if (PlantsArea != null)
+            {
+                TimeSpan timeSpan;
+                if (MeasurableType == MeasurableTypesEnum.Nutrient)
+                {
+                    timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
+                                                                  PlantsArea.PlantRequirements.Nutrient.Optimal))*2);
+                    return timeSpan;
+                }
+                if (MeasurableType == MeasurableTypesEnum.SoilPh)
+                {
+                    timeSpan = new TimeSpan(0, 0, (int)(Math.Abs(ParameterValue -
+                                                                  PlantsArea.PlantRequirements.SoilPh.Optimal))*4);
+                    return timeSpan;
+                }
+            }
+            return TimeSpan.Zero;
         }
     };
 }

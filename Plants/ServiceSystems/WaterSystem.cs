@@ -13,12 +13,13 @@ namespace Planting.ServiceSystems
 
         public override TimeSpan ComputeTimeForService()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void StartService(TimeSpan timeSpan, Func<TimeSpan, TimeSpan> func1)
-        {
-            throw new NotImplementedException();
+            if (PlantsArea != null)
+            {
+                TimeSpan timeSpan = new TimeSpan(0, 0, (int)(Math.Abs(ParameterValue -
+                    PlantsArea.PlantRequirements.Humidity.Optimal))/3);
+                return timeSpan;
+            }
+            return TimeSpan.Zero;
         }
     }
 }

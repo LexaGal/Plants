@@ -14,15 +14,18 @@ namespace Planting.Sensors
     {
         public string Id { get; private set; }
         public ParameterFunction Function { get; set; }
-
+        public bool IsOn { get; set; }
+    
         protected Sensor(Tuple<int, int> location, PlantsArea plantsArea, 
             TimeSpan measuringTimeout, MeasurableParameter measurableParameter)
         {
             Id = Guid.NewGuid().ToString().Substring(0, 8);
             Location = location;
             PlantsArea = plantsArea;
+            plantsArea.AddSensor(this);
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
+            IsOn = true;
         }
 
         public double GetCurrentMeasuring

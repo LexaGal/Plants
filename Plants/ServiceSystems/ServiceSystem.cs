@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Timers;
 using Planting.Plants;
 using Planting.PlantsRequirements;
 
@@ -17,8 +19,45 @@ namespace Planting.ServiceSystems
             ParameterValue = parameterValue;
         }
 
+        public void SetSensorsState(bool state)
+        {
+            PlantsArea.Sensors
+                .Where(s => s.MeasurableParameter.Type == MeasurableType)
+                .ToList()
+                .ForEach(s => s.IsOn = state);
+        }
+
+        public void ResetSensorsFunctions()
+        {
+            PlantsArea.Sensors
+                .Where(s => s.MeasurableParameter.Type == MeasurableType)
+                .ToList()
+                .ForEach(s => s.Function.ResetFunction());
+
+        }
+
         public abstract TimeSpan ComputeTimeForService();
 
-        public abstract void StartService(TimeSpan timeSpan, Func<TimeSpan, TimeSpan> func);
+        public void StartService(TimeSpan timeSpan, Func<ServiceMessage, ServiceMessage> func)
+        {
+            SetSensorsState(false);
+
+            Timer timer = new Timer(ComputeTimeForService().TotalMilliseconds);
+
+            timer.Elapsed += (sender, args) =>
+            {
+                ServiceMessage serviceMessage = new ServiceMessage(PlantsArea.Id, MeasurableType,
+                    PlantsArea.PlantRequirements.GetMeasurableParameter(MeasurableType).Optimal, timeSpan);
+
+                func(serviceMessage);
+
+                ResetSensorsFunctions();
+
+                timer.Stop();
+
+                SetSensorsState(true);
+            };
+            timer.Start();
+        }
     }
 }

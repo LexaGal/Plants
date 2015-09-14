@@ -39,7 +39,7 @@ namespace Planting.Observation
                 MessagesDictionary[recievedMessage.PlantsAreaId].Add(recievedMessage);
 
                 Console.WriteLine(recievedMessage.ToString());
-                Console.WriteLine("Message is accepted (Observer)! {0}\n", SystemTimer.CurrentTimeSpan.Seconds);
+                Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan);
 
                 if (recievedMessage.MessageType == MessageTypesEnum.CriticalInfo)
                 {
