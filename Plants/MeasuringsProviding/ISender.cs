@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Planting.MeasuringsProviding
+namespace PlantingLib.MeasuringsProviding
 {
     public interface ISender<in T> where T: class 
     {

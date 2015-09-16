@@ -1,6 +1,6 @@
-﻿using Planting.ParametersFunctions;
+﻿using PlantingLib.ParametersFunctions;
 
-namespace Planting.WeatherTypes
+namespace PlantingLib.WeatherTypes
 {
     public abstract class WeatherMeasurer
     {

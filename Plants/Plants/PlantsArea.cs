@@ -1,37 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Planting.Sensors;
+using PlantingLib.MappingTypes;
+using PlantingLib.Sensors;
 
-namespace Planting.Plants
+namespace PlantingLib.Plants
 {
     public class PlantsArea
     {
-        public string Id { get; private set; }
-        public IList<Plant> Plants { get; private set; }
+        public Guid Id { get; private set; }
+
+        public Plant Plant { get; private set; }
         public IList<Sensor> Sensors { get; private set; }
+        public int Number { get; private set; }
 
-        public PlantsArea(IList<Plant> plants)
+        public PlantsArea(Plant plant, int number)
         {
-            Id = Guid.NewGuid().ToString().Substring(0, 8);
-            Plants = plants;
-        }
-
-        public PlantsArea()
-        {
-            Id = Guid.NewGuid().ToString().Substring(0, 8);
-            Plants = new List<Plant>();
+            Id = Guid.NewGuid();
+            Plant = plant;
+            Number = number;
         }
 
         public void AddPlant(Plant plant)
         {
-            if (Plants == null)
-            {
-                Plants = new List<Plant>();
-            }
-            Plants.Add(plant);
+            Number ++;
         }
 
         public void AddSensor(Sensor sensor)
@@ -43,9 +34,12 @@ namespace Planting.Plants
             Sensors.Add(sensor);
         }
 
-        public Plant PlantRequirements
+        public PlantsAreaMapping GetMapping
         {
-            get { return Plants.First(); }
+            get
+            {
+                return new PlantsAreaMapping(Id, Plant.Id, Number);
+            }
         }
     }
 }

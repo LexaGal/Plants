@@ -1,11 +1,15 @@
 ﻿using System;
-using Planting.PlantsRequirements;
-using Planting.WeatherTypes;
+using System.ComponentModel.DataAnnotations;
+using PlantingLib.PlantsRequirements;
+using PlantingLib.WeatherTypes;
 
-namespace Planting.ParametersFunctions
+namespace PlantingLib.ParametersFunctions
 {
     public abstract class ParameterFunction
     {
+        [Key]
+        public Guid Id { get; set; }
+
         public MeasurableParameter MeasurableParameter { get; private set; }
         public Double CurrentFunctionValue { get; set; }
         public WeatherTypesEnum WeatherType { get; private set; }

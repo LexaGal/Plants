@@ -1,10 +1,12 @@
 ﻿using System;
-using Planting.ParametersFunctions;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using System.ComponentModel.DataAnnotations.Schema;
+using PlantingLib.ParametersFunctions;
+using PlantingLib.Plants;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.Sensors
+namespace PlantingLib.Sensors
 {
+    [NotMapped]
     public class NutrientSensor : Sensor
     {
         public NutrientSensor(Tuple<int, int> location, PlantsArea plantsArea, TimeSpan measuringTimeout,
@@ -12,6 +14,10 @@ namespace Planting.Sensors
             : base(location, plantsArea, measuringTimeout, nutrient)
         {
             Function = new NutrientFunction(nutrient);
+        }
+
+        public NutrientSensor()
+        {
         }
     }
 }

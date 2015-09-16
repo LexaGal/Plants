@@ -1,11 +1,11 @@
-namespace Planting.PlantsRequirements
+namespace PlantingLib.PlantsRequirements
 {
     public class Humidity : MeasurableParameter
     {
         public Humidity(int optimalHumidity, int minHumidity, int maxHumidity)
             : base(optimalHumidity, minHumidity, maxHumidity)
         {
-            Type = MeasurableTypesEnum.Humidity;
+            MeasurableType = MeasurableTypesEnum.Humidity;
         }
     }
 }

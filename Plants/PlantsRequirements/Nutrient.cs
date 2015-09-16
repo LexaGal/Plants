@@ -1,11 +1,11 @@
-﻿namespace Planting.PlantsRequirements
+﻿namespace PlantingLib.PlantsRequirements
 {
     public class Nutrient : MeasurableParameter
     {
         public Nutrient(int optimalNutrient, int minNutrient, int maxNutrient)
             : base(optimalNutrient, minNutrient, maxNutrient)
         {
-            Type = MeasurableTypesEnum.Nutrient;
+            MeasurableType = MeasurableTypesEnum.Nutrient;
         }
 
     }

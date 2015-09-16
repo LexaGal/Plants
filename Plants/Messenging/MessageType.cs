@@ -1,4 +1,4 @@
-namespace Planting.Messenging
+namespace PlantingLib.Messenging
 {
     public enum MessageTypesEnum
     {

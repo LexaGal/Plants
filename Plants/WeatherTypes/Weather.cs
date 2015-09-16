@@ -1,7 +1,6 @@
 ﻿using System;
-using Planting.Messenging;
 
-namespace Planting.WeatherTypes
+namespace PlantingLib.WeatherTypes
 {
     public static class Weather
     {

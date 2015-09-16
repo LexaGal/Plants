@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.ServiceSystems
+namespace PlantingLib.ServiceSystems
 {
     public class ServiceMessage
     {
-        public ServiceMessage(string plantsAreaId, MeasurableTypesEnum measurableType, double parameterValue, TimeSpan timeSpan)
+        public ServiceMessage(Guid plantsAreaId, MeasurableTypesEnum measurableType, double parameterValue, TimeSpan timeSpan)
         {
             PlantsAreaId = plantsAreaId;
             MeasurableType = measurableType;
@@ -18,7 +13,7 @@ namespace Planting.ServiceSystems
             TimeSpan = timeSpan;
         }
 
-        public string PlantsAreaId { get; private set; }
+        public Guid PlantsAreaId { get; private set; }
         public MeasurableTypesEnum MeasurableType { get; private set; }
         public double ParameterValue { get; private set; }
         public TimeSpan TimeSpan { get; private set; }

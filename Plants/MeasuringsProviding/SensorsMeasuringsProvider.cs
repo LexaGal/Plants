@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Planting.MessagesCreators;
-using Planting.Messenging;
-using Planting.Sensors;
+using PlantingLib.MessagesCreators;
+using PlantingLib.Messenging;
+using PlantingLib.Sensors;
 
-namespace Planting.MeasuringsProviding
+namespace PlantingLib.MeasuringsProviding
 {
     public class SensorsMeasuringsProvider : ISender<MeasuringMessage>
     {

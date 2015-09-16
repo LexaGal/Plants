@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Timers;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using PlantingLib.Plants;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.ServiceSystems
+namespace PlantingLib.ServiceSystems
 {
     public class TemperatureSystem : ServiceSystem
     {
@@ -18,7 +16,7 @@ namespace Planting.ServiceSystems
             if (PlantsArea != null)
             {
                 TimeSpan timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
-                    PlantsArea.PlantRequirements.Temperature.Optimal)));
+                    PlantsArea.Plant.Temperature.Optimal)));
                 return timeSpan;
             }
             return TimeSpan.Zero;

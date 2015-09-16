@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using PlantingLib.Plants;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.ServiceSystems
+namespace PlantingLib.ServiceSystems
 {
     public abstract class ServiceSystem
     {
@@ -22,7 +22,7 @@ namespace Planting.ServiceSystems
         public void SetSensorsState(bool state)
         {
             PlantsArea.Sensors
-                .Where(s => s.MeasurableParameter.Type == MeasurableType)
+                .Where(s => s.MeasurableParameter.MeasurableType == MeasurableType)
                 .ToList()
                 .ForEach(s => s.IsOn = state);
         }
@@ -30,7 +30,7 @@ namespace Planting.ServiceSystems
         public void ResetSensorsFunctions()
         {
             PlantsArea.Sensors
-                .Where(s => s.MeasurableParameter.Type == MeasurableType)
+                .Where(s => s.MeasurableParameter.MeasurableType == MeasurableType)
                 .ToList()
                 .ForEach(s => s.Function.ResetFunction());
 
@@ -47,7 +47,7 @@ namespace Planting.ServiceSystems
             timer.Elapsed += (sender, args) =>
             {
                 ServiceMessage serviceMessage = new ServiceMessage(PlantsArea.Id, MeasurableType,
-                    PlantsArea.PlantRequirements.GetMeasurableParameter(MeasurableType).Optimal, timeSpan);
+                    PlantsArea.Plant.GetMeasurableParameter(MeasurableType).Optimal, timeSpan);
 
                 func(serviceMessage);
 

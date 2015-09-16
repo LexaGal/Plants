@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Planting.ParametersFunctions;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using PlantingLib.ParametersFunctions;
+using PlantingLib.Plants;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.Sensors
+namespace PlantingLib.Sensors
 {
     public class TemperatureSensor : Sensor
     {
@@ -16,6 +12,10 @@ namespace Planting.Sensors
             : base(location, plantsArea, measuringTimeout, temperature)
         {
             Function = new TemperatureFunction(temperature);
+        }
+
+        public TemperatureSensor()
+        {
         }
     }
 }

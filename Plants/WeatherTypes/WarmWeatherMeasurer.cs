@@ -1,4 +1,4 @@
-namespace Planting.WeatherTypes
+namespace PlantingLib.WeatherTypes
 {
     public class WarmWeatherMeasurer : WeatherMeasurer
     {

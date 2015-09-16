@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Timers;
 
-namespace Planting.Timers
+namespace PlantingLib.Timers
 {
     public static class SystemTimer
     {
         private static Timer _timer;
         public static TimeSpan CurrentTimeSpan { get; set; }
-        public static TimeSpan RestartTimeSpan = new TimeSpan(0, 0, 20);
+        public static TimeSpan RestartTimeSpan = new TimeSpan(0, 3, 0);
 
         public static void Start(ElapsedEventHandler handler, TimeSpan timeSpan)
         {

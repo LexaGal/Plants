@@ -1,8 +1,8 @@
 ﻿using System;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using PlantingLib.Plants;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.ServiceSystems
+namespace PlantingLib.ServiceSystems
 {
     public class NutrientSystem : ServiceSystem
     {
@@ -19,13 +19,13 @@ namespace Planting.ServiceSystems
                 if (MeasurableType == MeasurableTypesEnum.Nutrient)
                 {
                     timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
-                                                                  PlantsArea.PlantRequirements.Nutrient.Optimal))*2);
+                                                                  PlantsArea.Plant.Nutrient.Optimal))*2);
                     return timeSpan;
                 }
                 if (MeasurableType == MeasurableTypesEnum.SoilPh)
                 {
                     timeSpan = new TimeSpan(0, 0, (int)(Math.Abs(ParameterValue -
-                                                                  PlantsArea.PlantRequirements.SoilPh.Optimal))*4);
+                                                                  PlantsArea.Plant.SoilPh.Optimal))*4);
                     return timeSpan;
                 }
             }

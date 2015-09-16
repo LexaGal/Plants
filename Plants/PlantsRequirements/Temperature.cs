@@ -1,11 +1,11 @@
-﻿namespace Planting.PlantsRequirements
+﻿namespace PlantingLib.PlantsRequirements
 {
     public class Temperature : MeasurableParameter
     {
         public Temperature(int optimalTemperature, int minTemperature, int maxTemperature)
             : base(optimalTemperature, minTemperature, maxTemperature)
         {
-            Type = MeasurableTypesEnum.Temperature;
+            MeasurableType = MeasurableTypesEnum.Temperature;
         }
     }
 }

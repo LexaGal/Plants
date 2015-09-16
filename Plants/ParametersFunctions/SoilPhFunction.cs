@@ -1,8 +1,8 @@
-﻿using Planting.PlantsRequirements;
-using Planting.Timers;
-using Planting.WeatherTypes;
+﻿using PlantingLib.PlantsRequirements;
+using PlantingLib.Timers;
+using PlantingLib.WeatherTypes;
 
-namespace Planting.ParametersFunctions
+namespace PlantingLib.ParametersFunctions
 {
     public class SoilPhFunction : ParameterFunction
     {

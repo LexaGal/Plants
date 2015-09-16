@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Planting.MeasuringsProviding;
-using Planting.MessagesCreators;
-using Planting.Messenging;
-using Planting.Plants;
-using Planting.Timers;
+using PlantingLib.MeasuringsProviding;
+using PlantingLib.Messenging;
+using PlantingLib.Plants;
+using PlantingLib.Timers;
 
-namespace Planting.Observation
+namespace PlantingLib.Observation
 {
     public class Observer : IReciever, ISender<MeasuringMessage>
     {
         public ISender<MeasuringMessage> Sender { get; private set; }
         public PlantsAreas PlantsAreas { get; private set; }
-        public IDictionary<string, IList<MeasuringMessage>> MessagesDictionary;
+        public IDictionary<Guid, IList<MeasuringMessage>> MessagesDictionary;
         public const int MessagesLimit = 10;
 
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)
@@ -24,7 +23,7 @@ namespace Planting.Observation
 
             PlantsAreas = plantsAreas;
            
-            MessagesDictionary = new Dictionary<string, IList<MeasuringMessage>>();
+            MessagesDictionary = new Dictionary<Guid, IList<MeasuringMessage>>();
             PlantsAreas.AllPlantsAreas.ToList().ForEach(pa => MessagesDictionary.Add(pa.Id, new List<MeasuringMessage>()));
         }
         
@@ -39,10 +38,12 @@ namespace Planting.Observation
                 MessagesDictionary[recievedMessage.PlantsAreaId].Add(recievedMessage);
 
                 Console.WriteLine(recievedMessage.ToString());
-                Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan);
+                Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan.TotalSeconds);
 
                 if (recievedMessage.MessageType == MessageTypesEnum.CriticalInfo)
                 {
+                    //Console.WriteLine(recievedMessage.ToString());
+                    //Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan);
                     //sending to scheduler
                     OnMessageSending(recievedMessage);
                 }

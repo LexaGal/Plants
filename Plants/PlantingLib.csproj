@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B3521B62-7B55-452D-9B22-99075E2E4116}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PlantingLib</RootNamespace>
+    <AssemblyName>PlantingLib</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.0.4.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.0.4\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MappingTypes\MeasurableParameterMapping.cs" />
+    <Compile Include="MappingTypes\MeasuringMessageMapping.cs" />
+    <Compile Include="MappingTypes\PlantMapping.cs" />
+    <Compile Include="MappingTypes\PlantsAreaMapping.cs" />
+    <Compile Include="MappingTypes\SensorMapping.cs" />
+    <Compile Include="MessagesCreators\MeasuringMessageCreator.cs" />
+    <Compile Include="Messenging\MessengingEventArgs.cs" />
+    <Compile Include="MeasuringsProviding\ISender.cs" />
+    <Compile Include="Messenging\MeasuringMessage.cs" />
+    <Compile Include="Observation\IReciever.cs" />
+    <Compile Include="ParametersFunctions\HumidityFunction.cs" />
+    <Compile Include="ParametersFunctions\NutrientFunction.cs" />
+    <Compile Include="ParametersFunctions\ParameterFunction.cs" />
+    <Compile Include="ParametersFunctions\SoilPhFunction.cs" />
+    <Compile Include="ParametersFunctions\TemperatureFunction.cs" />
+    <Compile Include="PlantsRequirements\MeasurableType.cs" />
+    <Compile Include="Messenging\MessageType.cs" />
+    <Compile Include="MeasuringsProviding\SensorsMeasuringsProvider.cs" />
+    <Compile Include="Observation\Observer.cs" />
+    <Compile Include="PlantsRequirements\MeasurableParameter.cs" />
+    <Compile Include="PlantsRequirements\Humidity.cs" />
+    <Compile Include="PlantsRequirements\Nutrient.cs" />
+    <Compile Include="PlantsRequirements\SoilPh.cs" />
+    <Compile Include="PlantsRequirements\Temperature.cs" />
+    <Compile Include="Plants\PlantsAreas.cs" />
+    <Compile Include="Plants\Plant.cs" />
+    <Compile Include="Plants\PlantsArea.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceSystems\ServiceMessage.cs" />
+    <Compile Include="ServiceSystems\ServiceSystem.cs" />
+    <Compile Include="ServiceSystems\TemperatureSystem.cs" />
+    <Compile Include="ServiceSystems\NutrientSystem.cs" />
+    <Compile Include="ServiceSystems\WaterSystem.cs" />
+    <Compile Include="Sensors\HumiditySensor.cs" />
+    <Compile Include="Sensors\NutrientSensor.cs" />
+    <Compile Include="Sensors\TemperatureSensor.cs" />
+    <Compile Include="Sensors\SensorsCollection.cs" />
+    <Compile Include="Sensors\Sensor.cs" />
+    <Compile Include="Sensors\SoilPhSensor.cs" />
+    <Compile Include="Timers\SystemTimer.cs" />
+    <Compile Include="ServiceSystems\ServiceProvider.cs" />
+    <Compile Include="WeatherTypes\ColdWeatherMeasurer.cs" />
+    <Compile Include="WeatherTypes\HotWeatherMeasurer.cs" />
+    <Compile Include="WeatherTypes\RainyWeatherMeasurer.cs" />
+    <Compile Include="WeatherTypes\WarmWeatherMeasurer.cs" />
+    <Compile Include="WeatherTypes\Weather.cs" />
+    <Compile Include="WeatherTypes\WeatherMeasurer.cs" />
+    <Compile Include="WeatherTypes\WeatherTypesEnum.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

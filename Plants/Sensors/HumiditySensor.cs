@@ -1,10 +1,12 @@
 ﻿using System;
-using Planting.ParametersFunctions;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using System.ComponentModel.DataAnnotations.Schema;
+using PlantingLib.ParametersFunctions;
+using PlantingLib.Plants;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.Sensors
+namespace PlantingLib.Sensors
 {
+    [NotMapped]
     public class HumiditySensor : Sensor
     {
         public HumiditySensor(Tuple<int, int> location, PlantsArea plantsArea, TimeSpan measuringTimeout,
@@ -13,5 +15,8 @@ namespace Planting.Sensors
         {
             Function = new HumidityFunction(humidity);
         }
+
+        public HumiditySensor()
+        {}
     }
 }

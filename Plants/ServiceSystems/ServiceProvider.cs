@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Planting.MeasuringsProviding;
-using Planting.Messenging;
-using Planting.Observation;
-using Planting.Plants;
-using Planting.PlantsRequirements;
+using PlantingLib.MeasuringsProviding;
+using PlantingLib.Messenging;
+using PlantingLib.Observation;
+using PlantingLib.Plants;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.ServiceSystems
+namespace PlantingLib.ServiceSystems
 {
     public class ServiceProvider : IReciever
     {

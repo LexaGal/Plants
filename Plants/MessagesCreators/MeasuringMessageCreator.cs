@@ -1,17 +1,16 @@
 ﻿using System;
-using Planting.MeasuringsProviding;
-using Planting.Messenging;
-using Planting.PlantsRequirements;
+using PlantingLib.Messenging;
+using PlantingLib.PlantsRequirements;
 
-namespace Planting.MessagesCreators
+namespace PlantingLib.MessagesCreators
 {
     public class MeasuringMessageCreator
     {
         public MeasurableParameter MeasurableParameter { get; set; }
-        public string PlantsAreaId { get; private set; }
+        public Guid PlantsAreaId { get; private set; }
         public double ParameterValue { get; private set; }
 
-        public MeasuringMessageCreator(MeasurableParameter measurableValue, string plantsAreaId, double measuringValue)
+        public MeasuringMessageCreator(MeasurableParameter measurableValue, Guid plantsAreaId, double measuringValue)
         {
             MeasurableParameter = measurableValue;
             PlantsAreaId = plantsAreaId;
@@ -23,10 +22,10 @@ namespace Planting.MessagesCreators
             if (ParameterValue < MeasurableParameter.Min || ParameterValue > MeasurableParameter.Max)
             {
                 return new MeasuringMessage(DateTime.Now, MessageTypesEnum.CriticalInfo,
-                    MeasurableParameter.Type, PlantsAreaId, ParameterValue);
+                    MeasurableParameter.MeasurableType, PlantsAreaId, ParameterValue);
             }
             return new MeasuringMessage(DateTime.Now, MessageTypesEnum.UsualInfo,
-                    MeasurableParameter.Type, PlantsAreaId, ParameterValue);
+                    MeasurableParameter.MeasurableType, PlantsAreaId, ParameterValue);
         }
     }
 }
