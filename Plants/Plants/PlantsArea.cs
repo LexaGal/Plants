@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using PlantingLib.MappingTypes;
 using PlantingLib.Sensors;
 
 namespace PlantingLib.Plants
@@ -20,6 +19,13 @@ namespace PlantingLib.Plants
             Number = number;
         }
 
+        public PlantsArea(Guid id, Plant plant, int number)
+        {
+            Id = id;
+            Plant = plant;
+            Number = number;
+        }
+
         public void AddPlant(Plant plant)
         {
             Number ++;
@@ -32,14 +38,26 @@ namespace PlantingLib.Plants
                 Sensors = new List<Sensor>();
             }
             Sensors.Add(sensor);
+        }     
+    }
+
+    public class PlantsAreaEqualityComparer : IEqualityComparer<PlantsArea>
+    {
+
+        public bool Equals(PlantsArea pa1, PlantsArea pa2)
+        {
+            if (pa1.Id == pa2.Id)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public PlantsAreaMapping GetMapping
+        public int GetHashCode(PlantsArea pa)
         {
-            get
-            {
-                return new PlantsAreaMapping(Id, Plant.Id, Number);
-            }
+            return typeof(PlantsArea).GetHashCode();
         }
+
     }
+
 }

@@ -1,8 +1,7 @@
 ﻿using System;
-using PlantingLib.MappingTypes;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.ParametersFunctions;
 using PlantingLib.Plants;
-using PlantingLib.PlantsRequirements;
 
 namespace PlantingLib.Sensors
 {
@@ -12,37 +11,35 @@ namespace PlantingLib.Sensors
         public TimeSpan MeasuringTimeout { get; private set; }
         public PlantsArea PlantsArea { get; private set; }
         public MeasurableParameter MeasurableParameter { get; private set; }
-        public Tuple<int, int> Location { get; private set; }
         public ParameterFunction Function { get; set; }
         public bool IsOn { get; set; }
+        public MeasurableTypesEnum MeasurableType { get; private set; }
 
-        protected Sensor()
-        {
-        }
-
-        protected Sensor(Tuple<int, int> location, PlantsArea plantsArea,
+        protected Sensor(PlantsArea plantsArea,
             TimeSpan measuringTimeout, MeasurableParameter measurableParameter)
         {
             Id = Guid.NewGuid();
-            Location = location;
+            PlantsArea = plantsArea;
+            plantsArea.AddSensor(this);
+            MeasuringTimeout = measuringTimeout;
+            MeasurableParameter = measurableParameter;
+            MeasurableType = MeasurableParameter.MeasurableType;
+            IsOn = true;
+        }
+
+        protected Sensor(Guid id, PlantsArea plantsArea,
+            TimeSpan measuringTimeout, MeasurableParameter measurableParameter)
+        {
+            Id = id;
             PlantsArea = plantsArea;
             plantsArea.AddSensor(this);
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
             IsOn = true;
         }
-
         public double GetCurrentMeasuring
         {
             get { return Function.NewFunctionValue(); }
-        }
-
-        public SensorMapping GetMapping
-        {
-            get
-            {
-                return new SensorMapping(Id, PlantsArea.Id, (int) MeasuringTimeout.TotalSeconds, MeasurableParameter.Id);
-            }
         }
     }
 }

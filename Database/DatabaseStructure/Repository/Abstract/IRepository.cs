@@ -6,9 +6,9 @@ namespace Database.DatabaseStructure.Repository.Abstract
     public interface IRepository<T> : IDisposable where T: class
     {
         IQueryable<T> GetAll();
-        T Get(int id);
+        T Get(Guid id);
         bool Add(T value);
-        bool Edit(int id, T value);
-        bool Delete(int id);
+        bool Edit(Guid id, T value);
+        bool Delete(Guid id);
     }
 }

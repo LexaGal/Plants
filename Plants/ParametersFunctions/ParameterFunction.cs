@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using PlantingLib.PlantsRequirements;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.WeatherTypes;
 
 namespace PlantingLib.ParametersFunctions

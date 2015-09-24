@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
-using PlantingLib.PlantsRequirements;
 
 namespace PlantingLib.ServiceSystems
 {

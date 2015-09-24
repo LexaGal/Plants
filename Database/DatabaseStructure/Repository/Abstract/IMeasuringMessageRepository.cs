@@ -1,4 +1,4 @@
-﻿using PlantingLib.MappingTypes;
+﻿using MeasuringMessageMapping = Database.MappingTypes.MeasuringMessageMapping;
 
 namespace Database.DatabaseStructure.Repository.Abstract
 {

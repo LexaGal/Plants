@@ -1,0 +1,11 @@
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\PlantingLib.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\PlantingLib.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\AutoMapper.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\EntityFramework.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\AutoMapper.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\EntityFramework.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Release\PlantingLib.csprojResolveAssemblyReference.cache
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Release\PlantingLib.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Release\PlantingLib.pdb

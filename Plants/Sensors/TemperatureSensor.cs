@@ -1,21 +1,23 @@
 ﻿using System;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.ParametersFunctions;
 using PlantingLib.Plants;
-using PlantingLib.PlantsRequirements;
 
 namespace PlantingLib.Sensors
 {
     public class TemperatureSensor : Sensor
     {
-        public TemperatureSensor(Tuple<int, int> location, PlantsArea plantsArea, TimeSpan measuringTimeout,
+        public TemperatureSensor(PlantsArea plantsArea, TimeSpan measuringTimeout,
             Temperature temperature)
-            : base(location, plantsArea, measuringTimeout, temperature)
+            : base(plantsArea, measuringTimeout, temperature)
         {
             Function = new TemperatureFunction(temperature);
         }
 
-        public TemperatureSensor()
+        public TemperatureSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, Temperature temperature)
+            : base(id, plantsArea, measuringTimeout, temperature)
         {
+            Function = new TemperatureFunction(temperature);
         }
     }
 }

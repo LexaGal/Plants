@@ -53,6 +53,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbContextConfiguration.cs" />
+    <Compile Include="MappingTypes\MeasurableParameterMapping.cs" />
+    <Compile Include="MappingTypes\MeasuringMessageMapping.cs" />
+    <Compile Include="MappingTypes\PlantMapping.cs" />
+    <Compile Include="MappingTypes\PlantsAreaMapping.cs" />
+    <Compile Include="MappingTypes\SensorMapping.cs" />
     <Compile Include="PlantingDb.cs" />
     <Compile Include="DatabaseStructure\Repository\Abstract\IMeasurableParameterRepository.cs" />
     <Compile Include="DatabaseStructure\Repository\Abstract\IMeasuringMessageRepository.cs" />
@@ -70,12 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Plants\PlantingLib.csproj">
-      <Project>{b3521b62-7b55-452d-9b22-99075e2e4116}</Project>
-      <Name>PlantingLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

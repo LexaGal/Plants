@@ -1,0 +1,13 @@
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\Mapper.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\Mapper.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\Database.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\PlantingLib.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\EntityFramework.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\Database.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\PlantingLib.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\EntityFramework.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Release\Mapper.csprojResolveAssemblyReference.cache
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Release\Mapper.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Release\Mapper.pdb

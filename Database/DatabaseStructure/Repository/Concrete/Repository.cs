@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Database.DatabaseStructure.Repository.Abstract;
 
 namespace Database.DatabaseStructure.Repository.Concrete
@@ -13,7 +14,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
             return Context.Set<T>().AsQueryable();
         }
 
-        public virtual T Get(int id)
+        public virtual T Get(Guid id)
         {
             return Context.Set<T>().Find(id);
         }
@@ -26,9 +27,9 @@ namespace Database.DatabaseStructure.Repository.Concrete
             return true;
         }
 
-        public abstract bool Edit(int id, T value);
+        public abstract bool Edit(Guid id, T value);
         
-        public virtual bool Delete(int id)
+        public virtual bool Delete(Guid id)
         {
             T t = Context.Set<T>().Find(id);
             if (t != null)

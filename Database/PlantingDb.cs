@@ -1,9 +1,13 @@
 ﻿using System.Data.Entity;
-using PlantingLib.MappingTypes;
+using MeasurableParameterMapping = Database.MappingTypes.MeasurableParameterMapping;
+using MeasuringMessageMapping = Database.MappingTypes.MeasuringMessageMapping;
+using PlantMapping = Database.MappingTypes.PlantMapping;
+using PlantsAreaMapping = Database.MappingTypes.PlantsAreaMapping;
+using SensorMapping = Database.MappingTypes.SensorMapping;
 
 namespace Database
 {
-    [DbConfigurationType(typeof(DbContextConfiguration))]
+    [DbConfigurationType(typeof (DbContextConfiguration))]
     public class PlantingDb : DbContext
     {
         public DbSet<MeasurableParameterMapping> MeasurableParametersSet { get; set; }
@@ -21,4 +25,4 @@ namespace Database
             modelBuilder.Entity<MeasuringMessageMapping>().ToTable("MeasuringMessage");
         }
     }
-} ;
+} 

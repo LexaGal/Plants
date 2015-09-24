@@ -9,3 +9,14 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\Plan
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\AutoMapper.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\AutoMapper.xml
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\PlantingLib.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\PlantingLib.pdb
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\AutoMapper.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\EntityFramework.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\EntityFramework.SqlServer.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\AutoMapper.xml
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\EntityFramework.xml
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\EntityFramework.SqlServer.xml
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.csprojResolveAssemblyReference.cache
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.pdb

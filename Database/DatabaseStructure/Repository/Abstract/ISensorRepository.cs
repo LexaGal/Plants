@@ -1,4 +1,4 @@
-﻿using PlantingLib.MappingTypes;
+﻿using SensorMapping = Database.MappingTypes.SensorMapping;
 
 namespace Database.DatabaseStructure.Repository.Abstract
 {

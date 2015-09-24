@@ -57,6 +57,10 @@
       <Project>{3a18d4ac-4b79-4fed-b466-87d8e29101d3}</Project>
       <Name>Database</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mapper\Mapper.csproj">
+      <Project>{365d25b6-7f68-458b-a45e-3952db55bd50}</Project>
+      <Name>Mapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plants\PlantingLib.csproj">
       <Project>{b3521b62-7b55-452d-9b22-99075e2e4116}</Project>
       <Name>PlantingLib</Name>

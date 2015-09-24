@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using PlantingLib.MappingTypes;
-using PlantingLib.PlantsRequirements;
+using PlantingLib.MeasurableParameters;
 
 namespace PlantingLib.Messenging
 {
@@ -34,13 +33,6 @@ namespace PlantingLib.Messenging
                 PlantsAreaId, ParameterValue.ToString("F2"));
         }
 
-        public MeasuringMessageMapping GetMapping
-        {
-            get
-            {
-                return new MeasuringMessageMapping(Id, DateTime, MeasurableType.ToString(),
-                    MeasurableType.ToString(), PlantsAreaId, ParameterValue);
-            }
-        }
+      
     }
 }

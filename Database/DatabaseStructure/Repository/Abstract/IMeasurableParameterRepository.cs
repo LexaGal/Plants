@@ -1,4 +1,4 @@
-﻿using PlantingLib.MappingTypes;
+﻿using MeasurableParameterMapping = Database.MappingTypes.MeasurableParameterMapping;
 
 namespace Database.DatabaseStructure.Repository.Abstract
 {

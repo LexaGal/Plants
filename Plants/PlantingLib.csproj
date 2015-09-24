@@ -57,11 +57,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MappingTypes\MeasurableParameterMapping.cs" />
-    <Compile Include="MappingTypes\MeasuringMessageMapping.cs" />
-    <Compile Include="MappingTypes\PlantMapping.cs" />
-    <Compile Include="MappingTypes\PlantsAreaMapping.cs" />
-    <Compile Include="MappingTypes\SensorMapping.cs" />
     <Compile Include="MessagesCreators\MeasuringMessageCreator.cs" />
     <Compile Include="Messenging\MessengingEventArgs.cs" />
     <Compile Include="MeasuringsProviding\ISender.cs" />
@@ -72,15 +67,15 @@
     <Compile Include="ParametersFunctions\ParameterFunction.cs" />
     <Compile Include="ParametersFunctions\SoilPhFunction.cs" />
     <Compile Include="ParametersFunctions\TemperatureFunction.cs" />
-    <Compile Include="PlantsRequirements\MeasurableType.cs" />
+    <Compile Include="MeasurableParameters\MeasurableType.cs" />
     <Compile Include="Messenging\MessageType.cs" />
     <Compile Include="MeasuringsProviding\SensorsMeasuringsProvider.cs" />
     <Compile Include="Observation\Observer.cs" />
-    <Compile Include="PlantsRequirements\MeasurableParameter.cs" />
-    <Compile Include="PlantsRequirements\Humidity.cs" />
-    <Compile Include="PlantsRequirements\Nutrient.cs" />
-    <Compile Include="PlantsRequirements\SoilPh.cs" />
-    <Compile Include="PlantsRequirements\Temperature.cs" />
+    <Compile Include="MeasurableParameters\MeasurableParameter.cs" />
+    <Compile Include="MeasurableParameters\Humidity.cs" />
+    <Compile Include="MeasurableParameters\Nutrient.cs" />
+    <Compile Include="MeasurableParameters\SoilPh.cs" />
+    <Compile Include="MeasurableParameters\Temperature.cs" />
     <Compile Include="Plants\PlantsAreas.cs" />
     <Compile Include="Plants\Plant.cs" />
     <Compile Include="Plants\PlantsArea.cs" />

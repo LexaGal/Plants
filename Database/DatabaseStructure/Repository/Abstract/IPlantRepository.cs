@@ -1,4 +1,4 @@
-﻿using PlantingLib.MappingTypes;
+﻿using PlantMapping = Database.MappingTypes.PlantMapping;
 
 namespace Database.DatabaseStructure.Repository.Abstract
 {

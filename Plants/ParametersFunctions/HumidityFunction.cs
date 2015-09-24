@@ -1,4 +1,4 @@
-﻿using PlantingLib.PlantsRequirements;
+﻿using PlantingLib.MeasurableParameters;
 using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 

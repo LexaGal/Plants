@@ -1,5 +1,5 @@
 ﻿using System;
-using PlantingLib.PlantsRequirements;
+using PlantingLib.MeasurableParameters;
 
 namespace PlantingLib.ServiceSystems
 {

@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Timers;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
-using PlantingLib.MappingTypes;
+using Database.MappingTypes;
+using Mapper.MapperContext;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
-using PlantingLib.PlantsRequirements;
 using PlantingLib.Sensors;
 using PlantingLib.ServiceSystems;
 using PlantingLib.Timers;
@@ -19,42 +20,41 @@ namespace PlantingUI
 {
     class Program
     {
-        private static PlantsAreas _plantsAreas;
         private static SensorsCollection _sensorsCollection;
         private static Observer _observer;
+        private static PlantsAreas _plantsAreas;
         private static SensorsMeasuringsProvider _sensorsMeasuringsProvider;
+        private static ServiceProvider _serviceProvider;
 
         private static DateTime _beginDateTime;
         
         public static void Initialize()
         {
             IPlantRepository plantRepository = new PlantRepository();
-            List<PlantMapping> plantMappings = plantRepository.GetAll().ToList();
-
             IPlantsAreaRepository plantsAreaRepository = new PlantsAreaRepository();
-            List<PlantsAreaMapping> areas = plantsAreaRepository.GetAll().ToList();
-
             IMeasurableParameterRepository measurableParameterRepository = new MeasurableParameterRepository();
-            List<MeasurableParameterMapping> measurableParameterMappings = measurableParameterRepository.GetAll().ToList();
-
             ISensorRepository sensorRepository = new SensorRepository();
-            List<SensorMapping> sensors = sensorRepository.GetAll().ToList();
             
-            PlantMapping plantMapping = new PlantMapping(
-                Guid.NewGuid(),
-                measurableParameterMappings.First(m => m.Type == MeasurableTypesEnum.Temperature.ToString()).Id,
-                measurableParameterMappings.First(m => m.Type == MeasurableTypesEnum.Humidity.ToString()).Id,
-                measurableParameterMappings.First(m => m.Type == MeasurableTypesEnum.SoilPh.ToString()).Id,
-                measurableParameterMappings.First(m => m.Type == MeasurableTypesEnum.Nutrient.ToString()).Id,
-                1000, 1, 1);
+            DbMapper dbMapper = new DbMapper(plantRepository, plantsAreaRepository,
+                measurableParameterRepository);
 
-            plantRepository.Add(plantMapping);
+            //IList<PlantsAreaMapping> plantsAreasMappings = plantsAreaRepository.GetAll().ToList();
+            
+            List<SensorMapping> sensorMappings = sensorRepository.GetAll().ToList();
+           _sensorsCollection = new SensorsCollection();
+            sensorMappings.ForEach(m => _sensorsCollection.AddSensor(dbMapper.RestoreSensor(m)));
+
+            _plantsAreas = new PlantsAreas();
+
+            _sensorsCollection.AllSensors.ToList().ForEach(s => _plantsAreas.AddPlantsArea(s.PlantsArea));
 
             _sensorsMeasuringsProvider = new SensorsMeasuringsProvider(_sensorsCollection);
-            
+
+            _plantsAreas = new PlantsAreas(_plantsAreas.AllPlantsAreas.Distinct(new PlantsAreaEqualityComparer()).ToList());
+
             _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
-            
-            ServiceProvider provider = new ServiceProvider(_observer, _plantsAreas);
+
+            _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
 
             _beginDateTime = DateTime.Now;
         }
@@ -84,7 +84,7 @@ namespace PlantingUI
         static void Main(string[] args)
         {
             Initialize();
-            Weather.SetWeather(WeatherTypesEnum.Rainy);
+            Weather.SetWeather(WeatherTypesEnum.Warm);
             SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
         }
     }
