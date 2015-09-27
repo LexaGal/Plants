@@ -6,7 +6,7 @@ namespace PlantingLib.ServiceSystems
 {
     public class NutrientSystem : ServiceSystem
     {
-        public NutrientSystem(MeasurableTypesEnum measurableType, double parameterValue, PlantsArea plantsArea)
+        public NutrientSystem(MeasurableTypeEnum measurableType, double parameterValue, PlantsArea plantsArea)
             : base(measurableType, parameterValue, plantsArea)
         {
         }
@@ -16,13 +16,13 @@ namespace PlantingLib.ServiceSystems
             if (PlantsArea != null)
             {
                 TimeSpan timeSpan;
-                if (MeasurableType == MeasurableTypesEnum.Nutrient)
+                if (MeasurableType == MeasurableTypeEnum.Nutrient)
                 {
                     timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
                                                                   PlantsArea.Plant.Nutrient.Optimal))*2);
                     return timeSpan;
                 }
-                if (MeasurableType == MeasurableTypesEnum.SoilPh)
+                if (MeasurableType == MeasurableTypeEnum.SoilPh)
                 {
                     timeSpan = new TimeSpan(0, 0, (int)(Math.Abs(ParameterValue -
                                                                   PlantsArea.Plant.SoilPh.Optimal))*4);

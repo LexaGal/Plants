@@ -23,7 +23,7 @@ namespace PlantingLib.MeasuringsProviding
                 {
                     MeasuringMessageCreator measuringMessageCreator =
                         new MeasuringMessageCreator(sensor.MeasurableParameter,
-                            sensor.PlantsArea.Id, sensor.GetCurrentMeasuring);
+                            sensor.PlantsArea.Id, sensor.GetNewMeasuring);
 
                     MeasuringMessage message = measuringMessageCreator.CreateMessage();
                     //sending to observer

@@ -59,18 +59,18 @@
     <Compile Include="MappingTypes\PlantsAreaMapping.cs" />
     <Compile Include="MappingTypes\SensorMapping.cs" />
     <Compile Include="PlantingDb.cs" />
-    <Compile Include="DatabaseStructure\Repository\Abstract\IMeasurableParameterRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Abstract\IMeasuringMessageRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Abstract\IPlantRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Abstract\IPlantsAreaRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Abstract\IMeasurableParameterMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Abstract\IMeasuringMessageMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Abstract\IPlantMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Abstract\IPlantsAreaMappingRepository.cs" />
     <Compile Include="DatabaseStructure\Repository\Abstract\IRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Abstract\ISensorRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Concrete\MeasurableParameterRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Concrete\MeasuringMessageRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Concrete\PlantRepository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Concrete\PlantsAreaRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Abstract\ISensorMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Concrete\MeasurableParameterMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Concrete\MeasuringMessageMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Concrete\PlantMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Concrete\PlantsAreaMappingRepository.cs" />
     <Compile Include="DatabaseStructure\Repository\Concrete\Repository.cs" />
-    <Compile Include="DatabaseStructure\Repository\Concrete\SensorRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Concrete\SensorMappingRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

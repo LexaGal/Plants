@@ -5,7 +5,7 @@ namespace PlantingLib.ServiceSystems
 {
     public class ServiceMessage
     {
-        public ServiceMessage(Guid plantsAreaId, MeasurableTypesEnum measurableType, double parameterValue, TimeSpan timeSpan)
+        public ServiceMessage(Guid plantsAreaId, MeasurableTypeEnum measurableType, double parameterValue, TimeSpan timeSpan)
         {
             PlantsAreaId = plantsAreaId;
             MeasurableType = measurableType;
@@ -14,7 +14,7 @@ namespace PlantingLib.ServiceSystems
         }
 
         public Guid PlantsAreaId { get; private set; }
-        public MeasurableTypesEnum MeasurableType { get; private set; }
+        public MeasurableTypeEnum MeasurableType { get; private set; }
         public double ParameterValue { get; private set; }
         public TimeSpan TimeSpan { get; private set; }
 

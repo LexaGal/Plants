@@ -11,12 +11,12 @@ namespace Mapper.MapperContext
 {
     public class DbMapper
     {
-        private readonly IPlantRepository _plantRepository;
-        private readonly IPlantsAreaRepository _plantsAreaRepository;
-        private readonly IMeasurableParameterRepository _measurableParameterRepository;
+        private readonly IPlantMappingRepository _plantRepository;
+        private readonly IPlantsAreaMappingRepository _plantsAreaRepository;
+        private readonly IMeasurableParameterMappingRepository _measurableParameterRepository;
 
-        public DbMapper(IPlantRepository plantRepository, IPlantsAreaRepository plantsAreaRepository,
-            IMeasurableParameterRepository measurableParameterRepository)
+        public DbMapper(IPlantMappingRepository plantRepository, IPlantsAreaMappingRepository plantsAreaRepository,
+            IMeasurableParameterMappingRepository measurableParameterRepository)
         {
             _plantRepository = plantRepository;
             _plantsAreaRepository = plantsAreaRepository;
@@ -31,7 +31,7 @@ namespace Mapper.MapperContext
         {
             return new PlantMapping(plant.Id, plant.Temperature.Id, plant.Humidity.Id,
                 plant.SoilPh.Id, plant.Nutrient.Id, (int) plant.GrowingTime.TotalSeconds,
-                (int) plant.WateringSpan.TotalSeconds, (int) plant.NutrientingSpan.TotalSeconds);
+                (int) plant.WateringSpan.TotalSeconds, (int) plant.NutrientingSpan.TotalSeconds, plant.Name.ToString());
 
         }
 
@@ -98,10 +98,12 @@ namespace Mapper.MapperContext
             SoilPh soilPh = RestoreMeasurableParameter(soilPhMapping) as SoilPh;
             Nutrient nutrient = RestoreMeasurableParameter(nutrientMapping) as Nutrient;
 
+            PlantNameEnum name = (PlantNameEnum) Enum.Parse(typeof (PlantNameEnum), plantMapping.Name);
+            
             return new Plant(plantMapping.Id, temperature, humidity, soilPh, nutrient,
                 new TimeSpan(0, 0, plantMapping.GrowingTime),
                 new TimeSpan(0, 0, plantMapping.WateringSpan),
-                new TimeSpan(0, 0, plantMapping.NutrientingSpan));
+                new TimeSpan(0, 0, plantMapping.NutrientingSpan), name);
         }
 
         public PlantsArea RestorePlantArea(PlantsAreaMapping plantsAreaMapping)

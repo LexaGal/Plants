@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using PlantingLib.Sensors;
 
 namespace PlantingLib.Plants
@@ -11,12 +12,20 @@ namespace PlantingLib.Plants
         public Plant Plant { get; private set; }
         public IList<Sensor> Sensors { get; private set; }
         public int Number { get; private set; }
-
+        public bool IsBeingWatering { get; set; }
+        public bool IsBeingNutrienting { get; set; }
+        public bool IsBeingWarming { get; set; }
+        public bool IsBeingCooling { get; set; }
+        
         public PlantsArea(Plant plant, int number)
         {
             Id = Guid.NewGuid();
             Plant = plant;
             Number = number;
+            IsBeingWatering = false;
+            IsBeingNutrienting = false;
+            IsBeingWarming = false;
+            IsBeingCooling = false;
         }
 
         public PlantsArea(Guid id, Plant plant, int number)
@@ -24,6 +33,10 @@ namespace PlantingLib.Plants
             Id = id;
             Plant = plant;
             Number = number;
+            IsBeingWatering = false;
+            IsBeingNutrienting = false;
+            IsBeingWarming = false;
+            IsBeingCooling = false;
         }
 
         public void AddPlant(Plant plant)
@@ -36,6 +49,10 @@ namespace PlantingLib.Plants
             if (Sensors == null)
             {
                 Sensors = new List<Sensor>();
+            }
+            if (Sensors.Any(s => s.Id == sensor.Id))
+            {
+                return;
             }
             Sensors.Add(sensor);
         }     

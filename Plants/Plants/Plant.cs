@@ -8,7 +8,7 @@ namespace PlantingLib.Plants
     public class Plant
     {
         public Plant(Temperature temperature, Humidity humidity, SoilPh soilPh,
-            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan)
+            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan, PlantNameEnum name)
         {
             Id = Guid.NewGuid();
             Temperature = temperature;
@@ -18,6 +18,7 @@ namespace PlantingLib.Plants
             GrowingTime = growingTime;
             WateringSpan = wateringSpan;
             NutrientingSpan = nutrientingSpan;
+            Name = name;
 
             MeasurableParameters = new List<MeasurableParameter>
             {
@@ -29,7 +30,7 @@ namespace PlantingLib.Plants
         }
 
         public Plant(Guid id, Temperature temperature, Humidity humidity, SoilPh soilPh,
-            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan)
+            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan, PlantNameEnum name)
         {
             Id = id;
             Temperature = temperature;
@@ -39,6 +40,7 @@ namespace PlantingLib.Plants
             GrowingTime = growingTime;
             WateringSpan = wateringSpan;
             NutrientingSpan = nutrientingSpan;
+            Name = name;
 
             MeasurableParameters = new List<MeasurableParameter>
             {
@@ -49,12 +51,13 @@ namespace PlantingLib.Plants
             };
         }
 
-        public MeasurableParameter GetMeasurableParameter(MeasurableTypesEnum type)
+        public MeasurableParameter GetMeasurableParameter(MeasurableTypeEnum type)
         {
             return MeasurableParameters.First(mp => mp.MeasurableType == type);
         }
 
         public Guid Id { get; private set; }
+        public PlantNameEnum Name { get; private set; }
         public Temperature Temperature { get; private set; }
         public Humidity Humidity { get; private set; }
         public SoilPh SoilPh { get; private set; }

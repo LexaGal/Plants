@@ -30,10 +30,10 @@ namespace PlantingUI
         
         public static void Initialize()
         {
-            IPlantRepository plantRepository = new PlantRepository();
-            IPlantsAreaRepository plantsAreaRepository = new PlantsAreaRepository();
-            IMeasurableParameterRepository measurableParameterRepository = new MeasurableParameterRepository();
-            ISensorRepository sensorRepository = new SensorRepository();
+            IPlantMappingRepository plantRepository = new PlantMappingRepository();
+            IPlantsAreaMappingRepository plantsAreaRepository = new PlantsAreaMappingRepository();
+            IMeasurableParameterMappingRepository measurableParameterRepository = new MeasurableParameterMappingRepository();
+            ISensorMappingRepository sensorRepository = new SensorMappingRepository();
             
             DbMapper dbMapper = new DbMapper(plantRepository, plantsAreaRepository,
                 measurableParameterRepository);
@@ -41,7 +41,7 @@ namespace PlantingUI
             //IList<PlantsAreaMapping> plantsAreasMappings = plantsAreaRepository.GetAll().ToList();
             
             List<SensorMapping> sensorMappings = sensorRepository.GetAll().ToList();
-           _sensorsCollection = new SensorsCollection();
+            _sensorsCollection = new SensorsCollection();
             sensorMappings.ForEach(m => _sensorsCollection.AddSensor(dbMapper.RestoreSensor(m)));
 
             _plantsAreas = new PlantsAreas();
@@ -59,7 +59,7 @@ namespace PlantingUI
             _beginDateTime = DateTime.Now;
         }
 
-        public static void Send(object sender, ElapsedEventArgs args)
+        private static void Send(object sender, ElapsedEventArgs args)
         {
             if (_sensorsMeasuringsProvider != null)
             {

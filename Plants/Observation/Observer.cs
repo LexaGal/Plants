@@ -10,14 +10,12 @@ namespace PlantingLib.Observation
 {
     public class Observer : IReciever, ISender<MeasuringMessage>
     {
-        public ISender<MeasuringMessage> Sender { get; private set; }
         public PlantsAreas PlantsAreas { get; private set; }
         public IDictionary<Guid, IList<MeasuringMessage>> MessagesDictionary;
         public const int MessagesLimit = 10;
 
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)
         {
-            Sender = sender;
             //subscribing
             sender.MessageSending += RecieveMessage;
 
@@ -40,10 +38,8 @@ namespace PlantingLib.Observation
                 Console.WriteLine(recievedMessage.ToString());
                 Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan.TotalSeconds);
 
-                if (recievedMessage.MessageType == MessageTypesEnum.CriticalInfo)
+                if (recievedMessage.MessageType == MessageTypeEnum.CriticalInfo)
                 {
-                    //Console.WriteLine(recievedMessage.ToString());
-                    //Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan);
                     //sending to scheduler
                     OnMessageSending(recievedMessage);
                 }

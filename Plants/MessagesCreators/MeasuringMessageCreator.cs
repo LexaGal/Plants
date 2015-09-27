@@ -21,10 +21,10 @@ namespace PlantingLib.MessagesCreators
         {
             if (ParameterValue < MeasurableParameter.Min || ParameterValue > MeasurableParameter.Max)
             {
-                return new MeasuringMessage(DateTime.Now, MessageTypesEnum.CriticalInfo,
+                return new MeasuringMessage(DateTime.Now, MessageTypeEnum.CriticalInfo,
                     MeasurableParameter.MeasurableType, PlantsAreaId, ParameterValue);
             }
-            return new MeasuringMessage(DateTime.Now, MessageTypesEnum.UsualInfo,
+            return new MeasuringMessage(DateTime.Now, MessageTypeEnum.UsualInfo,
                     MeasurableParameter.MeasurableType, PlantsAreaId, ParameterValue);
         }
     }

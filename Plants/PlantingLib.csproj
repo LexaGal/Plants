@@ -67,8 +67,8 @@
     <Compile Include="ParametersFunctions\ParameterFunction.cs" />
     <Compile Include="ParametersFunctions\SoilPhFunction.cs" />
     <Compile Include="ParametersFunctions\TemperatureFunction.cs" />
-    <Compile Include="MeasurableParameters\MeasurableType.cs" />
-    <Compile Include="Messenging\MessageType.cs" />
+    <Compile Include="MeasurableParameters\MeasurableTypeEnum.cs" />
+    <Compile Include="Messenging\MessageTypeEnum.cs" />
     <Compile Include="MeasuringsProviding\SensorsMeasuringsProvider.cs" />
     <Compile Include="Observation\Observer.cs" />
     <Compile Include="MeasurableParameters\MeasurableParameter.cs" />
@@ -76,6 +76,7 @@
     <Compile Include="MeasurableParameters\Nutrient.cs" />
     <Compile Include="MeasurableParameters\SoilPh.cs" />
     <Compile Include="MeasurableParameters\Temperature.cs" />
+    <Compile Include="Plants\PlantNameEnum.cs" />
     <Compile Include="Plants\PlantsAreas.cs" />
     <Compile Include="Plants\Plant.cs" />
     <Compile Include="Plants\PlantsArea.cs" />

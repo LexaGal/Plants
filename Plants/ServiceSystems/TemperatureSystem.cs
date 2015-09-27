@@ -6,7 +6,7 @@ namespace PlantingLib.ServiceSystems
 {
     public class TemperatureSystem : ServiceSystem
     {
-        public TemperatureSystem(MeasurableTypesEnum measurableType, double parameterValue, PlantsArea plantsArea)
+        public TemperatureSystem(MeasurableTypeEnum measurableType, double parameterValue, PlantsArea plantsArea)
             : base(measurableType, parameterValue, plantsArea)
         {
         }

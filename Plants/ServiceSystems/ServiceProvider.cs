@@ -35,24 +35,23 @@ namespace PlantingLib.ServiceSystems
                     recievedMessage.ParameterValue, PlantsAreas.AllPlantsAreas.First(pa =>
                         pa.Id == recievedMessage.PlantsAreaId));
 
-                TimeSpan timeSpan = serviceSystem.ComputeTimeForService();
-                serviceSystem.StartService(timeSpan, GetServiceTime);
+                serviceSystem.StartService(GetServiceTime);
             }
         }
 
-        public ServiceSystem GetServiceSystem(MeasurableTypesEnum measurableType,
+        public ServiceSystem GetServiceSystem(MeasurableTypeEnum measurableType,
             double parameterValue, PlantsArea plantsArea)
         {
             switch (measurableType)
             {
-                    case MeasurableTypesEnum.Temperature:
-                        return new TemperatureSystem(MeasurableTypesEnum.Temperature, parameterValue, plantsArea);
-                    case MeasurableTypesEnum.Humidity:
-                        return new WaterSystem(MeasurableTypesEnum.Humidity, parameterValue, plantsArea);
-                    case MeasurableTypesEnum.Nutrient:
-                        return new NutrientSystem(MeasurableTypesEnum.Nutrient, parameterValue, plantsArea);
-                    case MeasurableTypesEnum.SoilPh:
-                        return new NutrientSystem(MeasurableTypesEnum.SoilPh, parameterValue, plantsArea);
+                case MeasurableTypeEnum.Temperature:
+                    return new TemperatureSystem(MeasurableTypeEnum.Temperature, parameterValue, plantsArea);
+                case MeasurableTypeEnum.Humidity:
+                    return new WaterSystem(MeasurableTypeEnum.Humidity, parameterValue, plantsArea);
+                case MeasurableTypeEnum.Nutrient:
+                    return new NutrientSystem(MeasurableTypeEnum.Nutrient, parameterValue, plantsArea);
+                case MeasurableTypeEnum.SoilPh:
+                    return new NutrientSystem(MeasurableTypeEnum.SoilPh, parameterValue, plantsArea);
             }
             return null;
         }

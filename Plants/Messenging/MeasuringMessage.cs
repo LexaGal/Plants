@@ -6,8 +6,8 @@ namespace PlantingLib.Messenging
 {
     public class MeasuringMessage
     {
-        public MeasuringMessage(DateTime dateTime, MessageTypesEnum messageType,
-            MeasurableTypesEnum measurableType, Guid plantsAreaId, double parameterValue)
+        public MeasuringMessage(DateTime dateTime, MessageTypeEnum messageType,
+            MeasurableTypeEnum measurableType, Guid plantsAreaId, double parameterValue)
         {
             Id = Guid.NewGuid();
             DateTime = dateTime;
@@ -21,8 +21,8 @@ namespace PlantingLib.Messenging
         public Guid Id { get; private set; }
 
         public DateTime DateTime { get; private set; }
-        public MessageTypesEnum MessageType { get; private set; }
-        public MeasurableTypesEnum MeasurableType { get; private set; }
+        public MessageTypeEnum MessageType { get; private set; }
+        public MeasurableTypeEnum MeasurableType { get; private set; }
         public Guid PlantsAreaId { get; private set; }
         public double ParameterValue { get; private set; }
 

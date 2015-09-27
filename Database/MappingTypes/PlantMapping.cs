@@ -15,13 +15,14 @@ namespace Database.MappingTypes
         public int GrowingTime { get; set; }
         public int WateringSpan { get; set; }
         public int NutrientingSpan { get; set; }
+        public string Name { get; set; }
 
         public PlantMapping()
         {
         }
 
         public PlantMapping(Guid id, Guid temperatureId, Guid humidityId, Guid soilPhId,
-            Guid nutrientId, int growingTimeLimit, int wateringSpan, int nutrientingSpan)
+            Guid nutrientId, int growingTimeLimit, int wateringSpan, int nutrientingSpan, string name)
         {
             Id = id;
             TemperatureId = temperatureId;
@@ -31,6 +32,7 @@ namespace Database.MappingTypes
             GrowingTime = growingTimeLimit;
             WateringSpan = wateringSpan;
             NutrientingSpan = nutrientingSpan;
+            Name = name;
         }
     }
 }

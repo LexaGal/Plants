@@ -16,10 +16,10 @@ namespace PlantingLib.ParametersFunctions
             switch (WeatherType)
             {
                 case WeatherTypesEnum.Cold:
-                    return CurrentFunctionValue;
+                    return CurrentFunctionValue += 0.125 * Random.Next(-1, 2);
 
                 case WeatherTypesEnum.Warm:
-                    return CurrentFunctionValue;
+                    return CurrentFunctionValue += 0.125 * Random.Next(-1, 2);
 
                 case WeatherTypesEnum.Hot:
                     if (SystemTimer.CurrentTimeSpan.Seconds < SystemTimer.RestartTimeSpan.TotalSeconds / 2 ||

@@ -18,10 +18,25 @@ namespace PlantingLib.Timers
             Console.ReadLine();
         }
 
+        public static bool IsEnabled
+        {
+            get { return _timer.Enabled; }
+        }
+
         public static void Restart()
         {
             _timer.Stop();
             _timer.Start();
+        }
+
+        public static void Enable()
+        {
+            _timer.Enabled = true;
+        }
+
+        public static void Disable()
+        {
+            _timer.Enabled = false;
         }
     }
 }

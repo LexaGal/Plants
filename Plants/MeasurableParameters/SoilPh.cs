@@ -7,12 +7,12 @@ namespace PlantingLib.MeasurableParameters
         public SoilPh(int optimalSoilPh, int minSoilPh, int maxSoilPh)
             : base(optimalSoilPh, minSoilPh, maxSoilPh)
         {
-            MeasurableType = MeasurableTypesEnum.SoilPh;
+            MeasurableType = MeasurableTypeEnum.SoilPh;
         }
 
         public SoilPh(Guid id, int optimal, int min, int max) : base(id, optimal, min, max)
         {
-            MeasurableType = MeasurableTypesEnum.SoilPh;
+            MeasurableType = MeasurableTypeEnum.SoilPh;
         }
     }
 

@@ -6,7 +6,6 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Enti
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.pdb
-C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\AutoMapper.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\AutoMapper.xml
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\PlantingLib.dll
@@ -20,3 +19,4 @@ E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Enti
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.csprojResolveAssemblyReference.cache
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.dll
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.csprojResolveAssemblyReference.cache

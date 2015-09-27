@@ -13,8 +13,8 @@ namespace PlantingLib.Sensors
         public MeasurableParameter MeasurableParameter { get; private set; }
         public ParameterFunction Function { get; set; }
         public bool IsOn { get; set; }
-        public MeasurableTypesEnum MeasurableType { get; private set; }
-
+        public MeasurableTypeEnum MeasurableType { get; private set; }
+        
         protected Sensor(PlantsArea plantsArea,
             TimeSpan measuringTimeout, MeasurableParameter measurableParameter)
         {
@@ -35,9 +35,10 @@ namespace PlantingLib.Sensors
             plantsArea.AddSensor(this);
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
+            MeasurableType = MeasurableParameter.MeasurableType;
             IsOn = true;
         }
-        public double GetCurrentMeasuring
+        public double GetNewMeasuring
         {
             get { return Function.NewFunctionValue(); }
         }
