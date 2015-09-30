@@ -21,3 +21,5 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\M
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\PlantingLib.pdb
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\EntityFramework.xml
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Debug\PlantsAreaWindow.baml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Debug\PlantsAreaWindow.g.cs

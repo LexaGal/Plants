@@ -50,7 +50,7 @@ namespace Mapper.MapperContext
         public MeasurableParameterMapping GetMeasurableParameterMapping(MeasurableParameter measurableParameter)
         {
             return new MeasurableParameterMapping(measurableParameter.Id, measurableParameter.Optimal,
-                measurableParameter.Optimal, measurableParameter.Max,
+                measurableParameter.Min, measurableParameter.Max,
                 measurableParameter.MeasurableType.ToString());
         }
 

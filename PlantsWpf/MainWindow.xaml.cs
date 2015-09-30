@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Database.DatabaseStructure.Repository.Abstract;
@@ -15,13 +12,13 @@ using Database.MappingTypes;
 using Mapper.MapperContext;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviding;
-using PlantingLib.Messenging;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
 using PlantingLib.ServiceSystems;
 using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
+using PlantsWpf.ArgsForEvents;
 using PlantsWpf.DataGridBuilders;
 
 namespace PlantsWpf
@@ -44,12 +41,12 @@ namespace PlantsWpf
         {
             InitializeComponent();
             Initialize();
-
-            WeatherBox.Items.Add(WeatherTypesEnum.Warm);
-            WeatherBox.Items.Add(WeatherTypesEnum.Cold);
-            WeatherBox.Items.Add(WeatherTypesEnum.Hot);
-            WeatherBox.Items.Add(WeatherTypesEnum.Rainy);
-
+            foreach (string name in Enum.GetNames(typeof(WeatherTypesEnum)))
+            {
+                WeatherBox.Items.Add(name);
+            }
+            WeatherBox.Text = WeatherBox.Items[0].ToString();
+            
             WeatherBox.SelectionChanged += WeatherBox_OnSelectionChanged;
         }
 
@@ -63,7 +60,7 @@ namespace PlantsWpf
                 {
                     _beginDateTime = _beginDateTime.Add(SystemTimer.RestartTimeSpan);
 
-                    timeSpan = new TimeSpan(0, 0, (int) (timeSpan.TotalSeconds%SystemTimer.RestartTimeSpan.TotalSeconds));
+                    timeSpan = new TimeSpan(0, 0, (int)(timeSpan.TotalSeconds % SystemTimer.RestartTimeSpan.TotalSeconds));
 
                     //restarting timer and reseting all functions values to base values (new day after night sleep)
                     SystemTimer.Restart();
@@ -82,7 +79,7 @@ namespace PlantsWpf
             IMeasurableParameterMappingRepository measurableParameterRepository =
                 new MeasurableParameterMappingRepository();
             ISensorMappingRepository sensorRepository = new SensorMappingRepository();
-
+            
             _dbMapper = new DbMapper(plantRepository, plantsAreaRepository,
                 measurableParameterRepository);
 
@@ -96,10 +93,10 @@ namespace PlantsWpf
             {
                 _plantsAreas.AddPlantsArea(s.PlantsArea);
             });
-
-            foreach (var area in _plantsAreas.AllPlantsAreas)
+            
+            foreach (PlantsArea area in _plantsAreas.AllPlantsAreas)
             {
-                foreach (var sensor in _sensorsCollection.AllSensors)
+                foreach (Sensor sensor in _sensorsCollection.AllSensors)
                 {
                     if (sensor.PlantsArea.Id == area.Id)
                     {
@@ -126,8 +123,8 @@ namespace PlantsWpf
         {
             PlantsGrid.Children.Clear();
             int n = _plantsAreas.AllPlantsAreas.Count;
-            int marginLeft = 20;
-            int marginTop = 50;
+            int marginLeft = 0;
+            int marginTop = 0;
 
             for (int index = 0; index < _plantsAreas.AllPlantsAreas.Count; index++)
             {
@@ -170,12 +167,47 @@ namespace PlantsWpf
             _dispatcherTimer.Start();
         }
 
-        private void WeatherBox_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        private void SavePlantsArea(PlantsArea plantsArea)
         {
-            WeatherTypesEnum weatherTypesEnum =
-                (WeatherTypesEnum)
-                    Enum.Parse(typeof (WeatherTypesEnum), selectionChangedEventArgs.AddedItems[0].ToString());
-            Weather.SetWeather(weatherTypesEnum);
+            DbMapper dbMapper = new DbMapper();
+
+            IPlantMappingRepository plantMappingRepository = new PlantMappingRepository();
+            IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
+            IMeasurableParameterMappingRepository measurableParameterMappingRepository =
+                new MeasurableParameterMappingRepository();
+            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
+
+            Temperature temperature = plantsArea.Plant.Temperature;
+            MeasurableParameterMapping measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(temperature);
+            measurableParameterMappingRepository.Add(measurableParameterMapping);
+
+            Humidity humidity = plantsArea.Plant.Humidity;
+            measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(humidity);
+            measurableParameterMappingRepository.Add(measurableParameterMapping);
+
+            SoilPh soilPh = plantsArea.Plant.SoilPh;
+            measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(soilPh);
+            measurableParameterMappingRepository.Add(measurableParameterMapping);
+
+            Nutrient nutrient = plantsArea.Plant.Nutrient;
+            measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(nutrient);
+            measurableParameterMappingRepository.Add(measurableParameterMapping);
+
+            Plant plant = plantsArea.Plant;
+            PlantMapping plantMapping = dbMapper.GetPlantMapping(plant);
+            plantMappingRepository.Add(plantMapping);
+            
+            PlantsAreaMapping plantsAreaMapping = dbMapper.GetPlantsAreaMapping(plantsArea);
+            plantsAreaMappingRepository.Add(plantsAreaMapping);
+
+            foreach (var sensor in plantsArea.Sensors)
+            {
+                SensorMapping sensorMapping = dbMapper.GetSensorMapping(sensor);
+                sensorMappingRepository.Add(sensorMapping);
+                _sensorsCollection.AddSensor(sensor);
+            }
+
+            _plantsAreas.AddPlantsArea(plantsArea);
         }
 
         private void Load_OnClick(object sender, RoutedEventArgs e)
@@ -184,6 +216,7 @@ namespace PlantsWpf
             SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
             Start.IsEnabled = false;
             Pause.IsEnabled = true;
+            Load.IsEnabled = false;
         }
 
         private void Start_OnClick(object sender, RoutedEventArgs e)
@@ -194,6 +227,14 @@ namespace PlantsWpf
             Pause.IsEnabled = true;
         }
 
+        private void WeatherBox_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        {
+            WeatherTypesEnum weatherTypesEnum =
+                (WeatherTypesEnum)
+                    Enum.Parse(typeof(WeatherTypesEnum), selectionChangedEventArgs.AddedItems[0].ToString());
+            Weather.SetWeather(weatherTypesEnum);
+        }
+
         private void Pause_OnClick(object sender, RoutedEventArgs e)
         {
             SystemTimer.Disable();
@@ -202,7 +243,7 @@ namespace PlantsWpf
             Pause.IsEnabled = false;
         }
 
-        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        private void DispatcherTimer_Tick(object sender, System.EventArgs e)
         {
             SetPlantsGrid();
         }
@@ -219,6 +260,19 @@ namespace PlantsWpf
             {
                 e.Row.Background = new SolidColorBrush(Colors.LawnGreen);
             }
+        }
+
+        private void AddArea_OnClick(object sender, RoutedEventArgs e)
+        {
+            PlantsAreaWindow secondWindow = new PlantsAreaWindow();
+            secondWindow.PlantsAreaEvent += PlantsAreaWindow_GetPlantsArea;
+            secondWindow.Show();
+        }
+
+        public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
+        {
+            PlantsArea plantsArea = e.PlantsArea;
+            SavePlantsArea(plantsArea);
         }
     }
 }

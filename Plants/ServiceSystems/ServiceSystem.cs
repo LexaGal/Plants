@@ -76,6 +76,7 @@ namespace PlantingLib.ServiceSystems
                     ResetSensorsFunctions();
 
                     SetSensorsState(true);
+                    
                     _timer.Enabled = false;
                     _timer.AutoReset = false;
 

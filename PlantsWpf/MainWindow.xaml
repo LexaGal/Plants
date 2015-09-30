@@ -3,22 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid x:Name="RootGrid">
-        <DockPanel HorizontalAlignment="Left" Height="44" LastChildFill="False" Margin="2,5,0,0" VerticalAlignment="Top" Width="264">
-            <Button Name="Load" Content="Load" HorizontalAlignment="Left" Margin="10,10,0,0"
+        <DockPanel HorizontalAlignment="Left" Height="56" LastChildFill="False" Margin="1,5,0,0" VerticalAlignment="Top" Width="359">
+            <Button Name="Load" Content="Load" HorizontalAlignment="Left" Margin="10,8,0,0"
                 VerticalAlignment="Top" Width="49" Height="26" Click="Load_OnClick" />
 
-            <Button Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,11,0,0"
+            <Button Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,9,0,0"
                 VerticalAlignment="Top" Width="54" Height="26" Click="Start_OnClick" />
 
-            <Button Content="Pause" Name="Pause" HorizontalAlignment="Left" Height="27" Margin="10,11,0,0"
+            <Button Content="Pause" Name="Pause" HorizontalAlignment="Left" Height="27" Margin="10,9,0,0"
                     VerticalAlignment="Top" Width="56" Click="Pause_OnClick"/>
 
-            <ComboBox Name="WeatherBox"  Margin="10,11,0,0" HorizontalAlignment="Left"
-                Width="61" Height="27" VerticalAlignment="Top"/>
-
+            <ComboBox Name="WeatherBox"  Margin="10,25,0,0" HorizontalAlignment="Left"
+                Width="61" Height="22" VerticalAlignment="Top"/>
+            <Label Content="Weather" HorizontalAlignment="Left" Margin="-58,0,0,0"  VerticalAlignment="Top" Height="28" Width="56"/>
+            <Button Name="AddArea" Content="Add area" Click="AddArea_OnClick" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="66" Height="28"/>
         </DockPanel>
-        <Grid x:Name="PlantsGrid" Margin="-14,-4,15,4">
-
-        </Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,65,0,-1">
+            <!--<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="518" Height="254" RenderTransformOrigin="0.102,0.197">-->
+                <Grid x:Name="PlantsGrid"></Grid>
+            <!--</Canvas>-->
+        </ScrollViewer>
     </Grid>
 </Window>

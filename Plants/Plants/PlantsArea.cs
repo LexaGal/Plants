@@ -26,6 +26,7 @@ namespace PlantingLib.Plants
             IsBeingNutrienting = false;
             IsBeingWarming = false;
             IsBeingCooling = false;
+            Sensors = new List<Sensor>();
         }
 
         public PlantsArea(Guid id, Plant plant, int number)
@@ -37,6 +38,7 @@ namespace PlantingLib.Plants
             IsBeingNutrienting = false;
             IsBeingWarming = false;
             IsBeingCooling = false;
+            Sensors = new List<Sensor>();
         }
 
         public void AddPlant(Plant plant)
