@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.Sensors;
 
 namespace PlantingLib.Plants
@@ -57,26 +58,29 @@ namespace PlantingLib.Plants
                 return;
             }
             Sensors.Add(sensor);
-        }     
-    }
+        }
 
-    public class PlantsAreaEqualityComparer : IEqualityComparer<PlantsArea>
-    {
-
-        public bool Equals(PlantsArea pa1, PlantsArea pa2)
+        public List<Sensor> FindTurnedOffSensors()
         {
-            if (pa1.Id == pa2.Id)
+            List<Sensor> sensors = new List<Sensor>();
+            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.Temperature))
             {
-                return true;
+                sensors.Add(new TemperatureSensor(this, new TimeSpan(0, 0, 1), Plant.Temperature));
             }
-            return false;
+            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.Humidity))
+            {
+                sensors.Add(new HumiditySensor(this, new TimeSpan(0, 0, 1), Plant.Humidity));
+            }
+            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.SoilPh))
+            {
+                sensors.Add(new SoilPhSensor(this, new TimeSpan(0, 0, 1), Plant.SoilPh));
+            }
+            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.Nutrient))
+            {
+                sensors.Add(new NutrientSensor(this, new TimeSpan(0, 0, 1), Plant.Nutrient));
+            }
+            return sensors;
         }
-
-        public int GetHashCode(PlantsArea pa)
-        {
-            return typeof(PlantsArea).GetHashCode();
-        }
-
+     
     }
-
 }

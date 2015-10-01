@@ -1,11 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
+using Binding = System.Windows.Data.Binding;
+using Button = System.Windows.Controls.Button;
+using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
+using DataGrid = System.Windows.Controls.DataGrid;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using MessageBox = System.Windows.Forms.MessageBox;
+using TextBox = System.Windows.Controls.TextBox;
+using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
+using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace PlantsWpf.DataGridBuilders
 {
@@ -16,9 +28,9 @@ namespace PlantsWpf.DataGridBuilders
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 115,
+                Width = 113,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
+                VerticalAlignment = VerticalAlignment.Top
             };
             dataGrid.LoadingRow += dataGridRowAction;
 
@@ -66,7 +78,7 @@ namespace PlantsWpf.DataGridBuilders
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 310,
+                Width = 307,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
@@ -76,7 +88,7 @@ namespace PlantsWpf.DataGridBuilders
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
                 Header = "Measurable type",
-                Binding = new Binding("MeasurableType")
+                Binding = new Binding("MeasurableType"),
             };
             DataGridTextColumn optimal = new DataGridTextColumn
             {
@@ -189,5 +201,112 @@ namespace PlantsWpf.DataGridBuilders
             return dataGrid;
         }
 
+        public DataGrid CreateTurnedOffSensorsDataGrid(PlantsArea area, Action<PlantsArea, Sensor> action)
+        {
+            DataGrid dataGrid = new DataGrid
+            {
+                Margin = new Thickness(0, 10, 0, 0),
+                Width = 307,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+           
+            // Create Columns
+            DataGridTextColumn measurableType = new DataGridTextColumn
+            {
+                Header = "Measurable type",
+                Binding = new Binding("MeasurableType"),
+            };
+            DataGridTextColumn optimal = new DataGridTextColumn
+            {
+                Header = "Optimal",
+                Binding = new Binding("Optimal")
+            };
+            DataGridTextColumn min = new DataGridTextColumn
+            {
+                Header = "Min",
+                Binding = new Binding("Min")
+            };
+            DataGridTextColumn max = new DataGridTextColumn
+            {
+                Header = "Max",
+                Binding = new Binding("Max")
+            };
+            
+            //
+            FrameworkElementFactory textBoxTemplate = new FrameworkElementFactory(typeof(TextBox));
+            textBoxTemplate.SetBinding(ContentControl.ContentProperty, new Binding("Timeout"));
+            DataGridTemplateColumn textBoxTemplateColumn = new DataGridTemplateColumn()
+            {
+                Header = "Timeout",
+                CellTemplate = new DataTemplate { VisualTree = textBoxTemplate }
+            };
+            //
+            
+            //
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
+            buttonTemplate.SetBinding(ContentControl.ContentProperty, new Binding("Add"));
+            DataGridTemplateColumn dataGridTemplateColumn = new DataGridTemplateColumn()
+            {
+                Header = "Add",
+                CellTemplate = new DataTemplate {VisualTree = buttonTemplate}
+            };
+            //
+ 
+            dataGrid.Columns.Add(measurableType);
+            dataGrid.Columns.Add(optimal);
+            dataGrid.Columns.Add(min);
+            dataGrid.Columns.Add(max);
+            dataGrid.Columns.Add(textBoxTemplateColumn);
+            dataGrid.Columns.Add(dataGridTemplateColumn);
+            
+            List<Sensor> sensors = area.FindTurnedOffSensors();
+
+            foreach (Sensor sensor in sensors)
+            {
+                string timeout = null;
+                TextBox textBox = new TextBox
+                {
+                    Height = 30,
+                    Width = 40,
+                    Text = ((int)sensor.MeasuringTimeout.TotalSeconds).ToString()
+                };
+                textBox.TextChanged += (sender, args) => { timeout = textBox.Text; };
+                Button addSensorButton = new Button
+                {
+                    Name = "AddSensor",
+                    Content = "+"
+                };
+
+                buttonTemplate.AddHandler(
+                    ButtonBase.ClickEvent,
+                    new RoutedEventHandler((o, e) =>
+                    {
+                        try
+                        {if (timeout == null) throw new FormatException(tgtguy777uy6y);
+                            sensor.SetMeasuringTimeout(new TimeSpan(0, 0, Convert.ToInt32(timeout)));
+                        }
+                        catch (FormatException)
+                        {
+                            MessageBox.Show(@"Please, fill in field with numeric value!");
+                            return;
+                        }
+                        action(area, sensor);
+                    })
+                );
+
+                dataGrid.Items.Add(new
+                {
+                    sensor.MeasurableType,
+                    sensor.MeasurableParameter.Optimal,
+                    sensor.MeasurableParameter.Min,
+                    sensor.MeasurableParameter.Max,
+                    textBox,
+                    addSensorButton
+                });
+            }
+
+            return dataGrid;
+        }
     }
 }

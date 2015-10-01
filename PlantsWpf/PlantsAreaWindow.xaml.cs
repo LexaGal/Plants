@@ -69,28 +69,33 @@ namespace PlantsWpf
                     growingTime, TimeSpan.Zero, TimeSpan.Zero, plantName);
 
                 PlantsArea plantsArea = new PlantsArea(plant, number);
-                
+
+                int temperatureTimeout = Convert.ToInt32(TemperatureTimeout.Text);
+                int humidityTimeout = Convert.ToInt32(HumidityTimeout.Text);
+                int soilPhTimeout = Convert.ToInt32(SoilPhTimeout.Text);
+                int nutrientTimeout = Convert.ToInt32(NutrientTimeout.Text);
+
                 if (TemperatureCheckBox.IsChecked != null && (bool) TemperatureCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new TemperatureSensor(plantsArea, new TimeSpan(0, 0, 4), temperature));
+                    plantsArea.AddSensor(new TemperatureSensor(plantsArea, new TimeSpan(0, 0, temperatureTimeout), temperature));
                 }
                 if (HumidityCheckBox.IsChecked != null && (bool)HumidityCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new HumiditySensor(plantsArea, new TimeSpan(0, 0, 3), humidity));
+                    plantsArea.AddSensor(new HumiditySensor(plantsArea, new TimeSpan(0, 0, humidityTimeout), humidity));
                 }
                 if (SoilPhCheckBox.IsChecked != null && (bool)SoilPhCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new SoilPhSensor(plantsArea, new TimeSpan(0, 0, 2), soilPh));
+                    plantsArea.AddSensor(new SoilPhSensor(plantsArea, new TimeSpan(0, 0, soilPhTimeout), soilPh));
                 }
                 if (NutrientCheckBox.IsChecked != null && (bool)NutrientCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new NutrientSensor(plantsArea, new TimeSpan(0, 0, 5), nutrient));
+                    plantsArea.AddSensor(new NutrientSensor(plantsArea, new TimeSpan(0, 0, nutrientTimeout), nutrient));
                 }
                 return plantsArea;
             }
             catch (FormatException)
             {
-                MessageBox.Show("Please, fill in all fields with numeric values!");
+                MessageBox.Show(@"Please, fill in all fields with numeric values!");
                 return null;
             }
         }

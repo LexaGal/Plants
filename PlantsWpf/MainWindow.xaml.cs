@@ -48,6 +48,9 @@ namespace PlantsWpf
             WeatherBox.Text = WeatherBox.Items[0].ToString();
             
             WeatherBox.SelectionChanged += WeatherBox_OnSelectionChanged;
+
+            Pause.IsEnabled = false;
+            Start.IsEnabled = false;
         }
 
         private void Send(object sender, ElapsedEventArgs args)
@@ -123,40 +126,88 @@ namespace PlantsWpf
         {
             PlantsGrid.Children.Clear();
             int n = _plantsAreas.AllPlantsAreas.Count;
-            int marginLeft = 0;
-            int marginTop = 0;
+            int marginLeft = 10;
+            int marginTop = 10;
 
             for (int index = 0; index < _plantsAreas.AllPlantsAreas.Count; index++)
             {
                 PlantsArea area = _plantsAreas.AllPlantsAreas[index];
-                GroupBox groupBox = new GroupBox
+                Panel bigPanel = new StackPanel
                 {
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left,
+                    Orientation = Orientation.Vertical,
                     Name = string.Format("{0}Area", area.Plant.Name),
-                    Header = string.Format("{0} area", area.Plant.Name),
                     Width = 325,
                     Height = 250,
-                    Margin = new Thickness(marginLeft, marginTop, 0, 0)
+                    CanVerticallyScroll = true,
+                };
+                bigPanel.Children.Add(new Label
+                {
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Content = area.Plant.Name + " area"
+                });
+                
+                DataGridBuilder builder = new DataGridBuilder();
+                bigPanel.Children.Add(builder.CreateSensorsDataGrid(area, DataGrid_LoadingRow));
+                bigPanel.Children.Add(builder.CreateServiceSystemsDataGrid(area, DataGrid_LoadingRow));
+                
+                Button addSensorsButton = new Button
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Name = "AddSensors",
+                    Content = "+ Sensors",
+                    Width = 60,
+                    Height = 30
+                };
+                addSensorsButton.Click += (sender, args) =>
+                {
+                    DataGridBuilder dataGridBuilder = new DataGridBuilder();
+                    DataGrid dataGrid = dataGridBuilder.CreateTurnedOffSensorsDataGrid(area, SaveAddedSensor);
+                    bigPanel.Children.Add(dataGrid);
                 };
 
-                marginLeft += 325;
-
-                if ((index + 1)%4 == 0)
+                bigPanel.Children.Add(addSensorsButton);
+                
+                ScrollViewer scrollViewer = new ScrollViewer
                 {
-                    marginLeft = 0;
-                    marginTop += 250;
+                    Height = bigPanel.Height,
+                    CanContentScroll = true,
+                    Content = bigPanel,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                };
+                Border border = new Border
+                {
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    BorderBrush = Brushes.Black,
+                    Background = Brushes.LightGray,
+                    BorderThickness = new Thickness(1),
+                    Width = bigPanel.Width,
+                    Height = bigPanel.Height,
+                    Margin = new Thickness(marginLeft, marginTop, 0, 0),
+                    Child = scrollViewer
+                };
+
+                PlantsGrid.Children.Add(border);
+
+                marginLeft += 335;
+
+                if ((index + 1) % 4 == 0)
+                {
+                    marginLeft = 10;
+                    marginTop += 260;
                 }
-
-                DataGridBuilder builder = new DataGridBuilder();
-                StackPanel stackPanel = new StackPanel();
-                stackPanel.Children.Add(builder.CreateSensorsDataGrid(area, DataGrid_LoadingRow));
-                stackPanel.Children.Add(builder.CreateServiceSystemsDataGrid(area, DataGrid_LoadingRow));
-                stackPanel.CanHorizontallyScroll = true;
-                groupBox.Content = stackPanel;
-
-                PlantsGrid.Children.Add(groupBox);
             }
+        }
+
+        private void SaveAddedSensor(PlantsArea area, Sensor sensor)
+        {
+            SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
+            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
+            sensorMappingRepository.Add(sensorMapping);
+            _sensorsCollection.AddSensor(sensor);
         }
 
         private void SetDispatcherTimer()

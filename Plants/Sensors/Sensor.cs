@@ -38,6 +38,12 @@ namespace PlantingLib.Sensors
             MeasurableType = MeasurableParameter.MeasurableType;
             IsOn = true;
         }
+
+        public void SetMeasuringTimeout(TimeSpan timeSpan)
+        {
+            MeasuringTimeout = timeSpan;
+        }
+
         public double GetNewMeasuring
         {
             get { return Function.NewFunctionValue(); }

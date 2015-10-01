@@ -16,7 +16,7 @@
             <ComboBox Name="WeatherBox"  Margin="10,25,0,0" HorizontalAlignment="Left"
                 Width="61" Height="22" VerticalAlignment="Top"/>
             <Label Content="Weather" HorizontalAlignment="Left" Margin="-58,0,0,0"  VerticalAlignment="Top" Height="28" Width="56"/>
-            <Button Name="AddArea" Content="Add area" Click="AddArea_OnClick" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="66" Height="28"/>
+            <Button Name="AddArea" Content="+ Area" Click="AddArea_OnClick" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="66" Height="28"/>
         </DockPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,65,0,-1">
             <!--<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="518" Height="254" RenderTransformOrigin="0.102,0.197">-->
