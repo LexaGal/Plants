@@ -8,40 +8,52 @@ namespace PlantingLib.Sensors
     public abstract class Sensor
     {
         public Guid Id { get; private set; }
-        public TimeSpan MeasuringTimeout { get; private set; }
+        public TimeSpan MeasuringTimeout { get; set; }
         public PlantsArea PlantsArea { get; private set; }
         public MeasurableParameter MeasurableParameter { get; private set; }
         public ParameterFunction Function { get; set; }
         public bool IsOn { get; set; }
         public MeasurableTypeEnum MeasurableType { get; private set; }
-        
-        protected Sensor(PlantsArea plantsArea,
-            TimeSpan measuringTimeout, MeasurableParameter measurableParameter)
+        public int NumberOfTimes { get; set; }
+
+        protected Sensor(PlantsArea plantsArea, TimeSpan measuringTimeout, MeasurableParameter measurableParameter, int numberOfTimes)
         {
             Id = Guid.NewGuid();
             PlantsArea = plantsArea;
-            plantsArea.AddSensor(this);
+            if (plantsArea != null)
+            {
+                plantsArea.AddSensor(this);
+            }
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
             MeasurableType = MeasurableParameter.MeasurableType;
             IsOn = true;
+            NumberOfTimes = numberOfTimes;
         }
 
-        protected Sensor(Guid id, PlantsArea plantsArea,
-            TimeSpan measuringTimeout, MeasurableParameter measurableParameter)
+        protected Sensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, MeasurableParameter measurableParameter, int numberOfTimes)
         {
             Id = id;
             PlantsArea = plantsArea;
-            plantsArea.AddSensor(this);
+            if (plantsArea != null)
+            {
+                plantsArea.AddSensor(this);
+            }
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
             MeasurableType = MeasurableParameter.MeasurableType;
             IsOn = true;
+            NumberOfTimes = numberOfTimes;
         }
 
         public void SetMeasuringTimeout(TimeSpan timeSpan)
         {
             MeasuringTimeout = timeSpan;
+        }
+
+        public void SetPlantsArea(PlantsArea area)
+        {
+            PlantsArea = area;
         }
 
         public double GetNewMeasuring

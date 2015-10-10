@@ -12,19 +12,21 @@ namespace Database.MappingTypes
         public int MeasuringTimeout { get; set; }
         public Guid MeasurableParameterId { get; set; }
         public string Type { get; set; }
+        public int NumberOfTimes { get; set; }
 
         public SensorMapping()
         {
         }
 
-        public SensorMapping(Guid id, Guid plantsAreaId, int measuringTimeout,
-            Guid measurableParameterId, string type)
+        public SensorMapping(Guid id, Guid plantsAreaId, int measuringTimeout, Guid measurableParameterId, string type,
+            int numberOfTimes)
         {
             Id = id;
             PlantsAreaId = plantsAreaId;
             MeasuringTimeout = measuringTimeout;
             MeasurableParameterId = measurableParameterId;
             Type = type;
+            NumberOfTimes = numberOfTimes;
         }
     }
 }

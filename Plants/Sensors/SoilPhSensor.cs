@@ -8,14 +8,14 @@ namespace PlantingLib.Sensors
 {
     public class SoilPhSensor : Sensor
     {
-        public SoilPhSensor( PlantsArea plantsArea, TimeSpan measuringTimeout, SoilPh soilPh)
-            : base(plantsArea, measuringTimeout, soilPh)
+        public SoilPhSensor( PlantsArea plantsArea, TimeSpan measuringTimeout, SoilPh soilPh, int numberOfTimes)
+            : base(plantsArea, measuringTimeout, soilPh, numberOfTimes)
         {
             Function = new SoilPhFunction(soilPh); 
         }
 
-        public SoilPhSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, SoilPh soilPh)
-            : base(id, plantsArea, measuringTimeout, soilPh)
+        public SoilPhSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, SoilPh soilPh, int numberOfTimes)
+            : base(id, plantsArea, measuringTimeout, soilPh, numberOfTimes)
         {
             Function = new SoilPhFunction(soilPh);
         }

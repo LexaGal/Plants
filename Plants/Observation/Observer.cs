@@ -4,6 +4,7 @@ using System.Linq;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
+using PlantingLib.Sensors;
 using PlantingLib.Timers;
 
 namespace PlantingLib.Observation
@@ -42,6 +43,15 @@ namespace PlantingLib.Observation
                 {
                     //sending to scheduler
                     OnMessageSending(recievedMessage);
+                    PlantsArea area = PlantsAreas.AllPlantsAreas.FirstOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
+                    if (area != null)
+                    {
+                        Sensor sensor = area.Sensors.FirstOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
+                        if (sensor != null)
+                        {
+                            sensor.NumberOfTimes++;
+                        }
+                    }
                 }
 
                 if (MessagesDictionary[recievedMessage.PlantsAreaId].Count >= MessagesLimit)

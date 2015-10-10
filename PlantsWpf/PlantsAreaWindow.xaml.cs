@@ -77,19 +77,20 @@ namespace PlantsWpf
 
                 if (TemperatureCheckBox.IsChecked != null && (bool) TemperatureCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new TemperatureSensor(plantsArea, new TimeSpan(0, 0, temperatureTimeout), temperature));
+                    plantsArea.AddSensor(new TemperatureSensor(plantsArea, new TimeSpan(0, 0, temperatureTimeout),
+                        temperature, 0));
                 }
-                if (HumidityCheckBox.IsChecked != null && (bool)HumidityCheckBox.IsChecked)
+                if (HumidityCheckBox.IsChecked != null && (bool) HumidityCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new HumiditySensor(plantsArea, new TimeSpan(0, 0, humidityTimeout), humidity));
+                    plantsArea.AddSensor(new HumiditySensor(plantsArea, new TimeSpan(0, 0, humidityTimeout), humidity, 0));
                 }
-                if (SoilPhCheckBox.IsChecked != null && (bool)SoilPhCheckBox.IsChecked)
+                if (SoilPhCheckBox.IsChecked != null && (bool) SoilPhCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new SoilPhSensor(plantsArea, new TimeSpan(0, 0, soilPhTimeout), soilPh));
+                    plantsArea.AddSensor(new SoilPhSensor(plantsArea, new TimeSpan(0, 0, soilPhTimeout), soilPh, 0));
                 }
-                if (NutrientCheckBox.IsChecked != null && (bool)NutrientCheckBox.IsChecked)
+                if (NutrientCheckBox.IsChecked != null && (bool) NutrientCheckBox.IsChecked)
                 {
-                    plantsArea.AddSensor(new NutrientSensor(plantsArea, new TimeSpan(0, 0, nutrientTimeout), nutrient));
+                    plantsArea.AddSensor(new NutrientSensor(plantsArea, new TimeSpan(0, 0, nutrientTimeout), nutrient, 0));
                 }
                 return plantsArea;
             }

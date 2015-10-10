@@ -58,7 +58,7 @@ namespace Mapper.MapperContext
         {
             return new SensorMapping(sensor.Id, sensor.PlantsArea.Id, 
                 (int) sensor.MeasuringTimeout.TotalSeconds, sensor.MeasurableParameter.Id,
-                sensor.MeasurableParameter.MeasurableType.ToString());
+                sensor.MeasurableParameter.MeasurableType.ToString(), sensor.NumberOfTimes);
         }
 
         public MeasurableParameter RestoreMeasurableParameter(MeasurableParameterMapping measurableParameterMapping)
@@ -122,22 +122,26 @@ namespace Mapper.MapperContext
             MeasurableParameterMapping measurableParameterMapping =
                 _measurableParameterRepository.Get(sensorMapping.MeasurableParameterId);
             MeasurableParameter measurableParameter = RestoreMeasurableParameter(measurableParameterMapping);
-            
+
             switch (sensorMapping.Type)
             {
                 case "Nutrient":
-                    return new NutrientSensor(sensorMapping.Id, plantsArea, 
-                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Nutrient);
+                    return new NutrientSensor(sensorMapping.Id, plantsArea,
+                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Nutrient,
+                        sensorMapping.NumberOfTimes);
                 case "SoilPh":
                     return new SoilPhSensor(sensorMapping.Id, plantsArea,
-                         new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as SoilPh);
+                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as SoilPh,
+                        sensorMapping.NumberOfTimes);
                 case "Humidity":
-                     return new HumiditySensor(sensorMapping.Id, plantsArea,
-                           new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Humidity);
+                    return new HumiditySensor(sensorMapping.Id, plantsArea,
+                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Humidity,
+                        sensorMapping.NumberOfTimes);
                 case "Temperature":
-                     return new TemperatureSensor(sensorMapping.Id, plantsArea,
-                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Temperature);
-               default:
+                    return new TemperatureSensor(sensorMapping.Id, plantsArea,
+                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Temperature,
+                        sensorMapping.NumberOfTimes);
+                default:
                     return null;
             }
         }

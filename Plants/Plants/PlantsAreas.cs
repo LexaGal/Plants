@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PlantingLib.Plants
 {
@@ -23,6 +24,7 @@ namespace PlantingLib.Plants
                 AllPlantsAreas = new List<PlantsArea>();
             }
             AllPlantsAreas.Add(area);
+            AllPlantsAreas = AllPlantsAreas.OrderBy(p => p.Plant.Name).ToList();
         }
     }
 }

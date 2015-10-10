@@ -55,6 +55,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ArgsForEvents\PlantsAreaEventArgs.cs" />
+    <Compile Include="DataGridObjects\DataGridSensor.cs" />
+    <Compile Include="DataGridObjects\StringToBoolConverter.cs" />
     <Compile Include="PlantsAreaWindow.xaml.cs">
       <DependentUpon>PlantsAreaWindow.xaml</DependentUpon>
     </Compile>
@@ -66,7 +68,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataGridBuilders\DataGridBuilder.cs" />
+    <Compile Include="DataGridsBuilders\DataGridBuilder.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -77,6 +79,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

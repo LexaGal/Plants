@@ -1,36 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
+using System.Windows.Data;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
+using PlantsWpf.DataGridObjects;
 using Binding = System.Windows.Data.Binding;
 using Button = System.Windows.Controls.Button;
-using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 using DataGrid = System.Windows.Controls.DataGrid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MessageBox = System.Windows.Forms.MessageBox;
-using TextBox = System.Windows.Controls.TextBox;
-using TextBoxBase = System.Windows.Controls.Primitives.TextBoxBase;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 
-namespace PlantsWpf.DataGridBuilders
+namespace PlantsWpf.DataGridsBuilders
 {
     public class DataGridBuilder
     {
-        public DataGrid CreateServiceSystemsDataGrid(PlantsArea area, EventHandler<DataGridRowEventArgs> dataGridRowAction)
+        public DataGrid CreateServiceSystemsDataGrid(PlantsArea area,
+            EventHandler<DataGridRowEventArgs> dataGridRowAction)
         {
             DataGrid dataGrid = new DataGrid
             {
-                Margin = new Thickness(0, 10, 0, 0),
-                Width = 113,
+                Margin = new Thickness(10, 10, 0, 0),
+                Width = 95,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
             };
             dataGrid.LoadingRow += dataGridRowAction;
 
@@ -42,7 +41,6 @@ namespace PlantsWpf.DataGridBuilders
             };
             DataGridTextColumn state = new DataGridTextColumn
             {
-                Header = "State",
                 Binding = new Binding("State")
             };
 
@@ -52,22 +50,22 @@ namespace PlantsWpf.DataGridBuilders
             dataGrid.Items.Add(new
             {
                 Action = "Watering",
-                State = area.IsBeingWatering.ToString()
+                State = area.IsBeingWatering ? "✔" : String.Empty
             });
             dataGrid.Items.Add(new
             {
                 Action = "Nutrienting",
-                State = area.IsBeingNutrienting.ToString()
+                State = area.IsBeingNutrienting ? "✔" : String.Empty
             });
             dataGrid.Items.Add(new
             {
                 Action = "Warming",
-                State = area.IsBeingWarming.ToString()
+                State = area.IsBeingWarming ? "✔" : String.Empty
             });
             dataGrid.Items.Add(new
             {
                 Action = "Cooling",
-                State = area.IsBeingCooling.ToString()
+                State = area.IsBeingCooling ? "✔" : String.Empty
             });
 
             return dataGrid;
@@ -77,10 +75,11 @@ namespace PlantsWpf.DataGridBuilders
         {
             DataGrid dataGrid = new DataGrid
             {
-                Margin = new Thickness(0, 10, 0, 0),
-                Width = 307,
+                Margin = new Thickness(10, 10, 0, 0),
+                Width = 280,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
             };
             dataGrid.LoadingRow += dataGridRowAction;
 
@@ -110,9 +109,13 @@ namespace PlantsWpf.DataGridBuilders
                 Header = "Value",
                 Binding = new Binding("Value")
             };
+            DataGridTextColumn numberOfTimes = new DataGridTextColumn
+            {
+                Header = "N",
+                Binding = new Binding("NumberOfTimes")
+            };
             DataGridTextColumn critical = new DataGridTextColumn
             {
-                Header = "Critical",
                 Binding = new Binding("Critical")
             };
 
@@ -121,8 +124,9 @@ namespace PlantsWpf.DataGridBuilders
             dataGrid.Columns.Add(min);
             dataGrid.Columns.Add(max);
             dataGrid.Columns.Add(value);
+            dataGrid.Columns.Add(numberOfTimes);
             dataGrid.Columns.Add(critical);
-
+           
             if (area.Sensors.Any(s => s.MeasurableType == MeasurableTypeEnum.Humidity))
             {
                 HumiditySensor humiditySensor =
@@ -138,7 +142,10 @@ namespace PlantsWpf.DataGridBuilders
                         area.Plant.Humidity.Max,
                         Value = humiditySensor.Function.CurrentFunctionValue.ToString("F2"),
                         Critical = humiditySensor.Function.CurrentFunctionValue > area.Plant.Humidity.Max ||
-                        humiditySensor.Function.CurrentFunctionValue < area.Plant.Humidity.Min ? "Yes" : "No"
+                                   humiditySensor.Function.CurrentFunctionValue < area.Plant.Humidity.Min
+                            ? "✘"
+                            : String.Empty,
+                        humiditySensor.NumberOfTimes
                     });
                 }
             }
@@ -156,7 +163,11 @@ namespace PlantsWpf.DataGridBuilders
                         area.Plant.Temperature.Max,
                         Value = temperatureSensor.Function.CurrentFunctionValue.ToString("F2"),
                         Critical = temperatureSensor.Function.CurrentFunctionValue > area.Plant.Temperature.Max ||
-                            temperatureSensor.Function.CurrentFunctionValue < area.Plant.Temperature.Min ? "Yes" : "No"
+                                   temperatureSensor.Function.CurrentFunctionValue < area.Plant.Temperature.Min
+                            ? "✘"
+                            : String.Empty,
+                        temperatureSensor.NumberOfTimes
+
                     });
                 }
             }
@@ -175,7 +186,10 @@ namespace PlantsWpf.DataGridBuilders
                         area.Plant.SoilPh.Max,
                         Value = soilPhSensor.Function.CurrentFunctionValue.ToString("F2"),
                         Critical = soilPhSensor.Function.CurrentFunctionValue > area.Plant.SoilPh.Max ||
-                        soilPhSensor.Function.CurrentFunctionValue < area.Plant.SoilPh.Min ? "Yes" : "No"
+                                   soilPhSensor.Function.CurrentFunctionValue < area.Plant.SoilPh.Min
+                            ? "✘"
+                            : String.Empty,
+                        soilPhSensor.NumberOfTimes
                     });
                 }
             }
@@ -194,118 +208,80 @@ namespace PlantsWpf.DataGridBuilders
                         area.Plant.Nutrient.Max,
                         Value = nutrientSensor.Function.CurrentFunctionValue.ToString("F2"),
                         Critical = nutrientSensor.Function.CurrentFunctionValue > area.Plant.Nutrient.Max ||
-                        nutrientSensor.Function.CurrentFunctionValue < area.Plant.Nutrient.Min ? "Yes" : "No"
+                                   nutrientSensor.Function.CurrentFunctionValue < area.Plant.Nutrient.Min
+                            ? "✘"
+                            : String.Empty,
+                        nutrientSensor.NumberOfTimes
                     });
                 }
             }
             return dataGrid;
         }
 
-        public DataGrid CreateTurnedOffSensorsDataGrid(PlantsArea area, Action<PlantsArea, Sensor> action)
+        public DataGrid CreateTurnedOffSensorsDataGrid(PlantsArea area, ObservableCollection<DataGridSensor> dataGridSensors)
         {
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
                 Width = 307,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
+                VerticalAlignment = VerticalAlignment.Bottom,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                AutoGenerateColumns = false
             };
-           
+
             // Create Columns
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
                 Header = "Measurable type",
                 Binding = new Binding("MeasurableType"),
+                IsReadOnly = true
             };
             DataGridTextColumn optimal = new DataGridTextColumn
             {
                 Header = "Optimal",
-                Binding = new Binding("Optimal")
+                Binding = new Binding("Optimal"),
+                IsReadOnly = true
             };
             DataGridTextColumn min = new DataGridTextColumn
             {
                 Header = "Min",
-                Binding = new Binding("Min")
+                Binding = new Binding("Min"),
+                IsReadOnly = true
             };
             DataGridTextColumn max = new DataGridTextColumn
             {
                 Header = "Max",
-                Binding = new Binding("Max")
+                Binding = new Binding("Max"),
+                IsReadOnly = true
             };
-            
-            //
-            FrameworkElementFactory textBoxTemplate = new FrameworkElementFactory(typeof(TextBox));
-            textBoxTemplate.SetBinding(ContentControl.ContentProperty, new Binding("Timeout"));
-            DataGridTemplateColumn textBoxTemplateColumn = new DataGridTemplateColumn()
+            DataGridTextColumn timeout = new DataGridTextColumn
             {
                 Header = "Timeout",
-                CellTemplate = new DataTemplate { VisualTree = textBoxTemplate }
+                Binding = new Binding("Timeout")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                }
             };
-            //
-            
-            //
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
-            buttonTemplate.SetBinding(ContentControl.ContentProperty, new Binding("Add"));
-            DataGridTemplateColumn dataGridTemplateColumn = new DataGridTemplateColumn()
+            DataGridCheckBoxColumn add = new DataGridCheckBoxColumn
             {
                 Header = "Add",
-                CellTemplate = new DataTemplate {VisualTree = buttonTemplate}
+                Binding =
+                    new Binding("Add")
+                    {
+                        Converter = new StringToBoolConverter(),
+                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                    }
             };
-            //
- 
+
             dataGrid.Columns.Add(measurableType);
             dataGrid.Columns.Add(optimal);
             dataGrid.Columns.Add(min);
             dataGrid.Columns.Add(max);
-            dataGrid.Columns.Add(textBoxTemplateColumn);
-            dataGrid.Columns.Add(dataGridTemplateColumn);
+            dataGrid.Columns.Add(timeout);
+            dataGrid.Columns.Add(add);
             
-            List<Sensor> sensors = area.FindTurnedOffSensors();
-
-            foreach (Sensor sensor in sensors)
-            {
-                string timeout = null;
-                TextBox textBox = new TextBox
-                {
-                    Height = 30,
-                    Width = 40,
-                    Text = ((int)sensor.MeasuringTimeout.TotalSeconds).ToString()
-                };
-                textBox.TextChanged += (sender, args) => { timeout = textBox.Text; };
-                Button addSensorButton = new Button
-                {
-                    Name = "AddSensor",
-                    Content = "+"
-                };
-
-                buttonTemplate.AddHandler(
-                    ButtonBase.ClickEvent,
-                    new RoutedEventHandler((o, e) =>
-                    {
-                        try
-                        {if (timeout == null) throw new FormatException(tgtguy777uy6y);
-                            sensor.SetMeasuringTimeout(new TimeSpan(0, 0, Convert.ToInt32(timeout)));
-                        }
-                        catch (FormatException)
-                        {
-                            MessageBox.Show(@"Please, fill in field with numeric value!");
-                            return;
-                        }
-                        action(area, sensor);
-                    })
-                );
-
-                dataGrid.Items.Add(new
-                {
-                    sensor.MeasurableType,
-                    sensor.MeasurableParameter.Optimal,
-                    sensor.MeasurableParameter.Min,
-                    sensor.MeasurableParameter.Max,
-                    textBox,
-                    addSensorButton
-                });
-            }
-
+            dataGrid.ItemsSource = dataGridSensors;
             return dataGrid;
         }
     }

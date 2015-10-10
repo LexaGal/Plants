@@ -41,7 +41,7 @@
         <CheckBox IsChecked="True" Name="SoilPhCheckBox" Grid.Column="1" HorizontalAlignment="Left" Margin="143,149,0,0" VerticalAlignment="Top" Height="13" Width="13"/>
         <CheckBox IsChecked="True" Name="NutrientCheckBox" Grid.Column="1" HorizontalAlignment="Left" Margin="143,174,0,0" VerticalAlignment="Top" Height="13" Width="13"/>
         <Label Content="Timeout" Grid.Column="1" HorizontalAlignment="Left" Margin="169,70,-58,0" VerticalAlignment="Top" Height="26" Width="54"/>
-        <TextBox Grid.Column="1" Name="TemperatureTimeout" HorizontalAlignment="Left" Height="23" Margin="184,91,-48,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="29" Text="1&#x9;1`"/>
+        <TextBox Grid.Column="1" Name="TemperatureTimeout" HorizontalAlignment="Left" Height="23" Margin="184,91,-48,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="29" Text="1"/>
         <TextBox Grid.Column="1" Name="HumidityTimeout" HorizontalAlignment="Left" Height="23" Margin="183,117,-47,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="29" Text="2"/>
         <TextBox Grid.Column="1" Name="SoilPhTimeout" HorizontalAlignment="Left" Height="23" Margin="183,143,-47,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="29" Text="3"/>
         <TextBox Grid.Column="1" Name="NutrientTimeout" HorizontalAlignment="Left" Height="23" Margin="183,169,-47,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="29" Text="4"/>
