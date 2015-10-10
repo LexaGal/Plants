@@ -55,7 +55,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ArgsForEvents\PlantsAreaEventArgs.cs" />
-    <Compile Include="DataGridObjects\DataGridSensor.cs" />
+    <Compile Include="DataGridObjects\DataGridSensorView.cs" />
+    <Compile Include="DataGridObjects\DataGridSensorToAddView.cs" />
     <Compile Include="DataGridObjects\StringToBoolConverter.cs" />
     <Compile Include="PlantsAreaWindow.xaml.cs">
       <DependentUpon>PlantsAreaWindow.xaml</DependentUpon>

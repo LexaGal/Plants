@@ -133,145 +133,12 @@ namespace PlantsWpf
                 
                 int marginLeft = 10;
                 int marginTop = 10;
-                DataGrid yetSensorsDataGrid = new DataGrid();
-                DataGridBuilder builder = new DataGridBuilder();
-
+                
                 for (int index = 0; index < _plantsAreas.AllPlantsAreas.Count; index++)
                 {
                     PlantsArea area = _plantsAreas.AllPlantsAreas[index];
-                    StackPanel plantAreaPanel = new StackPanel
-                    {
-                        VerticalAlignment = VerticalAlignment.Top,
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        Orientation = Orientation.Vertical,
-                        Width = 325,
-                        Height = 250,
-                        CanVerticallyScroll = true,
-                    };
-                    plantAreaPanel.Children.Add(new Label
-                    {
-                        VerticalAlignment = VerticalAlignment.Top,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Content = area.Plant.Name + " area"
-                    });
 
-                    plantAreaPanel.Children.Add(builder.CreateSensorsDataGrid(area, DataGrid_LoadingRow));
-                    plantAreaPanel.Children.Add(builder.CreateServiceSystemsDataGrid(area, DataGrid_LoadingRow));
-
-                    List<Sensor> sensors = area.FindTurnedOffSensors();
-
-                    if (sensors.Count != 0)
-                    {
-                        ObservableCollection<DataGridSensor> dataGridSensors = new ObservableCollection<DataGridSensor>(
-                            sensors.ConvertAll(s => new DataGridSensor
-                            {
-                                Timeout = ((int) s.MeasuringTimeout.TotalSeconds).ToString(),
-                                MeasurableType = s.MeasurableType.ToString(),
-                                Optimal = s.MeasurableParameter.Optimal.ToString(),
-                                Min = s.MeasurableParameter.Min.ToString(),
-                                Max = s.MeasurableParameter.Max.ToString(),
-                                Add = "yes"
-                            }));
-
-                        Button sensorsButton = new Button
-                        {
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            Margin = new Thickness(110, -120, 0, 50),
-                            Content = "Yet sensors",
-                            Width = 70,
-                            Height = 30
-                        };
-                        Button addButton = new Button
-                        {
-                            Width = 40,
-                            Height = 30,
-                            Content = "Add",
-                            Margin = new Thickness(180, -120, 0, 50),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            Visibility = Visibility.Hidden
-                        };
-                        Button closeButton = new Button
-                        {
-                            Width = 40,
-                            Height = 30,
-                            Content = "Close",
-                            Margin = new Thickness(220, -120, 0, 50),
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            Visibility = Visibility.Hidden
-                        };
-                        plantAreaPanel.Children.Add(sensorsButton);
-                        plantAreaPanel.Children.Add(addButton);
-                        plantAreaPanel.Children.Add(closeButton);
-
-                        sensorsButton.Click += (sender, args) =>
-                        {
-                            yetSensorsDataGrid = builder.CreateTurnedOffSensorsDataGrid(area, dataGridSensors);
-                            plantAreaPanel.Children.Add(yetSensorsDataGrid);
-                            sensorsButton.IsEnabled = false;
-                            addButton.Visibility = Visibility.Visible;
-                            closeButton.Visibility = Visibility.Visible;
-                        };
-
-                        addButton.Click += (o, e) =>
-                        {
-                            try
-                            {
-                                foreach (DataGridSensor dataGridSensor in dataGridSensors.Where(d => d.Add == "yes"))
-                                {
-                                    Sensor sensor =
-                                        sensors.SingleOrDefault(
-                                            s => s.MeasurableType.ToString() == dataGridSensor.MeasurableType);
-
-                                    if (sensor != null)
-                                    {
-                                        int i = Convert.ToInt32(dataGridSensor.Timeout);
-
-                                        if (i <= 0)
-                                        {
-                                            throw new FormatException();
-                                        }
-
-                                        sensor.MeasuringTimeout = new TimeSpan(0, 0,
-                                            Convert.ToInt32(dataGridSensor.Timeout));
-                                        SaveAddedSensor(area, sensor);
-                                    }
-                                }
-
-                            }
-                            catch (FormatException)
-                            {
-                                MessageBox.Show(@"Please, fill in 'Timeout' field with numeric value > 0!");
-                            }
-                        };
-                        
-                        closeButton.Click += (sender, args) =>
-                        {
-                            closeButton.Visibility = Visibility.Hidden;
-                            addButton.Visibility = Visibility.Hidden;
-                            sensorsButton.IsEnabled = true;
-                            plantAreaPanel.Children.Remove(yetSensorsDataGrid);
-                        };
-                    }
-
-                    ScrollViewer scrollViewer = new ScrollViewer
-                    {
-                        Height = plantAreaPanel.Height,
-                        CanContentScroll = true,
-                        Content = plantAreaPanel,
-                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto
-                    };
-                    Border border = new Border
-                    {
-                        VerticalAlignment = VerticalAlignment.Top,
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        BorderBrush = Brushes.Black,
-                        Background = Brushes.LightGray,
-                        BorderThickness = new Thickness(1),
-                        Width = plantAreaPanel.Width,
-                        Height = plantAreaPanel.Height,
-                        Margin = new Thickness(marginLeft, marginTop, 0, 0),
-                        Child = scrollViewer
-                    };
+                    Border border = CreateBorderedPlantAreaPanel(area, marginLeft, marginTop);
 
                     PlantsGrid.Children.Add(border);
 
@@ -285,9 +152,153 @@ namespace PlantsWpf
                 }
             }
             catch (InvalidOperationException)
+            {}
+        }
+
+        private Border CreateBorderedPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
+        {
+            DataGrid yetSensorsDataGrid = new DataGrid();
+            DataGrid sensorsDataGrid = new DataGrid();
+            DataGrid serviceSystemsDataGrid = new DataGrid();
+            DataGridBuilder builder = new DataGridBuilder();
+
+            StackPanel plantAreaPanel = new StackPanel
             {
-                //???
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Orientation = Orientation.Vertical,
+                Width = 325,
+                Height = 250,
+                CanVerticallyScroll = true,
+            };
+            plantAreaPanel.Children.Add(new Label
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Content = area.Plant.Name + " area"
+            });
+
+            sensorsDataGrid = builder.CreateSensorsDataGrid(area, DataGrid_LoadingRow);
+            plantAreaPanel.Children.Add(sensorsDataGrid);
+
+            serviceSystemsDataGrid = builder.CreateServiceSystemsDataGrid(area, DataGrid_LoadingRow);
+            plantAreaPanel.Children.Add(serviceSystemsDataGrid);
+
+            List<Sensor> sensors = area.FindTurnedOffSensors();
+
+            if (sensors.Count != 0)
+            {
+                ObservableCollection<DataGridSensorToAddView> dataGridSensors = new ObservableCollection<DataGridSensorToAddView>(
+                    sensors.ConvertAll(s => new DataGridSensorToAddView
+                    {
+                        Timeout = ((int)s.MeasuringTimeout.TotalSeconds).ToString(),
+                        MeasurableType = s.MeasurableType.ToString(),
+                        Optimal = s.MeasurableParameter.Optimal.ToString(),
+                        Min = s.MeasurableParameter.Min.ToString(),
+                        Max = s.MeasurableParameter.Max.ToString(),
+                        Add = "yes"
+                    }));
+
+                Button sensorsButton = new Button
+                {
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Margin = new Thickness(110, -120, 0, 50),
+                    Content = "Yet sensors",
+                    Width = 70,
+                    Height = 30
+                };
+                Button addButton = new Button
+                {
+                    Width = 40,
+                    Height = 30,
+                    Content = "Add",
+                    Margin = new Thickness(180, -120, 0, 50),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Visibility = Visibility.Hidden
+                };
+                Button closeButton = new Button
+                {
+                    Width = 40,
+                    Height = 30,
+                    Content = "Close",
+                    Margin = new Thickness(220, -120, 0, 50),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Visibility = Visibility.Hidden
+                };
+                plantAreaPanel.Children.Add(sensorsButton);
+                plantAreaPanel.Children.Add(addButton);
+                plantAreaPanel.Children.Add(closeButton);
+
+                sensorsButton.Click += (sender, args) =>
+                {
+                    yetSensorsDataGrid = builder.CreateSensorsToAddDataGrid(area, dataGridSensors);
+                    plantAreaPanel.Children.Add(yetSensorsDataGrid);
+                    sensorsButton.IsEnabled = false;
+                    addButton.Visibility = Visibility.Visible;
+                    closeButton.Visibility = Visibility.Visible;
+                };
+
+                addButton.Click += (o, e) =>
+                {
+                    try
+                    {
+                        foreach (DataGridSensorToAddView dataGridSensor in dataGridSensors.Where(d => d.Add == "yes").ToList())
+                        {
+                            Sensor sensor =
+                                sensors.SingleOrDefault(
+                                    s => s.MeasurableType.ToString() == dataGridSensor.MeasurableType);
+
+                            if (sensor != null)
+                            {
+                                int i = Convert.ToInt32(dataGridSensor.Timeout);
+
+                                if (i <= 0)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                sensor.MeasuringTimeout = new TimeSpan(0, 0,
+                                    Convert.ToInt32(dataGridSensor.Timeout));
+                                SaveAddedSensor(area, sensor);
+                            }
+                            dataGridSensors.Remove(dataGridSensor);
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                        MessageBox.Show(@"Please, fill in 'Timeout' field with numeric value > 0!");
+                    }
+                };
+
+                closeButton.Click += (sender, args) =>
+                {
+                    closeButton.Visibility = Visibility.Hidden;
+                    addButton.Visibility = Visibility.Hidden;
+                    sensorsButton.IsEnabled = true;
+                    plantAreaPanel.Children.Remove(yetSensorsDataGrid);
+                };
             }
+
+            ScrollViewer scrollViewer = new ScrollViewer
+            {
+                Height = plantAreaPanel.Height,
+                CanContentScroll = true,
+                Content = plantAreaPanel,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+            };
+            Border border = new Border
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                BorderBrush = Brushes.Black,
+                Background = Brushes.LightGray,
+                BorderThickness = new Thickness(1),
+                Width = plantAreaPanel.Width,
+                Height = plantAreaPanel.Height,
+                Margin = new Thickness(marginLeft, marginTop, 0, 0),
+                Child = scrollViewer
+            };
+            return border;
         }
 
         private void SaveAddedSensor(PlantsArea area, Sensor sensor)
@@ -353,7 +364,7 @@ namespace PlantsWpf
 
         private void Load_OnClick(object sender, RoutedEventArgs e)
         {
-            SetDispatcherTimer();
+            SetPlantsGrid();
             SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
             Start.IsEnabled = false;
             Pause.IsEnabled = true;
@@ -386,7 +397,7 @@ namespace PlantsWpf
 
         private void DispatcherTimer_Tick(object sender, System.EventArgs e)
         {
-            SetPlantsGrid();
+            //SetPlantsGrid();
         }
 
         private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)

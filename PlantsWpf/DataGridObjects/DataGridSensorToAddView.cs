@@ -5,7 +5,7 @@ using PlantsWpf.Annotations;
 
 namespace PlantsWpf.DataGridObjects
 {
-    public class DataGridSensor : INotifyPropertyChanged
+    public class DataGridSensorToAddView : INotifyPropertyChanged
     {
         public string Optimal { get; set; }
         public string Min { get; set; }

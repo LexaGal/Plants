@@ -18,9 +18,7 @@
             <Button Name="AddArea" Content="Add area" Click="AddArea_OnClick" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="66" Height="28"/>
         </DockPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,65,0,-1">
-            <!--<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="518" Height="254" RenderTransformOrigin="0.102,0.197">-->
-                <Grid x:Name="PlantsGrid"></Grid>
-            <!--</Canvas>-->
+            <Grid x:Name="PlantsGrid"></Grid>
         </ScrollViewer>
     </Grid>
 </Window>
