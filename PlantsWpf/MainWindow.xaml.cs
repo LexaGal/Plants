@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -54,6 +55,11 @@ namespace PlantsWpf
 
             Pause.IsEnabled = false;
             Start.IsEnabled = false;
+            SetPlantsGrid();
+
+            SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
+            Start.IsEnabled = false;
+            Pause.IsEnabled = true;
         }
 
         private void Send(object sender, ElapsedEventArgs args)
@@ -92,6 +98,8 @@ namespace PlantsWpf
             List<SensorMapping> sensorMappings = sensorRepository.GetAll().ToList();
             _sensorsCollection = new SensorsCollection();
             sensorMappings.ForEach(m => _sensorsCollection.AddSensor(_dbMapper.RestoreSensor(m)));
+
+            //_sensorsCollection.AddSensor(_dbMapper.RestoreSensor(sensorMappings[3]));
 
             _plantsAreas = new PlantsAreas();
 
@@ -178,10 +186,16 @@ namespace PlantsWpf
                 Content = area.Plant.Name + " area"
             });
 
-            sensorsDataGrid = builder.CreateSensorsDataGrid(area, DataGrid_LoadingRow);
+            BindingList<DataGridSensorView> dataGridSensorViews = new BindingList<DataGridSensorView>(
+                area.Sensors.ToList().ConvertAll(s => new DataGridSensorView(s)));
+            
+            sensorsDataGrid = builder.CreateSensorsDataGrid(area, dataGridSensorViews);
             plantAreaPanel.Children.Add(sensorsDataGrid);
 
-            serviceSystemsDataGrid = builder.CreateServiceSystemsDataGrid(area, DataGrid_LoadingRow);
+            BindingList<PlantsAreaServiceState> plantsAreaServiceStates =
+                new BindingList<PlantsAreaServiceState>{area.PlantsAreaServiceState};
+            
+            serviceSystemsDataGrid = builder.CreateServiceSystemsDataGrid(area, plantsAreaServiceStates);
             plantAreaPanel.Children.Add(serviceSystemsDataGrid);
 
             List<Sensor> sensors = area.FindTurnedOffSensors();
@@ -202,7 +216,7 @@ namespace PlantsWpf
                 Button sensorsButton = new Button
                 {
                     HorizontalAlignment = HorizontalAlignment.Left,
-                    Margin = new Thickness(110, -120, 0, 50),
+                    Margin = new Thickness(10, 10, 0, 0),
                     Content = "Yet sensors",
                     Width = 70,
                     Height = 30
@@ -212,7 +226,7 @@ namespace PlantsWpf
                     Width = 40,
                     Height = 30,
                     Content = "Add",
-                    Margin = new Thickness(180, -120, 0, 50),
+                    Margin = new Thickness(80, -30, 0, 0),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Visibility = Visibility.Hidden
                 };
@@ -221,7 +235,7 @@ namespace PlantsWpf
                     Width = 40,
                     Height = 30,
                     Content = "Close",
-                    Margin = new Thickness(220, -120, 0, 50),
+                    Margin = new Thickness(120, -30, 0, 0),
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Visibility = Visibility.Hidden
                 };
@@ -311,14 +325,6 @@ namespace PlantsWpf
             _sensorsCollection.AddSensor(sensor);
         }
 
-        private void SetDispatcherTimer()
-        {
-            _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Tick += DispatcherTimer_Tick;
-            _dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            _dispatcherTimer.Start();
-        }
-
         private void SavePlantsArea(PlantsArea plantsArea)
         {
             DbMapper dbMapper = new DbMapper();
@@ -362,19 +368,9 @@ namespace PlantsWpf
             _plantsAreas.AddPlantsArea(plantsArea);
         }
 
-        private void Load_OnClick(object sender, RoutedEventArgs e)
-        {
-            SetPlantsGrid();
-            SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
-            Start.IsEnabled = false;
-            Pause.IsEnabled = true;
-            Load.IsEnabled = false;
-        }
-
         private void Start_OnClick(object sender, RoutedEventArgs e)
         {
             SystemTimer.Enable();
-            _dispatcherTimer.IsEnabled = true;
             Start.IsEnabled = false;
             Pause.IsEnabled = true;
         }
@@ -390,31 +386,11 @@ namespace PlantsWpf
         private void Pause_OnClick(object sender, RoutedEventArgs e)
         {
             SystemTimer.Disable();
-            _dispatcherTimer.IsEnabled = false;
             Start.IsEnabled = true;
             Pause.IsEnabled = false;
         }
 
-        private void DispatcherTimer_Tick(object sender, System.EventArgs e)
-        {
-            //SetPlantsGrid();
-        }
-
-        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            string row = e.Row.Item.ToString();
-
-            if (row.Contains("✘"))
-            {
-                e.Row.Background = new SolidColorBrush(Colors.Red);
-            }
-            if (row.Contains("✔"))
-            {
-                e.Row.Background = new SolidColorBrush(Colors.LawnGreen);
-            }
-        }
-
-        private void AddArea_OnClick(object sender, RoutedEventArgs e)
+       private void AddArea_OnClick(object sender, RoutedEventArgs e)
         {
             PlantsAreaWindow secondWindow = new PlantsAreaWindow();
             secondWindow.PlantsAreaEvent += PlantsAreaWindow_GetPlantsArea;

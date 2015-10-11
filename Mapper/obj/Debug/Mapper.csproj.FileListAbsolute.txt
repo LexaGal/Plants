@@ -18,3 +18,7 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\Enti
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Debug\Mapper.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Debug\Mapper.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Debug\Mapper.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\PostSharp.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\PostSharp.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\Mapper.pssym
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Debug\Mapper.dll.postsharp

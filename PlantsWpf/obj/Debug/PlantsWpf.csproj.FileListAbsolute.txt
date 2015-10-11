@@ -23,3 +23,7 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\E
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Debug\PlantsAreaWindow.baml
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Debug\PlantsAreaWindow.g.cs
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\PostSharp.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\PostSharp.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Debug\PlantsWpf.pssym
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Debug\PlantsWpf.exe.postsharp

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms.VisualStyles;
+using System.Windows.Media;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
@@ -21,58 +24,133 @@ namespace PlantsWpf.DataGridsBuilders
     public class DataGridBuilder
     {
         public DataGrid CreateServiceSystemsDataGrid(PlantsArea area,
-            EventHandler<DataGridRowEventArgs> dataGridRowAction)
+            BindingList<PlantsAreaServiceState> plantsAreaServiceStates)
         {
             DataGrid dataGrid = new DataGrid
             {
-                Margin = new Thickness(10, 10, 0, 0),
-                Width = 95,
+                Margin = new Thickness(35, 10, 0, 0),
+                Width = 245,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
             };
-            dataGrid.LoadingRow += dataGridRowAction;
 
             // Create Columns
-            DataGridTextColumn action = new DataGridTextColumn
+            DataGridTextColumn watering = new DataGridTextColumn
             {
-                Header = "Action",
-                Binding = new Binding("Action")
+                Header = "Watering",
+                Binding = new Binding("Watering")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay,
+                },
+                CellStyle = new Style
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("Watering")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = "✔",
+                            Setters = {new Setter(Control.BackgroundProperty, Brushes.LawnGreen)}
+                        }
+                    }
+                },
+                IsReadOnly = true
             };
-            DataGridTextColumn state = new DataGridTextColumn
+            DataGridTextColumn nutrienting = new DataGridTextColumn
             {
-                Header = "✔",
-                Binding = new Binding("State")
+                Header = "Nutrienting",
+                Binding = new Binding("Nutrienting")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay,
+                },
+                CellStyle = new Style
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("Nutrienting")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = "✔",
+                            Setters = {new Setter(Control.BackgroundProperty, Brushes.LawnGreen)}
+                        }
+                    }
+                },
+                IsReadOnly = true
+            };
+            DataGridTextColumn warming = new DataGridTextColumn
+            {
+                Header = "Warming",
+                Binding = new Binding("Warming")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay,
+                },
+                CellStyle = new Style
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("Warming")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = "✔",
+                            Setters = {new Setter(Control.BackgroundProperty, Brushes.LawnGreen)}
+                        }
+                    }
+                },
+                IsReadOnly = true
+            };
+            DataGridTextColumn cooling = new DataGridTextColumn
+            {
+                Header = "Cooling",
+                Binding = new Binding("Cooling")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay,
+                },
+                CellStyle = new Style
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("Cooling")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = "✔",
+                            Setters = {new Setter(Control.BackgroundProperty, Brushes.LawnGreen)}
+                        }
+                    }
+                },
+                IsReadOnly = true
             };
 
-            dataGrid.Columns.Add(action);
-            dataGrid.Columns.Add(state);
+            dataGrid.Columns.Add(watering);
+            dataGrid.Columns.Add(nutrienting);
+            dataGrid.Columns.Add(warming);
+            dataGrid.Columns.Add(cooling);
 
-            dataGrid.Items.Add(new
-            {
-                Action = "Watering",
-                State = area.IsBeingWatering ? "✔" : String.Empty
-            });
-            dataGrid.Items.Add(new
-            {
-                Action = "Nutrienting",
-                State = area.IsBeingNutrienting ? "✔" : String.Empty
-            });
-            dataGrid.Items.Add(new
-            {
-                Action = "Warming",
-                State = area.IsBeingWarming ? "✔" : String.Empty
-            });
-            dataGrid.Items.Add(new
-            {
-                Action = "Cooling",
-                State = area.IsBeingCooling ? "✔" : String.Empty
-            });
-
+            dataGrid.ItemsSource = plantsAreaServiceStates;
             return dataGrid;
         }
 
-        public DataGrid CreateSensorsDataGrid(PlantsArea area, EventHandler<DataGridRowEventArgs> dataGridRowAction)
+        public DataGrid CreateSensorsDataGrid(PlantsArea area, BindingList<DataGridSensorView> dataGridSensorViews)
         {
             DataGrid dataGrid = new DataGrid
             {
@@ -81,10 +159,9 @@ namespace PlantsWpf.DataGridsBuilders
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
-            };
-            dataGrid.LoadingRow += dataGridRowAction;
-
-            // Create Columns
+               };
+            
+            //Create Columns
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
                 Header = "Measurable type",
@@ -112,131 +189,56 @@ namespace PlantsWpf.DataGridsBuilders
             DataGridTextColumn value = new DataGridTextColumn
             {
                 Header = "Value",
-                Binding = new Binding("Value") {UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged},
+                Binding = new Binding("Value")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged, 
+                    Mode = BindingMode.OneWay,
+                },
                 IsReadOnly = true
-            };
+             };
             DataGridTextColumn numberOfTimes = new DataGridTextColumn
             {
                 Header = "N",
-                Binding = new Binding("NumberOfTimes") {UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged},
+                Binding = new Binding("NumberOfTimes")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay
+                },
                 IsReadOnly = true
             };
-            DataGridTextColumn critical = new DataGridTextColumn
+            DataGridTextColumn isCritical = new DataGridTextColumn
             {
                 Header = "✘",
-                Binding = new Binding("Critical") {UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged},
-                IsReadOnly = true
+                Binding = new Binding("IsCritical")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                },
+                IsReadOnly = true,
+                CellStyle = new Style
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsCritical")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = "✘",
+                            Setters = {new Setter(Control.BackgroundProperty, Brushes.Red)}
+                        }
+                    }
+                }
             };
-
+        
             dataGrid.Columns.Add(measurableType);
             dataGrid.Columns.Add(optimal);
             dataGrid.Columns.Add(min);
             dataGrid.Columns.Add(max);
             dataGrid.Columns.Add(value);
             dataGrid.Columns.Add(numberOfTimes);
-            dataGrid.Columns.Add(critical);
-
-            ObservableCollection<DataGridSensorView> dataGridSensorViews = new ObservableCollection<DataGridSensorView>(
-                area.Sensors.ToList().ConvertAll(s => new DataGridSensorView
-                {
-                    MeasurableType = s.MeasurableType.ToString(),
-                    Optimal = area.Plant.Humidity.Optimal.ToString(),
-                    Min = area.Plant.Humidity.Min.ToString(),
-                    Max = area.Plant.Humidity.Max.ToString(),
-                    Value = s.Function.CurrentFunctionValue.ToString("F2"),
-                    NumberOfTimes = s.NumberOfTimes.ToString(),
-                    IsCritical = s.Function.CurrentFunctionValue > area.Plant.Humidity.Max ||
-                                 s.Function.CurrentFunctionValue < area.Plant.Humidity.Min ? "✘" : String.Empty,
-                }));
-
-            //if (area.Sensors.Any(s => s.MeasurableType == MeasurableTypeEnum.Humidity))
-            //{
-            //    HumiditySensor humiditySensor =
-            //        area.Sensors.First(s => s.MeasurableType == MeasurableTypeEnum.Humidity) as HumiditySensor;
-
-            //    if (humiditySensor != null)
-            //    {
-            //        dataGrid.Items.Add(new
-            //        {
-            //            area.Plant.Humidity.MeasurableType,
-            //            area.Plant.Humidity.Optimal,
-            //            area.Plant.Humidity.Min,
-            //            area.Plant.Humidity.Max,
-            //            Value = humiditySensor.Function.CurrentFunctionValue.ToString("F2"),
-            //            humiditySensor.NumberOfTimes,
-            //            Critical = humiditySensor.Function.CurrentFunctionValue > area.Plant.Humidity.Max ||
-            //                       humiditySensor.Function.CurrentFunctionValue < area.Plant.Humidity.Min
-            //                ? "✘"
-            //                : String.Empty,
-            //        });
-            //    }
-            //}
-            //if (area.Sensors.Any(s => s.MeasurableType == MeasurableTypeEnum.Temperature))
-            //{
-            //    TemperatureSensor temperatureSensor =
-            //        area.Sensors.First(s => s.MeasurableType == MeasurableTypeEnum.Temperature) as TemperatureSensor;
-            //    if (temperatureSensor != null)
-            //    {
-            //        dataGrid.Items.Add(new
-            //        {
-            //            area.Plant.Temperature.MeasurableType,
-            //            area.Plant.Temperature.Optimal,
-            //            area.Plant.Temperature.Min,
-            //            area.Plant.Temperature.Max,
-            //            Value = temperatureSensor.Function.CurrentFunctionValue.ToString("F2"),
-            //            temperatureSensor.NumberOfTimes,
-            //            Critical = temperatureSensor.Function.CurrentFunctionValue > area.Plant.Temperature.Max ||
-            //                       temperatureSensor.Function.CurrentFunctionValue < area.Plant.Temperature.Min
-            //                ? "✘"
-            //                : String.Empty,
-
-            //        });
-            //    }
-            //}
-            //if (area.Sensors.Any(s => s.MeasurableType == MeasurableTypeEnum.SoilPh))
-            //{
-            //    SoilPhSensor soilPhSensor =
-            //        area.Sensors.First(s => s.MeasurableType == MeasurableTypeEnum.SoilPh) as SoilPhSensor;
-
-            //    if (soilPhSensor != null)
-            //    {
-            //        dataGrid.Items.Add(new
-            //        {
-            //            area.Plant.SoilPh.MeasurableType,
-            //            area.Plant.SoilPh.Optimal,
-            //            area.Plant.SoilPh.Min,
-            //            area.Plant.SoilPh.Max,
-            //            Value = soilPhSensor.Function.CurrentFunctionValue.ToString("F2"),
-            //            soilPhSensor.NumberOfTimes,
-            //            Critical = soilPhSensor.Function.CurrentFunctionValue > area.Plant.SoilPh.Max ||
-            //                       soilPhSensor.Function.CurrentFunctionValue < area.Plant.SoilPh.Min
-            //                ? "✘"
-            //                : String.Empty,
-            //        });
-            //    }
-            //}
-            //if (area.Sensors.Any(s => s.MeasurableType == MeasurableTypeEnum.Nutrient))
-            //{
-            //    NutrientSensor nutrientSensor =
-            //        area.Sensors.First(s => s.MeasurableType == MeasurableTypeEnum.Nutrient) as NutrientSensor;
-
-            //    if (nutrientSensor != null)
-            //    {
-            //        dataGrid.Items.Add(new
-            //        {
-            //            area.Plant.Nutrient.MeasurableType,
-            //            area.Plant.Nutrient.Optimal,
-            //            area.Plant.Nutrient.Min,
-            //            area.Plant.Nutrient.Max,
-            //            Value = nutrientSensor.Function.CurrentFunctionValue.ToString("F2"),
-            //            nutrientSensor.NumberOfTimes,
-            //            Critical = nutrientSensor.Function.CurrentFunctionValue > area.Plant.Nutrient.Max ||
-            //                       nutrientSensor.Function.CurrentFunctionValue < area.Plant.Nutrient.Min
-            //                ? "✘"
-            //                : String.Empty,
-            //        });
-            //    }
-            //}
+            dataGrid.Columns.Add(isCritical);
 
             dataGrid.ItemsSource = dataGridSensorViews;
             return dataGrid;

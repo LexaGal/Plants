@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using PlantingLib.MeasurableParameters;
+using PlantingLib.Plants;
 using PlantingLib.Sensors;
 
 namespace PlantingLib.Plants
@@ -13,20 +14,20 @@ namespace PlantingLib.Plants
         public Plant Plant { get; private set; }
         public IList<Sensor> Sensors { get; private set; }
         public int Number { get; private set; }
-        public bool IsBeingWatering { get; set; }
-        public bool IsBeingNutrienting { get; set; }
-        public bool IsBeingWarming { get; set; }
-        public bool IsBeingCooling { get; set; }
-        
+        public PlantsAreaServiceState PlantsAreaServiceState { get; set; }
+
         public PlantsArea(Plant plant, int number)
         {
             Id = Guid.NewGuid();
             Plant = plant;
             Number = number;
-            IsBeingWatering = false;
-            IsBeingNutrienting = false;
-            IsBeingWarming = false;
-            IsBeingCooling = false;
+            PlantsAreaServiceState = new PlantsAreaServiceState
+            {
+                Watering = false.ToString(),
+                Nutrienting = false.ToString(),
+                Warming = false.ToString(),
+                Cooling = false.ToString()
+            }; 
             Sensors = new List<Sensor>();
         }
 
@@ -35,10 +36,13 @@ namespace PlantingLib.Plants
             Id = id;
             Plant = plant;
             Number = number;
-            IsBeingWatering = false;
-            IsBeingNutrienting = false;
-            IsBeingWarming = false;
-            IsBeingCooling = false;
+            PlantsAreaServiceState = new PlantsAreaServiceState
+            {
+                Watering = false.ToString(),
+                Nutrienting = false.ToString(),
+                Warming = false.ToString(),
+                Cooling = false.ToString()
+            };
             Sensors = new List<Sensor>();
         }
 

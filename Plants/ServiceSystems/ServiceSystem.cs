@@ -28,21 +28,21 @@ namespace PlantingLib.ServiceSystems
             switch (MeasurableType)
             {
                 case MeasurableTypeEnum.Humidity:
-                    PlantsArea.IsBeingWatering = !state;
+                    PlantsArea.PlantsAreaServiceState.Watering = (!state).ToString();
                     break;
                 case MeasurableTypeEnum.Temperature:
                     if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
                     {
-                        PlantsArea.IsBeingWarming = !state;
+                        PlantsArea.PlantsAreaServiceState.Warming = (!state).ToString();
                         break;
                     }
-                    PlantsArea.IsBeingCooling = !state;
+                    PlantsArea.PlantsAreaServiceState.Cooling = (!state).ToString();
                     break;
                 case MeasurableTypeEnum.SoilPh:
-                    PlantsArea.IsBeingNutrienting = !state;
+                    PlantsArea.PlantsAreaServiceState.Nutrienting = (!state).ToString();
                     break;
                 case MeasurableTypeEnum.Nutrient:
-                    PlantsArea.IsBeingNutrienting = !state;
+                    PlantsArea.PlantsAreaServiceState.Nutrienting = (!state).ToString();
                     break;
             }
             PlantsArea.Sensors
@@ -57,7 +57,6 @@ namespace PlantingLib.ServiceSystems
                 .Where(s => s.MeasurableParameter.MeasurableType == MeasurableType)
                 .ToList()
                 .ForEach(s => s.Function.ResetFunction());
-
         }
 
         public abstract TimeSpan ComputeTimeForService();

@@ -1,6 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using PlantingLib.Messenging;
+using PlantingLib.Plants;
+using PlantingLib.Sensors;
 using PlantsWpf.Annotations;
 
 namespace PlantsWpf.DataGridObjects
@@ -10,45 +16,61 @@ namespace PlantsWpf.DataGridObjects
         public string Optimal { get; set; }
         public string Min { get; set; }
         public string Max { get; set; }
-        public string MeasurableType { get; set; }
         public string Value { get; set; }
-        
-        private string _numberOfTimes;
-        private string _isCritical;
+        public string NumberOfTimes { get; set; }
+        public string IsCritical { get; set; }
+        public string MeasurableType { get; set; }
+
+        public DataGridSensorView(Sensor s)
+        {
+            s.NewMeasuring += GetNewMeasuring;
+            UpdateState(s);
+        }
+
+        public void UpdateState(Sensor s)
+        {
+        MeasurableType = s.MeasurableType.ToString();
+            Optimal =
+                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                    .Optimal.ToString();
+            Min =
+                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                    .Min.ToString();
+            Max =
+                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                    .Max.ToString();
+            Value = s.Function.CurrentFunctionValue.ToString("F2");
+            NumberOfTimes = s.NumberOfTimes.ToString();
+            IsCritical = s.Function.CurrentFunctionValue >
+                         s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Max ||
+                         s.Function.CurrentFunctionValue <
+                         s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Min
+                ? "✘"
+                : String.Empty;
+            OnPropertyChanged("Value");
+            OnPropertyChanged("NumberOfTimes");
+            OnPropertyChanged("IsCritical");
+        }
+
+        private void GetNewMeasuring(object sender, EventArgs eventArgs)
+        {
+            MessengingEventArgs<Sensor> messengingEventArgs = eventArgs as MessengingEventArgs<Sensor>;
+            if (messengingEventArgs != null)
+            {
+                UpdateState(messengingEventArgs.Object);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotNull]
-        public string NumberOfTimes
-        {
-            get { return _numberOfTimes; }
-            set
-            {
-                _numberOfTimes = value;
-                OnPropertyChanged("NumberOfTimes");
-            }
-        }
-        
-        [NotNull]
-        public string IsCritical
-        {
-            get { return _isCritical; }
-            set
-            {
-                _isCritical = value;
-                OnPropertyChanged("IsCritical");
-            }
-        }
-
         [NotifyPropertyChangedInvocator]
-        protected virtual bool OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-            return true;
         }
     }
+
 }

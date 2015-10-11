@@ -1,5 +1,6 @@
 ﻿using System;
 using PlantingLib.MeasurableParameters;
+using PlantingLib.Messenging;
 using PlantingLib.ParametersFunctions;
 using PlantingLib.Plants;
 
@@ -58,7 +59,23 @@ namespace PlantingLib.Sensors
 
         public double GetNewMeasuring
         {
-            get { return Function.NewFunctionValue(); }
+            get
+            {
+                Function.NewFunctionValue();
+                OnNewMeasuring();
+                return Function.CurrentFunctionValue;
+            }
+        }
+
+        public event EventHandler NewMeasuring;
+       
+        protected virtual void OnNewMeasuring()
+        {
+            var handler = NewMeasuring;
+            if (handler != null)
+            {
+                handler(this, new MessengingEventArgs<Sensor>(this));
+            }
         }
     }
 }

@@ -34,3 +34,7 @@ E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\bin\Debug\
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\bin\Debug\Mapper.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\bin\Debug\Mapper.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\bin\Debug\PostSharp.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\bin\Debug\PostSharp.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\bin\Debug\PlantingUI.pssym
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantingUI\obj\Debug\PlantingUI.exe.postsharp
