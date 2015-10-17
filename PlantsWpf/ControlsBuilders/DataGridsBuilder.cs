@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
-using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
-using PlantingLib.Sensors;
 using PlantsWpf.DataGridObjects;
 using Binding = System.Windows.Data.Binding;
-using Button = System.Windows.Controls.Button;
 using DataGrid = System.Windows.Controls.DataGrid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using MessageBox = System.Windows.Forms.MessageBox;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 
-namespace PlantsWpf.DataGridsBuilders
+namespace PlantsWpf.ControlsBuilders
 {
-    public class DataGridBuilder
+    public class DataGridsBuilder
     {
         public DataGrid CreateServiceSystemsDataGrid(PlantsArea area,
             BindingList<PlantsAreaServiceState> plantsAreaServiceStates)
@@ -32,7 +24,8 @@ namespace PlantsWpf.DataGridsBuilders
                 Width = 245,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                CanUserAddRows = false
             };
 
             // Create Columns
@@ -42,7 +35,7 @@ namespace PlantsWpf.DataGridsBuilders
                 Binding = new Binding("Watering")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                    Mode = BindingMode.OneWay,
+                    Mode = BindingMode.OneWay
                 },
                 CellStyle = new Style
                 {
@@ -68,7 +61,7 @@ namespace PlantsWpf.DataGridsBuilders
                 Binding = new Binding("Nutrienting")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                    Mode = BindingMode.OneWay,
+                    Mode = BindingMode.OneWay
                 },
                 CellStyle = new Style
                 {
@@ -94,7 +87,7 @@ namespace PlantsWpf.DataGridsBuilders
                 Binding = new Binding("Warming")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                    Mode = BindingMode.OneWay,
+                    Mode = BindingMode.OneWay
                 },
                 CellStyle = new Style
                 {
@@ -120,7 +113,7 @@ namespace PlantsWpf.DataGridsBuilders
                 Binding = new Binding("Cooling")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                    Mode = BindingMode.OneWay,
+                    Mode = BindingMode.OneWay
                 },
                 CellStyle = new Style
                 {
@@ -150,21 +143,23 @@ namespace PlantsWpf.DataGridsBuilders
             return dataGrid;
         }
 
-        public DataGrid CreateSensorsDataGrid(PlantsArea area, BindingList<DataGridSensorView> dataGridSensorViews)
+        public DataGrid CreateSensorsDataGrid(PlantsArea area, BindingList<DataGridSensorView> dataGridSensorViews, FrameworkElementFactory factory)
         {
             DataGrid dataGrid = new DataGrid
             {
-                Margin = new Thickness(10, 10, 0, 0),
-                Width = 300,
+                Margin = new Thickness(0, 10, 0, 0),
+                Width = 318,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                CanUserAddRows=false
                };
             
             //Create Columns
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
-                Header = "Measurable type",
+                Header = "Measurable",
+                Width = 73,
                 Binding = new Binding("MeasurableType"),
                 IsReadOnly = true
             };
@@ -192,7 +187,7 @@ namespace PlantsWpf.DataGridsBuilders
                 Binding = new Binding("Value")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged, 
-                    Mode = BindingMode.OneWay,
+                    Mode = BindingMode.OneWay
                 },
                 IsReadOnly = true
              };
@@ -208,7 +203,6 @@ namespace PlantsWpf.DataGridsBuilders
             };
             DataGridTextColumn isCritical = new DataGridTextColumn
             {
-                Header = "✘",
                 Binding = new Binding("IsCritical")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
@@ -225,13 +219,21 @@ namespace PlantsWpf.DataGridsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = "✘",
+                            Value = "(!)",
                             Setters = {new Setter(Control.BackgroundProperty, Brushes.Red)}
                         }
                     }
                 }
             };
-        
+
+            DataGridTemplateColumn remove = new DataGridTemplateColumn
+            {
+                CellTemplate = new DataTemplate
+                {
+                    VisualTree = factory
+                }
+            };
+            
             dataGrid.Columns.Add(measurableType);
             dataGrid.Columns.Add(optimal);
             dataGrid.Columns.Add(min);
@@ -239,6 +241,7 @@ namespace PlantsWpf.DataGridsBuilders
             dataGrid.Columns.Add(value);
             dataGrid.Columns.Add(numberOfTimes);
             dataGrid.Columns.Add(isCritical);
+            dataGrid.Columns.Add(remove);
 
             dataGrid.ItemsSource = dataGridSensorViews;
             return dataGrid;
@@ -248,18 +251,20 @@ namespace PlantsWpf.DataGridsBuilders
         {
             DataGrid dataGrid = new DataGrid
             {
-                Margin = new Thickness(0, 10, 0, 0),
-                Width = 307,
+                Margin = new Thickness(10, 10, 0, 0),
+                Width = 300,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                AutoGenerateColumns = false
+                AutoGenerateColumns = false,
+                CanUserAddRows = false
             };
 
             // Create Columns
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
-                Header = "Measurable type",
+                Header = "Measurable",
+                Width = 77,
                 Binding = new Binding("MeasurableType"),
                 IsReadOnly = true
             };

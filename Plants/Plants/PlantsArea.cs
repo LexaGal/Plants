@@ -64,7 +64,7 @@ namespace PlantingLib.Plants
             Sensors.Add(sensor);
         }
 
-        public List<Sensor> FindTurnedOffSensors()
+        public List<Sensor> FindSensorsToAdd()
         {
             List<Sensor> sensors = new List<Sensor>();
             if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.Temperature))

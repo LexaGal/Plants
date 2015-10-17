@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using PlantingLib.Sensors;
 using PlantsWpf.Annotations;
 
 namespace PlantsWpf.DataGridObjects
@@ -13,6 +15,17 @@ namespace PlantsWpf.DataGridObjects
         public string MeasurableType { get; set; }
         private string _timeout;
         private string _add;
+
+        public DataGridSensorToAddView(Sensor s)
+        {
+            _timeout = s.MeasuringTimeout.TotalSeconds.ToString(CultureInfo.InvariantCulture);
+            _add = "yes";
+            Optimal = s.MeasurableParameter.Optimal.ToString();
+            Min = s.MeasurableParameter.Min.ToString();
+            Max = s.MeasurableParameter.Max.ToString();
+            MeasurableType =
+                MeasurableType;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

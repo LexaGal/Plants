@@ -21,15 +21,18 @@ namespace PlantsWpf.DataGridObjects
         public string IsCritical { get; set; }
         public string MeasurableType { get; set; }
 
-        public DataGridSensorView(Sensor s)
+        public Sensor Sensor { get; private set; }
+
+        public DataGridSensorView(Sensor sensor)
         {
-            s.NewMeasuring += GetNewMeasuring;
-            UpdateState(s);
+            Sensor = sensor;
+            Sensor.NewMeasuring += GetNewMeasuring;
+            UpdateState(Sensor);
         }
 
         public void UpdateState(Sensor s)
         {
-        MeasurableType = s.MeasurableType.ToString();
+            MeasurableType = s.MeasurableType.ToString();
             Optimal =
                 s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
                     .Optimal.ToString();
@@ -45,7 +48,7 @@ namespace PlantsWpf.DataGridObjects
                          s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Max ||
                          s.Function.CurrentFunctionValue <
                          s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Min
-                ? "✘"
+                ? "(!)"
                 : String.Empty;
             OnPropertyChanged("Value");
             OnPropertyChanged("NumberOfTimes");
@@ -68,7 +71,7 @@ namespace PlantsWpf.DataGridObjects
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

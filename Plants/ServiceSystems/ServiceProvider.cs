@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Forms;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Messenging;
@@ -25,17 +26,24 @@ namespace PlantingLib.ServiceSystems
         //recieving
         public void RecieveMessage(object sender, EventArgs eventArgs)
         {
-            MessengingEventArgs<MeasuringMessage> messengingEventArgs =
-                eventArgs as MessengingEventArgs<MeasuringMessage>;
-            if (messengingEventArgs != null)
+            try
             {
-                MeasuringMessage recievedMessage = messengingEventArgs.Object;
+                MessengingEventArgs<MeasuringMessage> messengingEventArgs =
+                    eventArgs as MessengingEventArgs<MeasuringMessage>;
+                if (messengingEventArgs != null)
+                {
+                    MeasuringMessage recievedMessage = messengingEventArgs.Object;
                 
-                ServiceSystem serviceSystem = GetServiceSystem(recievedMessage.MeasurableType, 
-                    recievedMessage.ParameterValue, PlantsAreas.AllPlantsAreas.First(pa =>
-                        pa.Id == recievedMessage.PlantsAreaId));
+                    ServiceSystem serviceSystem = GetServiceSystem(recievedMessage.MeasurableType, 
+                        recievedMessage.ParameterValue, PlantsAreas.AllPlantsAreas.First(pa =>
+                            pa.Id == recievedMessage.PlantsAreaId));
 
-                serviceSystem.StartService(GetServiceTime);
+                    serviceSystem.StartService(GetServiceTime);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 

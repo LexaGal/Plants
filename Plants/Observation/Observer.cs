@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
@@ -29,36 +30,47 @@ namespace PlantingLib.Observation
         //recieving
         public void RecieveMessage(object sender, EventArgs eventArgs)
         {
-            MessengingEventArgs<MeasuringMessage> messengingEventArgs =
-                eventArgs as MessengingEventArgs<MeasuringMessage>;
-            if (messengingEventArgs != null)
+            try
             {
-                MeasuringMessage recievedMessage = messengingEventArgs.Object;
-                MessagesDictionary[recievedMessage.PlantsAreaId].Add(recievedMessage);
-
-                Console.WriteLine(recievedMessage.ToString());
-                Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan.TotalSeconds);
-
-                if (recievedMessage.MessageType == MessageTypeEnum.CriticalInfo)
+                MessengingEventArgs<MeasuringMessage> messengingEventArgs =
+                    eventArgs as MessengingEventArgs<MeasuringMessage>;
+                if (messengingEventArgs != null)
                 {
-                    //sending to scheduler
-                    OnMessageSending(recievedMessage);
-                    PlantsArea area = PlantsAreas.AllPlantsAreas.FirstOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
-                    if (area != null)
+                    MeasuringMessage recievedMessage = messengingEventArgs.Object;
+                    if (!MessagesDictionary.ContainsKey(recievedMessage.PlantsAreaId))
                     {
-                        Sensor sensor = area.Sensors.FirstOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
-                        if (sensor != null)
+                        MessagesDictionary.Add(recievedMessage.PlantsAreaId, new List<MeasuringMessage>());
+                    }
+                    MessagesDictionary[recievedMessage.PlantsAreaId].Add(recievedMessage);
+                    
+                    Console.WriteLine(recievedMessage.ToString());
+                    Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan.TotalSeconds);
+
+                    if (recievedMessage.MessageType == MessageTypeEnum.CriticalInfo)
+                    {
+                        //sending to scheduler
+                        OnMessageSending(recievedMessage);
+                        PlantsArea area = PlantsAreas.AllPlantsAreas.FirstOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
+                        if (area != null)
                         {
-                            sensor.NumberOfTimes++;
+                            Sensor sensor = area.Sensors.FirstOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
+                            if (sensor != null)
+                            {
+                                sensor.NumberOfTimes++;
+                            }
                         }
                     }
-                }
 
-                if (MessagesDictionary[recievedMessage.PlantsAreaId].Count >= MessagesLimit)
-                {
-                    MessagesDictionary[recievedMessage.PlantsAreaId].Clear();
-                    // to Db
+                    if (MessagesDictionary[recievedMessage.PlantsAreaId].Count >= MessagesLimit)
+                    {
+                        MessagesDictionary[recievedMessage.PlantsAreaId].Clear();
+                        // to Db
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 

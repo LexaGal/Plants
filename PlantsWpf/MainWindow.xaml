@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid x:Name="RootGrid">
-        <DockPanel HorizontalAlignment="Left" Height="46" LastChildFill="False" Margin="1,5,0,0" VerticalAlignment="Top" Width="282">
+        
+            <DockPanel HorizontalAlignment="Left" Height="46" LastChildFill="False" Margin="1,5,0,0" VerticalAlignment="Top" Width="282">
             <!--<Button Name="Load" Content="Load" HorizontalAlignment="Left" Margin="10,8,0,0"
                 VerticalAlignment="Top" Width="49" Height="26" Click="Load_OnClick" />-->
 
@@ -17,8 +18,10 @@
                 Width="61" Height="27" VerticalAlignment="Top"/>
             <Button Name="AddArea" Content="Add area" Click="AddArea_OnClick" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="66" Height="28"/>
         </DockPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,65,0,-1">
-            <Grid x:Name="PlantsGrid"></Grid>
+             
+        <ScrollViewer BorderBrush="Black" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,65,0,-1">
+                <Grid x:Name="PlantsGrid"></Grid>
+          
         </ScrollViewer>
     </Grid>
-</Window>
+ </Window>

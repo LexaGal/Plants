@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using System.Windows.Threading;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
@@ -21,8 +22,9 @@ using PlantingLib.ServiceSystems;
 using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 using PlantsWpf.ArgsForEvents;
+using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DataGridObjects;
-using PlantsWpf.DataGridsBuilders;
+using PlantsWpf.SavingData;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
@@ -39,18 +41,18 @@ namespace PlantsWpf
         private ServiceProvider _serviceProvider;
         private DbMapper _dbMapper;
         private DateTime _beginDateTime;
-        private DispatcherTimer _dispatcherTimer;
+        private DataSaver _dataSaver;
 
         public MainWindow()
         {
             InitializeComponent();
             Initialize();
-            foreach (string name in Enum.GetNames(typeof(WeatherTypesEnum)))
+            foreach (string name in Enum.GetNames(typeof (WeatherTypesEnum)))
             {
                 WeatherBox.Items.Add(name);
             }
             WeatherBox.Text = WeatherBox.Items[0].ToString();
-            
+
             WeatherBox.SelectionChanged += WeatherBox_OnSelectionChanged;
 
             Pause.IsEnabled = false;
@@ -60,6 +62,7 @@ namespace PlantsWpf
             SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
             Start.IsEnabled = false;
             Pause.IsEnabled = true;
+            WindowState = WindowState.Maximized;
         }
 
         private void Send(object sender, ElapsedEventArgs args)
@@ -100,7 +103,8 @@ namespace PlantsWpf
             sensorMappings.ForEach(m => _sensorsCollection.AddSensor(_dbMapper.RestoreSensor(m)));
 
             //_sensorsCollection.AddSensor(_dbMapper.RestoreSensor(sensorMappings[3]));
-
+            //_sensorsCollection=new SensorsCollection();
+            
             _plantsAreas = new PlantsAreas();
 
             _sensorsCollection.AllSensors.ToList().ForEach(s =>
@@ -131,6 +135,8 @@ namespace PlantsWpf
             _beginDateTime = DateTime.Now;
 
             Weather.SetWeather(WeatherTypesEnum.Warm);
+
+            _dataSaver = new DataSaver(_plantsAreas, _sensorsCollection);
         }
 
         private void SetPlantsGrid()
@@ -146,16 +152,16 @@ namespace PlantsWpf
                 {
                     PlantsArea area = _plantsAreas.AllPlantsAreas[index];
 
-                    Border border = CreateBorderedPlantAreaPanel(area, marginLeft, marginTop);
+                    Border borderedPlantAreaPanel = CreateBorderedPlantAreaPanel(area, marginLeft, marginTop);
 
-                    PlantsGrid.Children.Add(border);
+                    PlantsGrid.Children.Add(borderedPlantAreaPanel);
 
                     marginLeft += 335;
 
                     if ((index + 1)%4 == 0)
                     {
                         marginLeft = 10;
-                        marginTop += 260;
+                        marginTop += 210;
                     }
                 }
             }
@@ -165,133 +171,46 @@ namespace PlantsWpf
 
         private Border CreateBorderedPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
         {
-            DataGrid yetSensorsDataGrid = new DataGrid();
-            DataGrid sensorsDataGrid = new DataGrid();
-            DataGrid serviceSystemsDataGrid = new DataGrid();
-            DataGridBuilder builder = new DataGridBuilder();
+            DataGrid sensorsToAddDataGrid = new DataGrid();
+            DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
+            ControlsBuilder controlsBuilder = new ControlsBuilder();
 
             StackPanel plantAreaPanel = new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Vertical,
-                Width = 325,
-                Height = 250,
-                CanVerticallyScroll = true,
+                Width = 333,
+                Height = 200,
+                CanVerticallyScroll = true
             };
+
             plantAreaPanel.Children.Add(new Label
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Content = area.Plant.Name + " area"
+                Content = string.Format("{0} area ({1})", area.Plant.Name, area.Id)
             });
-
+            
             BindingList<DataGridSensorView> dataGridSensorViews = new BindingList<DataGridSensorView>(
                 area.Sensors.ToList().ConvertAll(s => new DataGridSensorView(s)));
-            
-            sensorsDataGrid = builder.CreateSensorsDataGrid(area, dataGridSensorViews);
-            plantAreaPanel.Children.Add(sensorsDataGrid);
-
             BindingList<PlantsAreaServiceState> plantsAreaServiceStates =
-                new BindingList<PlantsAreaServiceState>{area.PlantsAreaServiceState};
+                new BindingList<PlantsAreaServiceState> {area.PlantsAreaServiceState};
+            ObservableCollection<DataGridSensorToAddView> dataGridSensorToAddViews = new ObservableCollection
+                <DataGridSensorToAddView>(area.FindSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s)));
+
+            FrameworkElementFactory buttonTemplate = controlsBuilder.CreateButtonTemplate(area, dataGridSensorViews,
+                dataGridSensorToAddViews);
             
-            serviceSystemsDataGrid = builder.CreateServiceSystemsDataGrid(area, plantsAreaServiceStates);
+            DataGrid sensorsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews, buttonTemplate);
+            DataGrid serviceSystemsDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area, plantsAreaServiceStates);
+           
+            StackPanel buttonsPanel = controlsBuilder.CreateButtonsPanel(area, plantAreaPanel, sensorsToAddDataGrid,
+                dataGridSensorToAddViews, SaveAddedSensor, dataGridSensorViews);
+            
+            plantAreaPanel.Children.Add(sensorsDataGrid);
             plantAreaPanel.Children.Add(serviceSystemsDataGrid);
-
-            List<Sensor> sensors = area.FindTurnedOffSensors();
-
-            if (sensors.Count != 0)
-            {
-                ObservableCollection<DataGridSensorToAddView> dataGridSensors = new ObservableCollection<DataGridSensorToAddView>(
-                    sensors.ConvertAll(s => new DataGridSensorToAddView
-                    {
-                        Timeout = ((int)s.MeasuringTimeout.TotalSeconds).ToString(),
-                        MeasurableType = s.MeasurableType.ToString(),
-                        Optimal = s.MeasurableParameter.Optimal.ToString(),
-                        Min = s.MeasurableParameter.Min.ToString(),
-                        Max = s.MeasurableParameter.Max.ToString(),
-                        Add = "yes"
-                    }));
-
-                Button sensorsButton = new Button
-                {
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Margin = new Thickness(10, 10, 0, 0),
-                    Content = "Yet sensors",
-                    Width = 70,
-                    Height = 30
-                };
-                Button addButton = new Button
-                {
-                    Width = 40,
-                    Height = 30,
-                    Content = "Add",
-                    Margin = new Thickness(80, -30, 0, 0),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Visibility = Visibility.Hidden
-                };
-                Button closeButton = new Button
-                {
-                    Width = 40,
-                    Height = 30,
-                    Content = "Close",
-                    Margin = new Thickness(120, -30, 0, 0),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Visibility = Visibility.Hidden
-                };
-                plantAreaPanel.Children.Add(sensorsButton);
-                plantAreaPanel.Children.Add(addButton);
-                plantAreaPanel.Children.Add(closeButton);
-
-                sensorsButton.Click += (sender, args) =>
-                {
-                    yetSensorsDataGrid = builder.CreateSensorsToAddDataGrid(area, dataGridSensors);
-                    plantAreaPanel.Children.Add(yetSensorsDataGrid);
-                    sensorsButton.IsEnabled = false;
-                    addButton.Visibility = Visibility.Visible;
-                    closeButton.Visibility = Visibility.Visible;
-                };
-
-                addButton.Click += (o, e) =>
-                {
-                    try
-                    {
-                        foreach (DataGridSensorToAddView dataGridSensor in dataGridSensors.Where(d => d.Add == "yes").ToList())
-                        {
-                            Sensor sensor =
-                                sensors.SingleOrDefault(
-                                    s => s.MeasurableType.ToString() == dataGridSensor.MeasurableType);
-
-                            if (sensor != null)
-                            {
-                                int i = Convert.ToInt32(dataGridSensor.Timeout);
-
-                                if (i <= 0)
-                                {
-                                    throw new FormatException();
-                                }
-
-                                sensor.MeasuringTimeout = new TimeSpan(0, 0,
-                                    Convert.ToInt32(dataGridSensor.Timeout));
-                                SaveAddedSensor(area, sensor);
-                            }
-                            dataGridSensors.Remove(dataGridSensor);
-                        }
-                    }
-                    catch (FormatException)
-                    {
-                        MessageBox.Show(@"Please, fill in 'Timeout' field with numeric value > 0!");
-                    }
-                };
-
-                closeButton.Click += (sender, args) =>
-                {
-                    closeButton.Visibility = Visibility.Hidden;
-                    addButton.Visibility = Visibility.Hidden;
-                    sensorsButton.IsEnabled = true;
-                    plantAreaPanel.Children.Remove(yetSensorsDataGrid);
-                };
-            }
+            plantAreaPanel.Children.Add(buttonsPanel);
 
             ScrollViewer scrollViewer = new ScrollViewer
             {
@@ -300,12 +219,13 @@ namespace PlantsWpf
                 Content = plantAreaPanel,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto
             };
+            
             Border border = new Border
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 BorderBrush = Brushes.Black,
-                Background = Brushes.LightGray,
+                Background = Brushes.LightGoldenrodYellow,
                 BorderThickness = new Thickness(1),
                 Width = plantAreaPanel.Width,
                 Height = plantAreaPanel.Height,
@@ -317,55 +237,13 @@ namespace PlantsWpf
 
         private void SaveAddedSensor(PlantsArea area, Sensor sensor)
         {
-            area.AddSensor(sensor);
-            sensor.SetPlantsArea(area);
-            SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
-            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
-            sensorMappingRepository.Add(sensorMapping);
-            _sensorsCollection.AddSensor(sensor);
+            _dataSaver.SaveAddedSensor(area, sensor);
         }
 
-        private void SavePlantsArea(PlantsArea plantsArea)
+        private void SaveAddedPlantsArea(PlantsArea plantsArea)
         {
-            DbMapper dbMapper = new DbMapper();
-
-            IPlantMappingRepository plantMappingRepository = new PlantMappingRepository();
-            IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
-            IMeasurableParameterMappingRepository measurableParameterMappingRepository =
-                new MeasurableParameterMappingRepository();
-            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
-
-            Temperature temperature = plantsArea.Plant.Temperature;
-            MeasurableParameterMapping measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(temperature);
-            measurableParameterMappingRepository.Add(measurableParameterMapping);
-
-            Humidity humidity = plantsArea.Plant.Humidity;
-            measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(humidity);
-            measurableParameterMappingRepository.Add(measurableParameterMapping);
-
-            SoilPh soilPh = plantsArea.Plant.SoilPh;
-            measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(soilPh);
-            measurableParameterMappingRepository.Add(measurableParameterMapping);
-
-            Nutrient nutrient = plantsArea.Plant.Nutrient;
-            measurableParameterMapping = dbMapper.GetMeasurableParameterMapping(nutrient);
-            measurableParameterMappingRepository.Add(measurableParameterMapping);
-
-            Plant plant = plantsArea.Plant;
-            PlantMapping plantMapping = dbMapper.GetPlantMapping(plant);
-            plantMappingRepository.Add(plantMapping);
-            
-            PlantsAreaMapping plantsAreaMapping = dbMapper.GetPlantsAreaMapping(plantsArea);
-            plantsAreaMappingRepository.Add(plantsAreaMapping);
-
-            foreach (var sensor in plantsArea.Sensors)
-            {
-                SensorMapping sensorMapping = dbMapper.GetSensorMapping(sensor);
-                sensorMappingRepository.Add(sensorMapping);
-                _sensorsCollection.AddSensor(sensor);
-            }
-
-            _plantsAreas.AddPlantsArea(plantsArea);
+            _dataSaver.SaveAddedPlantsArea(plantsArea);
+            SetPlantsGrid();
         }
 
         private void Start_OnClick(object sender, RoutedEventArgs e)
@@ -400,7 +278,7 @@ namespace PlantsWpf
         public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
         {
             PlantsArea plantsArea = e.PlantsArea;
-            SavePlantsArea(plantsArea);
+            SaveAddedPlantsArea(plantsArea);
         }
     }
 }
