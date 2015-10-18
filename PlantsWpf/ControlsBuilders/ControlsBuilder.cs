@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
-using PlantsWpf.Annotations;
 using PlantsWpf.DataGridObjects;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -19,11 +14,12 @@ namespace PlantsWpf.ControlsBuilders
 {
     public class ControlsBuilder
     {
-        public FrameworkElementFactory CreateButtonTemplate(PlantsArea area, BindingList<DataGridSensorView> dataGridSensorViews,
-            ObservableCollection<DataGridSensorToAddView> dataGridSensorToAddViews)
+        public FrameworkElementFactory CreateButtonTemplate(PlantsArea area,
+            BindingList<DataGridSensorView> dataGridSensorViews, Action<PlantsArea, Sensor> removeSensor,
+            ObservableCollection<DataGridSensorToAddView> dataGridSensorToAddViews, Button sensorsToAddButton)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
-            buttonTemplate.SetValue(ContentControl.ContentProperty, "✘");
+            buttonTemplate.SetValue(ContentControl.ContentProperty, "X");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
@@ -31,12 +27,14 @@ namespace PlantsWpf.ControlsBuilders
                     DataGridSensorView view = ((FrameworkElement) o).DataContext as DataGridSensorView;
                     if (view != null)
                     {
-                        area.Sensors.Remove(view.Sensor);
+                        removeSensor(area, view.Sensor);
                         dataGridSensorViews.Remove(view);
                         
                         dataGridSensorToAddViews = new ObservableCollection
                             <DataGridSensorToAddView>(
                             area.FindSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s)));
+
+                        sensorsToAddButton.Visibility = dataGridSensorViews.Count != 4 ? Visibility.Visible : Visibility.Hidden;
                     }
                 })
                 );
@@ -45,7 +43,7 @@ namespace PlantsWpf.ControlsBuilders
 
         public StackPanel CreateButtonsPanel(PlantsArea area, StackPanel plantAreaPanel, 
             DataGrid sensorsToAddDataGrid, ObservableCollection<DataGridSensorToAddView> dataGridSensorToAddViews,
-            Action<PlantsArea, Sensor> saveAddedSensor, BindingList<DataGridSensorView> dataGridSensorViews) 
+            Action<PlantsArea, Sensor> saveSensor, BindingList<DataGridSensorView> dataGridSensorViews) 
         {
             Button sensorsToAddButton = new Button
             {
@@ -54,7 +52,7 @@ namespace PlantsWpf.ControlsBuilders
                 Content = "Sensors",
                 Width = 70,
                 Height = 30,
-                Visibility = Visibility.Visible
+                Visibility = dataGridSensorViews.Count != 4 ? Visibility.Visible : Visibility.Hidden
             };
             Button addSensorButton = new Button
             {
@@ -79,6 +77,9 @@ namespace PlantsWpf.ControlsBuilders
 
             sensorsToAddButton.Click += (sender, args) =>
             {
+                dataGridSensorToAddViews = new ObservableCollection
+                    <DataGridSensorToAddView>(
+                    area.FindSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s)));
                 sensorsToAddDataGrid = dataGridsBuilder.CreateSensorsToAddDataGrid(area, dataGridSensorToAddViews);
                 plantAreaPanel.Children.Add(sensorsToAddDataGrid);
                 sensorsToAddButton.IsEnabled = false;
@@ -107,12 +108,13 @@ namespace PlantsWpf.ControlsBuilders
 
                             sensor.MeasuringTimeout = new TimeSpan(0, 0,
                                 Convert.ToInt32(dataGridSensor.Timeout));
-                            saveAddedSensor(area, sensor);
+                            saveSensor(area, sensor);
                         }
                         dataGridSensorToAddViews.Remove(dataGridSensor);
                         if (dataGridSensorToAddViews.Count == 0)
                         {
                             sensorsToAddButton.Visibility = Visibility.Hidden;
+                            sensorsToAddButton.IsEnabled = true;
                             addSensorButton.Visibility = Visibility.Hidden;
                             closeSensorsToAddButton.Visibility = Visibility.Hidden;
                             plantAreaPanel.Children.Remove(sensorsToAddDataGrid);

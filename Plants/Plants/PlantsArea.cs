@@ -51,7 +51,7 @@ namespace PlantingLib.Plants
             Number ++;
         }
 
-        public void AddSensor(Sensor sensor)
+        public bool AddSensor(Sensor sensor)
         {
             if (Sensors == null)
             {
@@ -59,9 +59,22 @@ namespace PlantingLib.Plants
             }
             if (Sensors.Any(s => s.Id == sensor.Id))
             {
-                return;
+                return false;
             }
             Sensors.Add(sensor);
+            sensor.SetPlantsArea(this);
+            return true;
+        }
+
+        public bool RemoveSensor(Sensor sensor)
+        {
+            if (Sensors.All(s => s.Id != sensor.Id))
+            {
+                return false;
+            }
+            Sensors.Remove(sensor);
+            sensor.SetPlantsArea(null);
+            return true;
         }
 
         public List<Sensor> FindSensorsToAdd()

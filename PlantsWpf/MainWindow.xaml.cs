@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
-using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
@@ -25,7 +22,6 @@ using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DataGridObjects;
 using PlantsWpf.SavingData;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
 {
@@ -41,7 +37,7 @@ namespace PlantsWpf
         private ServiceProvider _serviceProvider;
         private DbMapper _dbMapper;
         private DateTime _beginDateTime;
-        private DataSaver _dataSaver;
+        private DbModifier _dbModifier;
 
         public MainWindow()
         {
@@ -102,8 +98,8 @@ namespace PlantsWpf
             _sensorsCollection = new SensorsCollection();
             sensorMappings.ForEach(m => _sensorsCollection.AddSensor(_dbMapper.RestoreSensor(m)));
 
-            //_sensorsCollection.AddSensor(_dbMapper.RestoreSensor(sensorMappings[3]));
-            //_sensorsCollection=new SensorsCollection();
+            //_sensorsCollection.AddSensor(_dbMapper.RestoreSensor(sensorMappings[1]));
+            //_sensorsCollection = new SensorsCollection();
             
             _plantsAreas = new PlantsAreas();
 
@@ -136,7 +132,7 @@ namespace PlantsWpf
 
             Weather.SetWeather(WeatherTypesEnum.Warm);
 
-            _dataSaver = new DataSaver(_plantsAreas, _sensorsCollection);
+            _dbModifier = new DbModifier(_plantsAreas, _sensorsCollection);
         }
 
         private void SetPlantsGrid()
@@ -161,7 +157,7 @@ namespace PlantsWpf
                     if ((index + 1)%4 == 0)
                     {
                         marginLeft = 10;
-                        marginTop += 210;
+                        marginTop += 250;
                     }
                 }
             }
@@ -181,7 +177,7 @@ namespace PlantsWpf
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Vertical,
                 Width = 333,
-                Height = 200,
+                Height = 240,
                 CanVerticallyScroll = true
             };
 
@@ -189,7 +185,7 @@ namespace PlantsWpf
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Content = string.Format("{0} area ({1})", area.Plant.Name, area.Id)
+                Content = string.Format("{0} (plant id: {1})", area.Plant.Name, area.Plant.Id)
             });
             
             BindingList<DataGridSensorView> dataGridSensorViews = new BindingList<DataGridSensorView>(
@@ -198,16 +194,16 @@ namespace PlantsWpf
                 new BindingList<PlantsAreaServiceState> {area.PlantsAreaServiceState};
             ObservableCollection<DataGridSensorToAddView> dataGridSensorToAddViews = new ObservableCollection
                 <DataGridSensorToAddView>(area.FindSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s)));
+          
+            StackPanel buttonsPanel = controlsBuilder.CreateButtonsPanel(area, plantAreaPanel, sensorsToAddDataGrid,
+                dataGridSensorToAddViews, SaveSensor, dataGridSensorViews);
 
             FrameworkElementFactory buttonTemplate = controlsBuilder.CreateButtonTemplate(area, dataGridSensorViews,
-                dataGridSensorToAddViews);
-            
+                RemoveSensor, dataGridSensorToAddViews, buttonsPanel.Children[0] as Button);
+          
             DataGrid sensorsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews, buttonTemplate);
             DataGrid serviceSystemsDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area, plantsAreaServiceStates);
            
-            StackPanel buttonsPanel = controlsBuilder.CreateButtonsPanel(area, plantAreaPanel, sensorsToAddDataGrid,
-                dataGridSensorToAddViews, SaveAddedSensor, dataGridSensorViews);
-            
             plantAreaPanel.Children.Add(sensorsDataGrid);
             plantAreaPanel.Children.Add(serviceSystemsDataGrid);
             plantAreaPanel.Children.Add(buttonsPanel);
@@ -235,14 +231,19 @@ namespace PlantsWpf
             return border;
         }
 
-        private void SaveAddedSensor(PlantsArea area, Sensor sensor)
+        private void SaveSensor(PlantsArea area, Sensor sensor)
         {
-            _dataSaver.SaveAddedSensor(area, sensor);
+            _dbModifier.SaveSensor(area, sensor);
         }
 
-        private void SaveAddedPlantsArea(PlantsArea plantsArea)
+        private void RemoveSensor(PlantsArea area, Sensor sensor)
         {
-            _dataSaver.SaveAddedPlantsArea(plantsArea);
+            _dbModifier.RemoveSensor(area, sensor);
+        }
+
+        private void SavePlantsArea(PlantsArea plantsArea)
+        {
+            _dbModifier.SavePlantsArea(plantsArea);
             SetPlantsGrid();
         }
 
@@ -278,7 +279,7 @@ namespace PlantsWpf
         public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
         {
             PlantsArea plantsArea = e.PlantsArea;
-            SaveAddedPlantsArea(plantsArea);
+            SavePlantsArea(plantsArea);
         }
     }
 }

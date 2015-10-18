@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using PlantingLib.Sensors;
 using PlantsWpf.Annotations;
 
@@ -24,7 +23,7 @@ namespace PlantsWpf.DataGridObjects
             Min = s.MeasurableParameter.Min.ToString();
             Max = s.MeasurableParameter.Max.ToString();
             MeasurableType =
-                MeasurableType;
+                s.MeasurableType.ToString();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

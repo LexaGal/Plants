@@ -1,11 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using PlantingLib.Messenging;
-using PlantingLib.Plants;
 using PlantingLib.Sensors;
 using PlantsWpf.Annotations;
 

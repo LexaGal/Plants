@@ -20,8 +20,8 @@ namespace PlantsWpf.ControlsBuilders
         {
             DataGrid dataGrid = new DataGrid
             {
-                Margin = new Thickness(35, 10, 0, 0),
-                Width = 245,
+                Margin = new Thickness(30, 10, 0, 0),
+                Width = 257,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,

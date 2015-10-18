@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Database.DatabaseStructure.Repository.Abstract;
+﻿using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
@@ -13,31 +8,38 @@ using PlantingLib.Sensors;
 
 namespace PlantsWpf.SavingData
 {
-    public class DataSaver
+    public class DbModifier
     {
         private readonly PlantsAreas _plantsAreas;
         private readonly SensorsCollection _sensorsCollection;
         private readonly DbMapper _dbMapper;
 
-        public DataSaver(PlantsAreas plantsAreas, SensorsCollection sensorsCollection)
+        public DbModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection)
         {
             _plantsAreas = plantsAreas;
             _sensorsCollection = sensorsCollection;
             _dbMapper = new DbMapper();
         }
     
-
-        public void SaveAddedSensor(PlantsArea area, Sensor sensor)
+        public void SaveSensor(PlantsArea area, Sensor sensor)
         {
             area.AddSensor(sensor);
-            sensor.SetPlantsArea(area);
             SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
             ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
             sensorMappingRepository.Add(sensorMapping);
             _sensorsCollection.AddSensor(sensor);
         }
 
-        public void SaveAddedPlantsArea(PlantsArea plantsArea)
+        public void RemoveSensor(PlantsArea area, Sensor sensor)
+        {
+            SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
+            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
+            sensorMappingRepository.Delete(sensorMapping.Id);
+            _sensorsCollection.RemoveSensor(sensor);
+            area.RemoveSensor(sensor);
+        }
+
+        public void SavePlantsArea(PlantsArea plantsArea)
         {
             IPlantMappingRepository plantMappingRepository = new PlantMappingRepository();
             IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
