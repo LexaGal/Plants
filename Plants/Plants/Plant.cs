@@ -25,8 +25,9 @@ namespace PlantingLib.Plants
                 Temperature,
                 Humidity,
                 SoilPh,
-                Nutrient
+                Nutrient,
             };
+            CustomParameters = new List<CustomParameter>();
         }
 
         public Plant(Guid id, Temperature temperature, Humidity humidity, SoilPh soilPh,
@@ -49,11 +50,27 @@ namespace PlantingLib.Plants
                 SoilPh,
                 Nutrient
             };
+
+            CustomParameters = new List<CustomParameter>(); 
         }
 
-        public MeasurableParameter GetMeasurableParameter(MeasurableTypeEnum type)
+        public MeasurableParameter GetMeasurableParameter(string type)
         {
             return MeasurableParameters.First(mp => mp.MeasurableType == type);
+        }
+
+        public bool AddCustomParameters(List<CustomParameter> customParameters)
+        {
+            CustomParameters.AddRange(customParameters);
+            MeasurableParameters.AddRange(customParameters);
+            return true;
+        }
+
+        public bool AddCustomParameter(CustomParameter customParameters)
+        {
+            CustomParameters.Add(customParameters);
+            MeasurableParameters.Add(customParameters);
+            return true;
         }
 
         public Guid Id { get; private set; }
@@ -65,6 +82,8 @@ namespace PlantingLib.Plants
         public TimeSpan GrowingTime { get; private set; }
         public TimeSpan WateringSpan { get; private set; }
         public TimeSpan NutrientingSpan { get; private set; }
-        public IList<MeasurableParameter> MeasurableParameters { get; private set; }
+        public List<MeasurableParameter> MeasurableParameters { get; private set; }
+        public List<CustomParameter> CustomParameters { get; private set; }
+
     }
 }

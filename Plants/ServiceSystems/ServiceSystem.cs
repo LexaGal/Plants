@@ -10,13 +10,13 @@ namespace PlantingLib.ServiceSystems
     public abstract class ServiceSystem
     {
         public PlantsArea PlantsArea { get; private set; }
-        public MeasurableTypeEnum MeasurableType { get; private set; }
+        public string MeasurableType { get; private set; }
         public double ParameterValue { get; private set; }
         private Timer _timer;
         private Func<ServiceMessage, ServiceMessage> _func;
         private int _nIntervals;
         
-        protected ServiceSystem(MeasurableTypeEnum measurableType, double parameterValue, PlantsArea plantsArea)
+        protected ServiceSystem(string measurableType, double parameterValue, PlantsArea plantsArea)
         {
             PlantsArea = plantsArea;
             MeasurableType = measurableType;
@@ -27,10 +27,10 @@ namespace PlantingLib.ServiceSystems
         {
             switch (MeasurableType)
             {
-                case MeasurableTypeEnum.Humidity:
+                case "Humidity":
                     PlantsArea.PlantsAreaServiceState.Watering = (!state).ToString();
                     break;
-                case MeasurableTypeEnum.Temperature:
+                case "Temperature":
                     if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
                     {
                         PlantsArea.PlantsAreaServiceState.Warming = (!state).ToString();
@@ -38,13 +38,17 @@ namespace PlantingLib.ServiceSystems
                     }
                     PlantsArea.PlantsAreaServiceState.Cooling = (!state).ToString();
                     break;
-                case MeasurableTypeEnum.SoilPh:
+                case "SoilPh":
                     PlantsArea.PlantsAreaServiceState.Nutrienting = (!state).ToString();
                     break;
-                case MeasurableTypeEnum.Nutrient:
+                case "Nutrient":
                     PlantsArea.PlantsAreaServiceState.Nutrienting = (!state).ToString();
                     break;
             }
+
+            
+
+
             PlantsArea.Sensors
                 .Where(s => s.MeasurableParameter.MeasurableType == MeasurableType)
                 .ToList()

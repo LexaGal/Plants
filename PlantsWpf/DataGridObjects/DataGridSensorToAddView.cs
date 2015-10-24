@@ -15,6 +15,10 @@ namespace PlantsWpf.DataGridObjects
         private string _timeout;
         private string _add;
 
+        public DataGridSensorToAddView()
+        {
+        }
+
         public DataGridSensorToAddView(Sensor s)
         {
             _timeout = s.MeasuringTimeout.TotalSeconds.ToString(CultureInfo.InvariantCulture);
@@ -23,7 +27,7 @@ namespace PlantsWpf.DataGridObjects
             Min = s.MeasurableParameter.Min.ToString();
             Max = s.MeasurableParameter.Max.ToString();
             MeasurableType =
-                s.MeasurableType.ToString();
+                s.MeasurableType;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

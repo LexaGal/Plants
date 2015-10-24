@@ -14,6 +14,7 @@ using Mapper.MapperContext;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServiceState;
 using PlantingLib.Sensors;
 using PlantingLib.ServiceSystems;
 using PlantingLib.Timers;
@@ -21,6 +22,7 @@ using PlantingLib.WeatherTypes;
 using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DataGridObjects;
+using PlantsWpf.ListViewExtensions;
 using PlantsWpf.SavingData;
 
 namespace PlantsWpf
@@ -53,7 +55,7 @@ namespace PlantsWpf
 
             Pause.IsEnabled = false;
             Start.IsEnabled = false;
-            SetPlantsGrid();
+            SetPlantsGrid(4);
 
             SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
             Start.IsEnabled = false;
@@ -99,7 +101,6 @@ namespace PlantsWpf
             sensorMappings.ForEach(m => _sensorsCollection.AddSensor(_dbMapper.RestoreSensor(m)));
 
             //_sensorsCollection.AddSensor(_dbMapper.RestoreSensor(sensorMappings[1]));
-            //_sensorsCollection = new SensorsCollection();
             
             _plantsAreas = new PlantsAreas();
 
@@ -135,34 +136,35 @@ namespace PlantsWpf
             _dbModifier = new DbModifier(_plantsAreas, _sensorsCollection);
         }
 
-        private void SetPlantsGrid()
+        private void SetPlantsGrid(int numberInRow)
         {
+            const int sizeHorizontal = 1360;
+            const int sizeVertical = 250;
             try
             {
                 PlantsGrid.Children.Clear();
-                
                 int marginLeft = 10;
                 int marginTop = 10;
-                
+
                 for (int index = 0; index < _plantsAreas.AllPlantsAreas.Count; index++)
                 {
                     PlantsArea area = _plantsAreas.AllPlantsAreas[index];
 
                     Border borderedPlantAreaPanel = CreateBorderedPlantAreaPanel(area, marginLeft, marginTop);
-
                     PlantsGrid.Children.Add(borderedPlantAreaPanel);
 
-                    marginLeft += 335;
-
-                    if ((index + 1)%4 == 0)
+                    marginLeft += sizeHorizontal/numberInRow;
+                    if ((index + 1)%numberInRow == 0)
                     {
                         marginLeft = 10;
-                        marginTop += 250;
+                        marginTop += sizeVertical;
                     }
+
                 }
             }
             catch (InvalidOperationException)
-            {}
+            {
+            }
         }
 
         private Border CreateBorderedPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
@@ -192,9 +194,10 @@ namespace PlantsWpf
                 area.Sensors.ToList().ConvertAll(s => new DataGridSensorView(s)));
             BindingList<PlantsAreaServiceState> plantsAreaServiceStates =
                 new BindingList<PlantsAreaServiceState> {area.PlantsAreaServiceState};
-            ObservableCollection<DataGridSensorToAddView> dataGridSensorToAddViews = new ObservableCollection
-                <DataGridSensorToAddView>(area.FindSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s)));
-          
+            BindingList<DataGridSensorToAddView> dataGridSensorToAddViews =
+                new BindingList<DataGridSensorToAddView>(area.FindSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s)));
+            dataGridSensorToAddViews.AllowNew = true;
+            
             StackPanel buttonsPanel = controlsBuilder.CreateButtonsPanel(area, plantAreaPanel, sensorsToAddDataGrid,
                 dataGridSensorToAddViews, SaveSensor, dataGridSensorViews);
 
@@ -244,7 +247,7 @@ namespace PlantsWpf
         private void SavePlantsArea(PlantsArea plantsArea)
         {
             _dbModifier.SavePlantsArea(plantsArea);
-            SetPlantsGrid();
+            SetPlantsGrid(4);
         }
 
         private void Start_OnClick(object sender, RoutedEventArgs e)

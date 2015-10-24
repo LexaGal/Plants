@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServiceState;
 using PlantingLib.Sensors;
 
 namespace PlantingLib.Plants
@@ -80,19 +81,19 @@ namespace PlantingLib.Plants
         public List<Sensor> FindSensorsToAdd()
         {
             List<Sensor> sensors = new List<Sensor>();
-            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.Temperature))
+            if (Sensors.All(sensor => sensor.MeasurableType != "Temperature"))
             {
                 sensors.Add(new TemperatureSensor(null, new TimeSpan(0, 0, 1), Plant.Temperature, 0));
             }
-            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.Humidity))
+            if (Sensors.All(sensor => sensor.MeasurableType != "Humidity"))
             {
                 sensors.Add(new HumiditySensor(null, new TimeSpan(0, 0, 1), Plant.Humidity, 0));
             }
-            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.SoilPh))
+            if (Sensors.All(sensor => sensor.MeasurableType != "SoilPh"))
             {
                 sensors.Add(new SoilPhSensor(null, new TimeSpan(0, 0, 1), Plant.SoilPh, 0));
             }
-            if (Sensors.All(sensor => sensor.MeasurableType != MeasurableTypeEnum.Nutrient))
+            if (Sensors.All(sensor => sensor.MeasurableType != "Nutrient"))
             {
                 sensors.Add(new NutrientSensor(null, new TimeSpan(0, 0, 1), Plant.Nutrient, 0));
             }

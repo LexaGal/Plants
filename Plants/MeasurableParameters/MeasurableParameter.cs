@@ -24,6 +24,6 @@ namespace PlantingLib.MeasurableParameters
         public int Optimal { get; private set; }
         public int Min { get; private set; }
         public int Max { get; private set; }
-        public MeasurableTypeEnum MeasurableType { get; protected set; }
+        public string MeasurableType { get; protected set; }
     }
 }

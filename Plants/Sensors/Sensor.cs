@@ -14,7 +14,7 @@ namespace PlantingLib.Sensors
         public MeasurableParameter MeasurableParameter { get; private set; }
         public ParameterFunction Function { get; set; }
         public bool IsOn { get; set; }
-        public MeasurableTypeEnum MeasurableType { get; private set; }
+        public string MeasurableType { get; private set; }
         public int NumberOfTimes { get; set; }
 
         protected Sensor(PlantsArea plantsArea, TimeSpan measuringTimeout, MeasurableParameter measurableParameter, int numberOfTimes)

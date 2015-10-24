@@ -1,4 +1,5 @@
-﻿using Database.DatabaseStructure.Repository.Abstract;
+﻿using System.Linq;
+using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
@@ -23,6 +24,20 @@ namespace PlantsWpf.SavingData
     
         public void SaveSensor(PlantsArea area, Sensor sensor)
         {
+            if (area.FindSensorsToAdd().SingleOrDefault(s =>
+                s.MeasurableType == sensor.MeasurableType) == null)
+            {
+                MeasurableParameterMapping measurableParameterMapping =
+                    _dbMapper.GetMeasurableParameterMapping(sensor.MeasurableParameter);
+                IMeasurableParameterMappingRepository measurableParameterMappingRepository =
+                    new MeasurableParameterMappingRepository();
+                measurableParameterMappingRepository.Add(measurableParameterMapping);
+                
+                area.Plant.AddCustomParameter(sensor.MeasurableParameter as CustomParameter);
+                PlantMapping plantMapping = _dbMapper.GetPlantMapping(area.Plant);
+                IPlantMappingRepository plantMappingRepository = new PlantMappingRepository();
+                plantMappingRepository.Edit(area.Plant.Id, plantMapping);
+            }
             area.AddSensor(sensor);
             SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
             ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();

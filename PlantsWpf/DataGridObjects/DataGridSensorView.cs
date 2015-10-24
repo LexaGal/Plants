@@ -27,24 +27,24 @@ namespace PlantsWpf.DataGridObjects
             UpdateState(Sensor);
         }
 
-        public void UpdateState(Sensor s)
+        public void UpdateState(Sensor sensor)
         {
-            MeasurableType = s.MeasurableType.ToString();
+            MeasurableType = sensor.MeasurableType;
             Optimal =
-                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Optimal.ToString();
             Min =
-                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Min.ToString();
             Max =
-                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Max.ToString();
-            Value = s.Function.CurrentFunctionValue.ToString("F2");
-            NumberOfTimes = s.NumberOfTimes.ToString();
-            IsCritical = s.Function.CurrentFunctionValue >
-                         s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Max ||
-                         s.Function.CurrentFunctionValue <
-                         s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Min
+            Value = sensor.Function.CurrentFunctionValue.ToString("F2");
+            NumberOfTimes = sensor.NumberOfTimes.ToString();
+            IsCritical = sensor.Function.CurrentFunctionValue >
+                         sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType).Max ||
+                         sensor.Function.CurrentFunctionValue <
+                         sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType).Min
                 ? "(!)"
                 : String.Empty;
             OnPropertyChanged("Value");

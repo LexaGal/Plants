@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServiceState;
+using PlantsWpf.Converters;
 using PlantsWpf.DataGridObjects;
 using Binding = System.Windows.Data.Binding;
 using DataGrid = System.Windows.Controls.DataGrid;
@@ -152,8 +154,8 @@ namespace PlantsWpf.ControlsBuilders
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                CanUserAddRows=false
-               };
+                CanUserAddRows = false
+            };
             
             //Create Columns
             DataGridTextColumn measurableType = new DataGridTextColumn
@@ -247,7 +249,7 @@ namespace PlantsWpf.ControlsBuilders
             return dataGrid;
         }
 
-        public DataGrid CreateSensorsToAddDataGrid(PlantsArea area, ObservableCollection<DataGridSensorToAddView> dataGridSensorsToAddViews)
+        public DataGrid CreateSensorsToAddDataGrid(PlantsArea area, BindingList<DataGridSensorToAddView> dataGridSensorsToAddViews)
         {
             DataGrid dataGrid = new DataGrid
             {
@@ -256,35 +258,32 @@ namespace PlantsWpf.ControlsBuilders
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                AutoGenerateColumns = false,
-                CanUserAddRows = false
             };
-
             // Create Columns
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
                 Header = "Measurable",
                 Width = 77,
                 Binding = new Binding("MeasurableType"),
-                IsReadOnly = true
+                //IsReadOnly = true
             };
             DataGridTextColumn optimal = new DataGridTextColumn
             {
                 Header = "Optimal",
                 Binding = new Binding("Optimal"),
-                IsReadOnly = true
+                //IsReadOnly = true
             };
             DataGridTextColumn min = new DataGridTextColumn
             {
                 Header = "Min",
                 Binding = new Binding("Min"),
-                IsReadOnly = true
+                //IsReadOnly = true
             };
             DataGridTextColumn max = new DataGridTextColumn
             {
                 Header = "Max",
                 Binding = new Binding("Max"),
-                IsReadOnly = true
+                //IsReadOnly = true
             };
             DataGridTextColumn timeout = new DataGridTextColumn
             {

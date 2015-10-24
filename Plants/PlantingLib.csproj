@@ -63,17 +63,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeasurableParameters\CustomParameter.cs" />
     <Compile Include="MessagesCreators\MeasuringMessageCreator.cs" />
     <Compile Include="Messenging\MessengingEventArgs.cs" />
     <Compile Include="MeasuringsProviding\ISender.cs" />
     <Compile Include="Messenging\MeasuringMessage.cs" />
     <Compile Include="Observation\IReciever.cs" />
+    <Compile Include="ParametersFunctions\CustomParameterFunction.cs" />
     <Compile Include="ParametersFunctions\HumidityFunction.cs" />
     <Compile Include="ParametersFunctions\NutrientFunction.cs" />
     <Compile Include="ParametersFunctions\ParameterFunction.cs" />
     <Compile Include="ParametersFunctions\SoilPhFunction.cs" />
     <Compile Include="ParametersFunctions\TemperatureFunction.cs" />
-    <Compile Include="MeasurableParameters\MeasurableTypeEnum.cs" />
+    <Compile Include="MeasurableParameters\MeasurableParametersDictionary.cs" />
     <Compile Include="Messenging\MessageTypeEnum.cs" />
     <Compile Include="MeasuringsProviding\SensorsMeasuringsProvider.cs" />
     <Compile Include="Observation\Observer.cs" />
@@ -82,14 +84,17 @@
     <Compile Include="MeasurableParameters\Nutrient.cs" />
     <Compile Include="MeasurableParameters\SoilPh.cs" />
     <Compile Include="MeasurableParameters\Temperature.cs" />
+    <Compile Include="Plants\ServiceState\CustomParameterServiceState.cs" />
     <Compile Include="Plants\PlantNameEnum.cs" />
     <Compile Include="Plants\PlantsAreaEqualityComparer.cs" />
     <Compile Include="Plants\PlantsAreas.cs" />
     <Compile Include="Plants\Plant.cs" />
     <Compile Include="Plants\PlantsArea.cs" />
-    <Compile Include="Plants\PlantsAreaServiceState.cs" />
+    <Compile Include="Plants\ServiceState\PlantsAreaServiceState.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sensors\CustomSensor.cs" />
+    <Compile Include="ServiceSystems\CustomSystem.cs" />
     <Compile Include="ServiceSystems\ServiceMessage.cs" />
     <Compile Include="ServiceSystems\ServiceSystem.cs" />
     <Compile Include="ServiceSystems\TemperatureSystem.cs" />
