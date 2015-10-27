@@ -25,7 +25,7 @@ namespace PlantingLib.Plants
                 Temperature,
                 Humidity,
                 SoilPh,
-                Nutrient,
+                Nutrient
             };
             CustomParameters = new List<CustomParameter>();
         }
@@ -50,7 +50,6 @@ namespace PlantingLib.Plants
                 SoilPh,
                 Nutrient
             };
-
             CustomParameters = new List<CustomParameter>(); 
         }
 
@@ -59,17 +58,23 @@ namespace PlantingLib.Plants
             return MeasurableParameters.First(mp => mp.MeasurableType == type);
         }
 
-        public bool AddCustomParameters(List<CustomParameter> customParameters)
+        public void AddCustomParameters(List<CustomParameter> customParameters)
         {
             CustomParameters.AddRange(customParameters);
             MeasurableParameters.AddRange(customParameters);
-            return true;
         }
 
-        public bool AddCustomParameter(CustomParameter customParameters)
+        public void AddCustomParameter(CustomParameter customParameters)
         {
             CustomParameters.Add(customParameters);
             MeasurableParameters.Add(customParameters);
+        }
+
+        public bool RemoveCustomParameter(CustomParameter customParameter)
+        {
+            //!!! not .Remove(item)
+            CustomParameters.RemoveAll(cp => cp.Id == customParameter.Id);
+            MeasurableParameters.RemoveAll(cp => cp.Id == customParameter.Id);
             return true;
         }
 

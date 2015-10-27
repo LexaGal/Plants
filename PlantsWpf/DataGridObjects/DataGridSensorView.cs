@@ -14,9 +14,9 @@ namespace PlantsWpf.DataGridObjects
         public string Min { get; set; }
         public string Max { get; set; }
         public string Value { get; set; }
-        public string NumberOfTimes { get; set; }
+        public string N { get; set; }
         public string IsCritical { get; set; }
-        public string MeasurableType { get; set; }
+        public string Measurable { get; set; }
 
         public Sensor Sensor { get; private set; }
 
@@ -29,7 +29,7 @@ namespace PlantsWpf.DataGridObjects
 
         public void UpdateState(Sensor sensor)
         {
-            MeasurableType = sensor.MeasurableType;
+            Measurable = sensor.MeasurableType;
             Optimal =
                 sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Optimal.ToString();
@@ -40,15 +40,17 @@ namespace PlantsWpf.DataGridObjects
                 sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Max.ToString();
             Value = sensor.Function.CurrentFunctionValue.ToString("F2");
-            NumberOfTimes = sensor.NumberOfTimes.ToString();
+            N = sensor.NumberOfTimes.ToString();
             IsCritical = sensor.Function.CurrentFunctionValue >
-                         sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType).Max ||
+                         sensor.PlantsArea.Plant.MeasurableParameters.First(
+                             p => p.MeasurableType == sensor.MeasurableType).Max ||
                          sensor.Function.CurrentFunctionValue <
-                         sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType).Min
+                         sensor.PlantsArea.Plant.MeasurableParameters.First(
+                             p => p.MeasurableType == sensor.MeasurableType).Min
                 ? "(!)"
                 : String.Empty;
             OnPropertyChanged("Value");
-            OnPropertyChanged("NumberOfTimes");
+            OnPropertyChanged("N");
             OnPropertyChanged("IsCritical");
         }
 

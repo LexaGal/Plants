@@ -43,7 +43,7 @@ namespace PlantingLib.ServiceSystems
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show(e.StackTrace);
             }
         }
 

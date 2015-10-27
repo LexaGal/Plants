@@ -11,7 +11,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
             PlantMapping plantMapping = Context.PlantsSet.Find(id);
             if (plantMapping == null)
             {
-                throw new ArgumentNullException("plantMapping");
+                throw new ArgumentNullException("PlantMapping is null");
             }
             value.CopyTo(plantMapping);
             Context.SaveChanges();

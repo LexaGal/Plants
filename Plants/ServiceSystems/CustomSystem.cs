@@ -15,8 +15,8 @@ namespace PlantingLib.ServiceSystems
         {
             if (PlantsArea != null)
             {
-                TimeSpan timeSpan = new TimeSpan(0, 0, (int)(Math.Abs(ParameterValue -
-                                                                      PlantsArea.Plant.Temperature.Optimal)));
+                TimeSpan timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
+                                                                       PlantsArea.Plant.Temperature.Optimal)));
                 return timeSpan;
             }
             return TimeSpan.Zero;

@@ -33,9 +33,10 @@ namespace Mapper.MapperContext
 
         public PlantMapping GetPlantMapping(Plant plant)
         {
+            //if custom sensor
             StringBuilder builder = new StringBuilder();
               
-            if (plant.CustomParameters != null)
+            if (plant.CustomParameters.Count != 0 )
             {
                 plant.CustomParameters.ToList().ForEach(c => builder.Append(c.Id.ToString() + ','));
 
@@ -93,12 +94,13 @@ namespace Mapper.MapperContext
                         return new Temperature(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
                             measurableParameterMapping.Min, measurableParameterMapping.Max);
                 }
+                //if custom sensor
                 return new CustomParameter(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
                     measurableParameterMapping.Min, measurableParameterMapping.Max, measurableParameterMapping.Type);
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.InnerException.ToString());
+                MessageBox.Show(e.StackTrace);
                 return null;
             }
         }
@@ -129,7 +131,8 @@ namespace Mapper.MapperContext
                     new TimeSpan(0, 0, plantMapping.WateringSpan),
                     new TimeSpan(0, 0, plantMapping.NutrientingSpan), name);
 
-                if (plantMapping.CustomParametersIds != null)
+                //if custom sensor
+                if (!string.IsNullOrEmpty(plantMapping.CustomParametersIds))
                 {
                     string[] ids = plantMapping.CustomParametersIds.Split(',');
                     List<MeasurableParameterMapping> measurableParameterMappings =
@@ -144,7 +147,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.InnerException.ToString());
+                MessageBox.Show(e.StackTrace);
                 return null;
             }
         }
@@ -161,7 +164,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.InnerException.ToString());
+                MessageBox.Show(e.StackTrace);
                 return null;
             }
         }
@@ -196,13 +199,14 @@ namespace Mapper.MapperContext
                             new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Temperature,
                             sensorMapping.NumberOfTimes);
                 }
+                //if custom sensor
                 return new CustomSensor(sensorMapping.Id, plantsArea,
                     new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as CustomParameter, 
                     sensorMapping.NumberOfTimes);
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.InnerException.ToString());
+                MessageBox.Show(e.StackTrace);
                 return null;
             }
         }

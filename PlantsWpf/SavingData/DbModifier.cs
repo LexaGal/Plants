@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 
 namespace PlantsWpf.SavingData
@@ -14,47 +17,77 @@ namespace PlantsWpf.SavingData
         private readonly PlantsAreas _plantsAreas;
         private readonly SensorsCollection _sensorsCollection;
         private readonly DbMapper _dbMapper;
+        private readonly IMeasurableParameterMappingRepository _measurableParameterMappingRepository;
+        private readonly IPlantMappingRepository _plantMappingRepository;
+        private readonly ISensorMappingRepository _sensorMappingRepository;
 
-        public DbModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection)
+        public DbModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection,
+            IMeasurableParameterMappingRepository measurableParameterMappingRepository,
+            IPlantMappingRepository plantMappingRepository, ISensorMappingRepository sensorMappingRepository)
         {
             _plantsAreas = plantsAreas;
             _sensorsCollection = sensorsCollection;
+            _measurableParameterMappingRepository = measurableParameterMappingRepository;
+            _plantMappingRepository = plantMappingRepository;
+            _sensorMappingRepository = sensorMappingRepository;
             _dbMapper = new DbMapper();
         }
-    
-        public void SaveSensor(PlantsArea area, Sensor sensor)
+
+        public void SaveAddedSensor(PlantsArea area, Sensor sensor)
         {
-            if (area.FindSensorsToAdd().SingleOrDefault(s =>
+            //if custom sensor
+            if (area.FindMainSensorsToAdd().SingleOrDefault(s =>
                 s.MeasurableType == sensor.MeasurableType) == null)
             {
                 MeasurableParameterMapping measurableParameterMapping =
                     _dbMapper.GetMeasurableParameterMapping(sensor.MeasurableParameter);
-                IMeasurableParameterMappingRepository measurableParameterMappingRepository =
-                    new MeasurableParameterMappingRepository();
-                measurableParameterMappingRepository.Add(measurableParameterMapping);
-                
+                _measurableParameterMappingRepository.Add(measurableParameterMapping);
+
                 area.Plant.AddCustomParameter(sensor.MeasurableParameter as CustomParameter);
+
                 PlantMapping plantMapping = _dbMapper.GetPlantMapping(area.Plant);
-                IPlantMappingRepository plantMappingRepository = new PlantMappingRepository();
-                plantMappingRepository.Edit(area.Plant.Id, plantMapping);
+                _plantMappingRepository.Edit(area.Plant.Id, plantMapping);
+
+                ServiceState serviceState = new ServiceState(sensor.MeasurableType, true);
+                area.PlantsAreaServiceState.AddServiceState(serviceState);
+
+                if (!AllMeasurableParameters.ParametersServices.ContainsKey(sensor.MeasurableType))
+                {
+                    AllMeasurableParameters.ParametersServices.Add(sensor.MeasurableType,
+                        new List<string> {serviceState.ServiceName});
+                }
             }
+
             area.AddSensor(sensor);
             SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
-            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
-            sensorMappingRepository.Add(sensorMapping);
+            _sensorMappingRepository.Add(sensorMapping);
             _sensorsCollection.AddSensor(sensor);
         }
 
         public void RemoveSensor(PlantsArea area, Sensor sensor)
         {
-            SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
-            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
-            sensorMappingRepository.Delete(sensorMapping.Id);
+            _sensorMappingRepository.Delete(sensor.Id);
             _sensorsCollection.RemoveSensor(sensor);
             area.RemoveSensor(sensor);
+
+            //if custom sensor
+            ServiceState serviceState =
+                area.PlantsAreaServiceState.ServiceStates.FirstOrDefault(
+                    s => s.ServiceName == String.Format("*{0}*", sensor.MeasurableType));
+            if (serviceState != null)
+            {
+                area.PlantsAreaServiceState.RemoveServiceState(serviceState);
+
+                area.Plant.RemoveCustomParameter(sensor.MeasurableParameter as CustomParameter);
+
+                PlantMapping plantMapping = _dbMapper.GetPlantMapping(area.Plant);
+                _plantMappingRepository.Edit(area.Plant.Id, plantMapping);
+
+                _measurableParameterMappingRepository.Delete(sensor.MeasurableParameter.Id);
+            }
         }
 
-        public void SavePlantsArea(PlantsArea plantsArea)
+        public void SaveAddedPlantsArea(PlantsArea plantsArea)
         {
             IPlantMappingRepository plantMappingRepository = new PlantMappingRepository();
             IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();

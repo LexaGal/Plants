@@ -16,8 +16,10 @@ namespace PlantingLib.Sensors
         public bool IsOn { get; set; }
         public string MeasurableType { get; private set; }
         public int NumberOfTimes { get; set; }
+        public bool IsCustom { get; set; }
 
-        protected Sensor(PlantsArea plantsArea, TimeSpan measuringTimeout, MeasurableParameter measurableParameter, int numberOfTimes)
+        protected Sensor(PlantsArea plantsArea, TimeSpan measuringTimeout, MeasurableParameter measurableParameter,
+            int numberOfTimes)
         {
             Id = Guid.NewGuid();
             PlantsArea = plantsArea;
@@ -29,6 +31,7 @@ namespace PlantingLib.Sensors
             MeasurableParameter = measurableParameter;
             MeasurableType = MeasurableParameter.MeasurableType;
             IsOn = true;
+            IsCustom = this is CustomSensor;
             NumberOfTimes = numberOfTimes;
         }
 
@@ -44,6 +47,7 @@ namespace PlantingLib.Sensors
             MeasurableParameter = measurableParameter;
             MeasurableType = MeasurableParameter.MeasurableType;
             IsOn = true;
+            IsCustom = this is CustomSensor;
             NumberOfTimes = numberOfTimes;
         }
 

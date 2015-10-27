@@ -96,7 +96,7 @@ namespace PlantsWpf
             }
             catch (FormatException)
             {
-                MessageBox.Show(@"Please, fill in all fields with numeric values!");
+                MessageBox.Show(@"Please, fill in all fields with numeric values > 0!");
                 return null;
             }
         }

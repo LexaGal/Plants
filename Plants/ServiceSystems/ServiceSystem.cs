@@ -25,34 +25,39 @@ namespace PlantingLib.ServiceSystems
 
         public void SetSensorsState(bool state)
         {
-            switch (MeasurableType)
-            {
-                case "Humidity":
-                    PlantsArea.PlantsAreaServiceState.Watering = (!state).ToString();
-                    break;
-                case "Temperature":
-                    if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
-                    {
-                        PlantsArea.PlantsAreaServiceState.Warming = (!state).ToString();
-                        break;
-                    }
-                    PlantsArea.PlantsAreaServiceState.Cooling = (!state).ToString();
-                    break;
-                case "SoilPh":
-                    PlantsArea.PlantsAreaServiceState.Nutrienting = (!state).ToString();
-                    break;
-                case "Nutrient":
-                    PlantsArea.PlantsAreaServiceState.Nutrienting = (!state).ToString();
-                    break;
-            }
-
-            
-
-
             PlantsArea.Sensors
                 .Where(s => s.MeasurableParameter.MeasurableType == MeasurableType)
                 .ToList()
                 .ForEach(s => s.IsOn = state);
+            switch (MeasurableType)
+            {
+                case "Humidity":
+                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Watering").IsOn =
+                        (!state).ToString();
+                    return;
+                case "Temperature":
+                    if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
+                    {
+                        PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Warming").IsOn =
+                            (!state).ToString();
+                        return;
+                    }
+                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Cooling").IsOn =
+                        (!state).ToString();
+                    return;
+                case "SoilPh":
+                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Nutrienting").IsOn =
+                        (!state).ToString();
+                    return;
+                case "Nutrient":
+                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Nutrienting").IsOn =
+                        (!state).ToString();
+                    return;
+            }
+            //if custom service state
+            PlantsArea.PlantsAreaServiceState.ServiceStates
+                .First(s => s.ServiceName.Contains(MeasurableType))
+                .IsOn = (!state).ToString();
         }
 
         public void ResetSensorsFunctions()

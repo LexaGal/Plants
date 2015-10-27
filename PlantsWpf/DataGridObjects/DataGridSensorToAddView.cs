@@ -11,7 +11,7 @@ namespace PlantsWpf.DataGridObjects
         public string Optimal { get; set; }
         public string Min { get; set; }
         public string Max { get; set; }
-        public string MeasurableType { get; set; }
+        public string Measurable { get; set; }
         private string _timeout;
         private string _add;
 
@@ -26,7 +26,7 @@ namespace PlantsWpf.DataGridObjects
             Optimal = s.MeasurableParameter.Optimal.ToString();
             Min = s.MeasurableParameter.Min.ToString();
             Max = s.MeasurableParameter.Max.ToString();
-            MeasurableType =
+            Measurable =
                 s.MeasurableType;
         }
 
@@ -59,7 +59,7 @@ namespace PlantsWpf.DataGridObjects
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                 return true;
             }
             return true;

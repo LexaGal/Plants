@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
-using PlantingLib.Plants.ServiceState;
+using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 
 namespace PlantingLib.Plants
@@ -22,13 +22,12 @@ namespace PlantingLib.Plants
             Id = Guid.NewGuid();
             Plant = plant;
             Number = number;
-            PlantsAreaServiceState = new PlantsAreaServiceState
-            {
-                Watering = false.ToString(),
-                Nutrienting = false.ToString(),
-                Warming = false.ToString(),
-                Cooling = false.ToString()
-            }; 
+            PlantsAreaServiceState = new PlantsAreaServiceState();
+            AllMeasurableParameters.ParametersServices.Values
+                .SelectMany(l => l)
+                .Distinct()
+                .ToList()
+                .ForEach(s => PlantsAreaServiceState.ServiceStates.Add(new ServiceState(s, false)));
             Sensors = new List<Sensor>();
         }
 
@@ -37,19 +36,13 @@ namespace PlantingLib.Plants
             Id = id;
             Plant = plant;
             Number = number;
-            PlantsAreaServiceState = new PlantsAreaServiceState
-            {
-                Watering = false.ToString(),
-                Nutrienting = false.ToString(),
-                Warming = false.ToString(),
-                Cooling = false.ToString()
-            };
+            PlantsAreaServiceState = new PlantsAreaServiceState();
+            AllMeasurableParameters.ParametersServices.Values
+               .SelectMany(l => l)
+               .Distinct()
+               .ToList()
+               .ForEach(s => PlantsAreaServiceState.ServiceStates.Add(new ServiceState(s, false)));
             Sensors = new List<Sensor>();
-        }
-
-        public void AddPlant(Plant plant)
-        {
-            Number ++;
         }
 
         public bool AddSensor(Sensor sensor)
@@ -78,7 +71,7 @@ namespace PlantingLib.Plants
             return true;
         }
 
-        public List<Sensor> FindSensorsToAdd()
+        public List<Sensor> FindMainSensorsToAdd()
         {
             List<Sensor> sensors = new List<Sensor>();
             if (Sensors.All(sensor => sensor.MeasurableType != "Temperature"))

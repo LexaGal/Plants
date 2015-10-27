@@ -38,7 +38,7 @@ namespace PlantsWpf.ListViewExtensions
                     gridView.Columns.Clear();
                     if (dataMatrix != null)
                     {
-                        foreach (var col in dataMatrix.Columns)
+                        foreach (MatrixColumn col in dataMatrix.Columns)
                         {
                             gridView.Columns.Add(
                                 new GridViewColumn

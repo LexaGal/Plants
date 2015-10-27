@@ -3,19 +3,27 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using PlantsWpf.Annotations;
 
-namespace PlantingLib.Plants.ServiceState
+namespace PlantingLib.Plants.ServiceStates
 {
-    public class CustomParameterServiceState : INotifyPropertyChanged
+    public class ServiceState : INotifyPropertyChanged
     {
-        private bool _servicing;
+        private bool _isOn;
 
-        public string Servicing
+        public ServiceState(string serviceName, bool isCustom)
         {
-            get { return _servicing ? "✔" : String.Empty; }
+            ServiceName = isCustom ? String.Format("*{0}*", serviceName) : serviceName;
+            _isOn = false;
+        }
+
+        public string ServiceName { get; private set; }
+
+        public string IsOn
+        {
+            get { return _isOn ? "✔" : String.Empty; }
             set
             {
-                _servicing = Convert.ToBoolean(value);
-                OnPropertyChanged("Servicing");
+                _isOn = Convert.ToBoolean(value);
+                OnPropertyChanged("IsOn");
             }
         }
 
