@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 
@@ -16,7 +17,9 @@ namespace PlantingLib.ServiceSystems
             if (PlantsArea != null)
             {
                 TimeSpan timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
-                                                                       PlantsArea.Plant.Temperature.Optimal)));
+                                                                       PlantsArea.Plant.CustomParameters.First(
+                                                                           cp => cp.MeasurableType == MeasurableType)
+                                                                           .Optimal)));
                 return timeSpan;
             }
             return TimeSpan.Zero;

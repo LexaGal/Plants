@@ -7,12 +7,14 @@ namespace PlantingLib.MeasurableParameters
         public Nutrient(int optimalNutrient, int minNutrient, int maxNutrient)
             : base(optimalNutrient, minNutrient, maxNutrient)
         {
-            MeasurableType = "Nutrient";
+            MeasurableType = ParameterEnum.Nutrient.ToString();
+
         }
 
         public Nutrient(Guid id, int optimal, int min, int max) : base(id, optimal, min, max)
         {
-            MeasurableType = "Nutrient";
+            MeasurableType = ParameterEnum.Nutrient.ToString();
+
         }
     }
 }

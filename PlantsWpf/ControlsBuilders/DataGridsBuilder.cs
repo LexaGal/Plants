@@ -1,11 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using PlantingLib.Plants;
-using PlantingLib.Plants.ServiceStates;
 using PlantsWpf.Converters;
 using PlantsWpf.DataGridObjects;
 using Binding = System.Windows.Data.Binding;
@@ -22,8 +20,8 @@ namespace PlantsWpf.ControlsBuilders
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 113,
-                HorizontalAlignment = HorizontalAlignment.Left,
+                Width = 116,
+                HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanUserAddRows = false,
@@ -33,6 +31,7 @@ namespace PlantsWpf.ControlsBuilders
             DataGridTextColumn columnServiceName = new DataGridTextColumn
             {
                 Header = "Service",
+                Width = 90,
                 Binding = new Binding("ServiceName")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
@@ -42,7 +41,6 @@ namespace PlantsWpf.ControlsBuilders
             };
             DataGridTextColumn columnIsOn = new DataGridTextColumn
             {
-                Header = "Is On",
                 Binding = new Binding("IsOn")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
@@ -79,8 +77,8 @@ namespace PlantsWpf.ControlsBuilders
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 320,
-                HorizontalAlignment = HorizontalAlignment.Left,
+                Width = 323,
+                HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanUserAddRows = false,
@@ -150,7 +148,7 @@ namespace PlantsWpf.ControlsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = "(!)",
+                            Value = "SOS",
                             Setters = {new Setter(Control.BackgroundProperty, Brushes.Red)}
                         }
                     }
@@ -186,7 +184,7 @@ namespace PlantsWpf.ControlsBuilders
             {
                 Margin = new Thickness(0, 10, 0, 0),
                 Width = 307,
-                HorizontalAlignment = HorizontalAlignment.Left,
+                HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanUserAddRows = true,

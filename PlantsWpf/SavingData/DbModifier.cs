@@ -51,10 +51,10 @@ namespace PlantsWpf.SavingData
                 ServiceState serviceState = new ServiceState(sensor.MeasurableType, true);
                 area.PlantsAreaServiceState.AddServiceState(serviceState);
 
-                if (!AllMeasurableParameters.ParametersServices.ContainsKey(sensor.MeasurableType))
+                if (MeasurableParametersInfo.GetParameterInfo(sensor.MeasurableType) == null)
                 {
-                    AllMeasurableParameters.ParametersServices.Add(sensor.MeasurableType,
-                        new List<string> {serviceState.ServiceName});
+                    MeasurableParametersInfo.ParametersInfo.Add(new ParameterInfo(sensor.MeasurableType,
+                        new List<ServiceState> {serviceState}));
                 }
             }
 

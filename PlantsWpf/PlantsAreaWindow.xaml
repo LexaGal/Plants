@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PlantsWpf.PlantsAreaWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SecondWindow" Height="268" Width="332" Background="LightGoldenrodYellow">
+        Title="SecondWindow" Height="268" Width="332" Background="LightBlue">
     <Grid x:Name="RootGrid" Margin="0,0,62,-2">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="27*"/>

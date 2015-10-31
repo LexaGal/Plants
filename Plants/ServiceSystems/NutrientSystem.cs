@@ -16,13 +16,13 @@ namespace PlantingLib.ServiceSystems
             if (PlantsArea != null)
             {
                 TimeSpan timeSpan;
-                if (MeasurableType == "Nutrient")
+                if (MeasurableType == ParameterEnum.Nutrient.ToString())
                 {
                     timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
                                                                   PlantsArea.Plant.Nutrient.Optimal))*2);
                     return timeSpan;
                 }
-                if (MeasurableType == "SoilPh")
+                if (MeasurableType == ParameterEnum.SoilPh.ToString())
                 {
                     timeSpan = new TimeSpan(0, 0, (int)(Math.Abs(ParameterValue -
                                                                   PlantsArea.Plant.SoilPh.Optimal))*4);

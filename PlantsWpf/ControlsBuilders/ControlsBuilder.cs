@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -8,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
-using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 using PlantsWpf.DataGridObjects;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -53,7 +50,7 @@ namespace PlantsWpf.ControlsBuilders
             Button sensorsToAddButton = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(0, 10, 0, 0),
+                Margin = new Thickness(150, 10, 0, 0),
                 Content = "Sensors",
                 Width = 70,
                 Height = 30
@@ -63,7 +60,7 @@ namespace PlantsWpf.ControlsBuilders
                 Width = 40,
                 Height = 30,
                 Content = "Add",
-                Margin = new Thickness(70, -30, 0, 0),
+                Margin = new Thickness(220, -30, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Visibility = Visibility.Collapsed
             };
@@ -72,7 +69,7 @@ namespace PlantsWpf.ControlsBuilders
                 Width = 40,
                 Height = 30,
                 Content = "Close",
-                Margin = new Thickness(110, -30, 0, 0),
+                Margin = new Thickness(260, -30, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Visibility = Visibility.Collapsed
             };
@@ -119,6 +116,13 @@ namespace PlantsWpf.ControlsBuilders
                         //if custom sensor
                         else
                         {
+                            if (dataGridSensorViews.Any(s => s.Measurable == dataGridSensorToAddView.Measurable))
+                            {
+                                MessageBox.Show(String.Format("Sensor with measurable '{0}' already exists",
+                                    dataGridSensorToAddView.Measurable));
+                                continue;
+                            }
+
                             TimeSpan timeout = new TimeSpan(0, 0, Convert.ToInt32(dataGridSensorToAddView.Timeout));
                             CustomParameter customParameter =
                                 new CustomParameter(Convert.ToInt32(dataGridSensorToAddView.Optimal),

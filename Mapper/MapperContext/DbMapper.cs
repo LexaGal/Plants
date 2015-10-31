@@ -35,8 +35,8 @@ namespace Mapper.MapperContext
         {
             //if custom sensor
             StringBuilder builder = new StringBuilder();
-              
-            if (plant.CustomParameters.Count != 0 )
+
+            if (plant.CustomParameters.Count != 0)
             {
                 plant.CustomParameters.ToList().ForEach(c => builder.Append(c.Id.ToString() + ','));
 
@@ -79,20 +79,26 @@ namespace Mapper.MapperContext
         {
             try
             {
-                switch (measurableParameterMapping.Type)
+                ParameterEnum parameter;
+                bool parsed = Enum.TryParse(measurableParameterMapping.Type, out parameter);
+
+                if (parsed)
                 {
-                    case "Nutrient":
-                        return new Nutrient(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
-                            measurableParameterMapping.Min, measurableParameterMapping.Max);
-                    case "SoilPh":
-                        return new SoilPh(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
-                            measurableParameterMapping.Min, measurableParameterMapping.Max);
-                    case "Humidity":
-                        return new Humidity(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
-                            measurableParameterMapping.Min, measurableParameterMapping.Max);
-                    case "Temperature":
-                        return new Temperature(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
-                            measurableParameterMapping.Min, measurableParameterMapping.Max);
+                    switch (parameter)
+                    {
+                        case ParameterEnum.Nutrient:
+                            return new Nutrient(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
+                                measurableParameterMapping.Min, measurableParameterMapping.Max);
+                        case ParameterEnum.SoilPh:
+                            return new SoilPh(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
+                                measurableParameterMapping.Min, measurableParameterMapping.Max);
+                        case ParameterEnum.Humidity:
+                            return new Humidity(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
+                                measurableParameterMapping.Min, measurableParameterMapping.Max);
+                        case ParameterEnum.Temperature:
+                            return new Temperature(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
+                                measurableParameterMapping.Min, measurableParameterMapping.Max);
+                    }
                 }
                 //if custom sensor
                 return new CustomParameter(measurableParameterMapping.Id, measurableParameterMapping.Optimal,
@@ -180,28 +186,34 @@ namespace Mapper.MapperContext
                     _measurableParameterRepository.Get(sensorMapping.MeasurableParameterId);
                 MeasurableParameter measurableParameter = RestoreMeasurableParameter(measurableParameterMapping);
 
-                switch (sensorMapping.Type)
+                ParameterEnum parameter;
+                bool parsed = Enum.TryParse(measurableParameterMapping.Type, out parameter);
+
+                if (parsed)
                 {
-                    case "Nutrient":
-                        return new NutrientSensor(sensorMapping.Id, plantsArea,
-                            new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Nutrient,
-                            sensorMapping.NumberOfTimes);
-                    case "SoilPh":
-                        return new SoilPhSensor(sensorMapping.Id, plantsArea,
-                            new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as SoilPh,
-                            sensorMapping.NumberOfTimes);
-                    case "Humidity":
-                        return new HumiditySensor(sensorMapping.Id, plantsArea,
-                            new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Humidity,
-                            sensorMapping.NumberOfTimes);
-                    case "Temperature":
-                        return new TemperatureSensor(sensorMapping.Id, plantsArea,
-                            new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Temperature,
-                            sensorMapping.NumberOfTimes);
+                    switch (parameter)
+                    {
+                        case ParameterEnum.Nutrient:
+                            return new NutrientSensor(sensorMapping.Id, plantsArea,
+                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Nutrient,
+                                sensorMapping.NumberOfTimes);
+                        case ParameterEnum.SoilPh:
+                            return new SoilPhSensor(sensorMapping.Id, plantsArea,
+                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as SoilPh,
+                                sensorMapping.NumberOfTimes);
+                        case ParameterEnum.Humidity:
+                            return new HumiditySensor(sensorMapping.Id, plantsArea,
+                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Humidity,
+                                sensorMapping.NumberOfTimes);
+                        case ParameterEnum.Temperature:
+                            return new TemperatureSensor(sensorMapping.Id, plantsArea,
+                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Temperature,
+                                sensorMapping.NumberOfTimes);
+                    }
                 }
                 //if custom sensor
                 return new CustomSensor(sensorMapping.Id, plantsArea,
-                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as CustomParameter, 
+                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as CustomParameter,
                     sensorMapping.NumberOfTimes);
             }
             catch (Exception e)

@@ -5,13 +5,15 @@ using PlantsWpf.Annotations;
 
 namespace PlantingLib.Plants.ServiceStates
 {
-    public class ServiceState : INotifyPropertyChanged
+    public class ServiceState : INotifyPropertyChanged, ICloneable
     {
         private bool _isOn;
+        public bool IsCustom { get; private set; }
 
         public ServiceState(string serviceName, bool isCustom)
         {
-            ServiceName = isCustom ? String.Format("*{0}*", serviceName) : serviceName;
+            IsCustom = isCustom;
+            ServiceName = IsCustom ? String.Format("*{0}*", serviceName) : serviceName;
             _isOn = false;
         }
 
@@ -37,6 +39,11 @@ namespace PlantingLib.Plants.ServiceStates
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public object Clone()
+        {
+            return new ServiceState(ServiceName, IsCustom);
         }
     }
 }

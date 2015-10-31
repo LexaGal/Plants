@@ -47,7 +47,8 @@ namespace PlantsWpf.DataGridObjects
                          sensor.Function.CurrentFunctionValue <
                          sensor.PlantsArea.Plant.MeasurableParameters.First(
                              p => p.MeasurableType == sensor.MeasurableType).Min
-                ? "(!)"
+                ? "" +
+                  "SOS"
                 : String.Empty;
             OnPropertyChanged("Value");
             OnPropertyChanged("N");

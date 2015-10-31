@@ -3,6 +3,7 @@ using System.Linq;
 using System.Timers;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Timers;
 
 namespace PlantingLib.ServiceSystems
@@ -29,35 +30,51 @@ namespace PlantingLib.ServiceSystems
                 .Where(s => s.MeasurableParameter.MeasurableType == MeasurableType)
                 .ToList()
                 .ForEach(s => s.IsOn = state);
-            switch (MeasurableType)
+            
+            ParameterEnum parameter;
+            bool parsed = Enum.TryParse(MeasurableType, out parameter);
+
+            if (parsed)
             {
-                case "Humidity":
-                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Watering").IsOn =
-                        (!state).ToString();
-                    return;
-                case "Temperature":
-                    if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
-                    {
-                        PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Warming").IsOn =
+                switch (parameter)
+                {
+                    case ParameterEnum.Humidity:
+                        PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                            s => s.ServiceName == ServiceStateEnum.Watering.ToString()).IsOn =
                             (!state).ToString();
                         return;
-                    }
-                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Cooling").IsOn =
-                        (!state).ToString();
-                    return;
-                case "SoilPh":
-                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Nutrienting").IsOn =
-                        (!state).ToString();
-                    return;
-                case "Nutrient":
-                    PlantsArea.PlantsAreaServiceState.ServiceStates.First(s => s.ServiceName == "Nutrienting").IsOn =
-                        (!state).ToString();
-                    return;
+                    case ParameterEnum.Temperature:
+                        if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
+                        {
+                            PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                                s => s.ServiceName == ServiceStateEnum.Warming.ToString()).IsOn =
+                                (!state).ToString();
+                            return;
+                        }
+                        PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                            s => s.ServiceName == ServiceStateEnum.Cooling.ToString()).IsOn =
+                            (!state).ToString();
+                        return;
+                    case ParameterEnum.SoilPh:
+                        PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                            s => s.ServiceName == ServiceStateEnum.Nutrienting.ToString()).IsOn =
+                            (!state).ToString();
+                        return;
+                    case ParameterEnum.Nutrient:
+                        PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                            s => s.ServiceName == ServiceStateEnum.Nutrienting.ToString()).IsOn =
+                            (!state).ToString();
+                        return;
+                }
             }
+
             //if custom service state
-            PlantsArea.PlantsAreaServiceState.ServiceStates
-                .First(s => s.ServiceName.Contains(MeasurableType))
-                .IsOn = (!state).ToString();
+            ServiceState serviceState = PlantsArea.PlantsAreaServiceState.ServiceStates
+                .FirstOrDefault(s => s.ServiceName == String.Format("*{0}*", MeasurableType));
+            if (serviceState != null)
+            {
+                serviceState.IsOn = (!state).ToString();
+            }
         }
 
         public void ResetSensorsFunctions()

@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbContextConfiguration.cs" />
+    <Compile Include="MappingTypes\DbContextConfiguration.cs" />
     <Compile Include="MappingTypes\MeasurableParameterMapping.cs" />
     <Compile Include="MappingTypes\MeasuringMessageMapping.cs" />
     <Compile Include="MappingTypes\PlantMapping.cs" />

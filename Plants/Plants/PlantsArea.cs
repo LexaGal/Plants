@@ -23,11 +23,12 @@ namespace PlantingLib.Plants
             Plant = plant;
             Number = number;
             PlantsAreaServiceState = new PlantsAreaServiceState();
-            AllMeasurableParameters.ParametersServices.Values
-                .SelectMany(l => l)
-                .Distinct()
+            MeasurableParametersInfo.ParametersInfo
+                .SelectMany(l => l.ServiceStates)
+                .Distinct(new ServiceStateEqualityComparer())
+                .Where(s => !s.IsCustom)
                 .ToList()
-                .ForEach(s => PlantsAreaServiceState.ServiceStates.Add(new ServiceState(s, false)));
+                .ForEach(s => PlantsAreaServiceState.AddServiceState(s.Clone() as ServiceState));
             Sensors = new List<Sensor>();
         }
 
@@ -37,11 +38,12 @@ namespace PlantingLib.Plants
             Plant = plant;
             Number = number;
             PlantsAreaServiceState = new PlantsAreaServiceState();
-            AllMeasurableParameters.ParametersServices.Values
-               .SelectMany(l => l)
-               .Distinct()
-               .ToList()
-               .ForEach(s => PlantsAreaServiceState.ServiceStates.Add(new ServiceState(s, false)));
+            MeasurableParametersInfo.ParametersInfo
+                .SelectMany(l => l.ServiceStates)
+                .Distinct(new ServiceStateEqualityComparer())
+                .Where(s => !s.IsCustom)
+                .ToList()
+                .ForEach(s => PlantsAreaServiceState.AddServiceState(s.Clone() as ServiceState));
             Sensors = new List<Sensor>();
         }
 
@@ -74,19 +76,19 @@ namespace PlantingLib.Plants
         public List<Sensor> FindMainSensorsToAdd()
         {
             List<Sensor> sensors = new List<Sensor>();
-            if (Sensors.All(sensor => sensor.MeasurableType != "Temperature"))
+            if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.Temperature.ToString()))
             {
                 sensors.Add(new TemperatureSensor(null, new TimeSpan(0, 0, 1), Plant.Temperature, 0));
             }
-            if (Sensors.All(sensor => sensor.MeasurableType != "Humidity"))
+            if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.Humidity.ToString()))
             {
                 sensors.Add(new HumiditySensor(null, new TimeSpan(0, 0, 1), Plant.Humidity, 0));
             }
-            if (Sensors.All(sensor => sensor.MeasurableType != "SoilPh"))
+            if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.SoilPh.ToString()))
             {
                 sensors.Add(new SoilPhSensor(null, new TimeSpan(0, 0, 1), Plant.SoilPh, 0));
             }
-            if (Sensors.All(sensor => sensor.MeasurableType != "Nutrient"))
+            if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.Nutrient.ToString()))
             {
                 sensors.Add(new NutrientSensor(null, new TimeSpan(0, 0, 1), Plant.Nutrient, 0));
             }

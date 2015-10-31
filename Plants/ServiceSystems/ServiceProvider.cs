@@ -50,17 +50,22 @@ namespace PlantingLib.ServiceSystems
         public ServiceSystem GetServiceSystem(string measurableType,
             double parameterValue, PlantsArea plantsArea)
         {
-            switch (measurableType)
-            {
-                case "Temperature":
-                    return new TemperatureSystem("Temperature", parameterValue, plantsArea);
-                case "Humidity":
-                    return new WaterSystem("Humidity", parameterValue, plantsArea);
-                case "Nutrient":
-                    return new NutrientSystem("Nutrient", parameterValue, plantsArea);
-                case "SoilPh":
-                    return new NutrientSystem("SoilPh", parameterValue, plantsArea);
+            ParameterEnum parameter;
+            bool parsed = Enum.TryParse(measurableType, out parameter);
 
+            if (parsed)
+            {
+                switch (parameter)
+                {
+                    case ParameterEnum.Temperature:
+                        return new TemperatureSystem(ParameterEnum.Temperature.ToString(), parameterValue, plantsArea);
+                    case ParameterEnum.Humidity:
+                        return new WaterSystem(ParameterEnum.Humidity.ToString(), parameterValue, plantsArea);
+                    case ParameterEnum.Nutrient:
+                        return new NutrientSystem(ParameterEnum.Nutrient.ToString(), parameterValue, plantsArea);
+                    case ParameterEnum.SoilPh:
+                        return new NutrientSystem(ParameterEnum.SoilPh.ToString(), parameterValue, plantsArea);
+                }
             }
             return new CustomSystem(measurableType, parameterValue, plantsArea);
         }

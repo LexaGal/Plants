@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
@@ -14,7 +12,6 @@ using Database.MappingTypes;
 using Mapper.MapperContext;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviding;
-using PlantingLib.Messenging;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServiceStates;
@@ -25,7 +22,6 @@ using PlantingLib.WeatherTypes;
 using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DataGridObjects;
-using PlantsWpf.ListViewExtensions;
 using PlantsWpf.SavingData;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -49,7 +45,7 @@ namespace PlantsWpf
         {
             InitializeComponent();
             
-            AllMeasurableParameters.SetDictionary();
+            MeasurableParametersInfo.SetBaseParameters();
 
             Initialize();
             
@@ -63,7 +59,7 @@ namespace PlantsWpf
 
             Pause.IsEnabled = false;
             Start.IsEnabled = false;
-            SetPlantsGrid(4);
+            SetPlantsGrid(3);
 
             SystemTimer.Start(Send, new TimeSpan(0, 0, 0, 0, 1000));
             Start.IsEnabled = false;
@@ -130,10 +126,10 @@ namespace PlantsWpf
                     ServiceState serviceState = new ServiceState(source.MeasurableType, true);
                     area.PlantsAreaServiceState.AddServiceState(serviceState);
 
-                    if (!AllMeasurableParameters.ParametersServices.ContainsKey(source.MeasurableType))
+                    if (MeasurableParametersInfo.GetParameterInfo(source.MeasurableType) == null)
                     {
-                        AllMeasurableParameters.ParametersServices.Add(source.MeasurableType,
-                            new List<string> {serviceState.ServiceName});
+                        MeasurableParametersInfo.ParametersInfo.Add(new ParameterInfo(source.MeasurableType,
+                            new List<ServiceState> { serviceState }));
                     }
                 }
             }
@@ -158,7 +154,7 @@ namespace PlantsWpf
         private void SetPlantsGrid(int numberInRow)
         {
             const int sizeHorizontal = 1360;
-            const int sizeVertical = 246;
+            const int sizeVertical = 410;
             try
             {
                 PlantsGrid.Children.Clear();
@@ -197,8 +193,8 @@ namespace PlantsWpf
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Vertical,
-                Width = 333,
-                Height = 240,
+                Width = 440,
+                Height = 400,
                 CanVerticallyScroll = true
             };
 
@@ -268,7 +264,7 @@ namespace PlantsWpf
         private void SavePlantsArea(PlantsArea plantsArea)
         {
             _dbModifier.SaveAddedPlantsArea(plantsArea);
-            SetPlantsGrid(4);
+            SetPlantsGrid(3);
         }
 
         private void Start_OnClick(object sender, RoutedEventArgs e)
