@@ -60,10 +60,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ArgsForEvents\PlantsAreaEventArgs.cs" />
+    <Compile Include="ListViewExtensions\DataMatrix.cs" />
     <Compile Include="ControlsBuilders\ControlsBuilder.cs" />
     <Compile Include="DataGridObjects\DataGridSensorView.cs" />
     <Compile Include="DataGridObjects\DataGridSensorToAddView.cs" />
     <Compile Include="Converters\StringToBoolConverter.cs" />
+    <Compile Include="ListViewExtensions\GenericEnumerator.cs" />
+    <Compile Include="ListViewExtensions\ListViewExtension.cs" />
+    <Compile Include="ListViewExtensions\MatrixColumn.cs" />
     <Compile Include="PlantsAreaWindow.xaml.cs">
       <DependentUpon>PlantsAreaWindow.xaml</DependentUpon>
     </Compile>

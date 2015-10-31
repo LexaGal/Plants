@@ -14,9 +14,9 @@ namespace PlantsWpf.DataGridObjects
         public string Min { get; set; }
         public string Max { get; set; }
         public string Value { get; set; }
-        public string NumberOfTimes { get; set; }
+        public string N { get; set; }
         public string IsCritical { get; set; }
-        public string MeasurableType { get; set; }
+        public string Measurable { get; set; }
 
         public Sensor Sensor { get; private set; }
 
@@ -27,28 +27,30 @@ namespace PlantsWpf.DataGridObjects
             UpdateState(Sensor);
         }
 
-        public void UpdateState(Sensor s)
+        public void UpdateState(Sensor sensor)
         {
-            MeasurableType = s.MeasurableType.ToString();
+            Measurable = sensor.MeasurableType;
             Optimal =
-                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Optimal.ToString();
             Min =
-                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Min.ToString();
             Max =
-                s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType)
+                sensor.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == sensor.MeasurableType)
                     .Max.ToString();
-            Value = s.Function.CurrentFunctionValue.ToString("F2");
-            NumberOfTimes = s.NumberOfTimes.ToString();
-            IsCritical = s.Function.CurrentFunctionValue >
-                         s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Max ||
-                         s.Function.CurrentFunctionValue <
-                         s.PlantsArea.Plant.MeasurableParameters.First(p => p.MeasurableType == s.MeasurableType).Min
+            Value = sensor.Function.CurrentFunctionValue.ToString("F2");
+            N = sensor.NumberOfTimes.ToString();
+            IsCritical = sensor.Function.CurrentFunctionValue >
+                         sensor.PlantsArea.Plant.MeasurableParameters.First(
+                             p => p.MeasurableType == sensor.MeasurableType).Max ||
+                         sensor.Function.CurrentFunctionValue <
+                         sensor.PlantsArea.Plant.MeasurableParameters.First(
+                             p => p.MeasurableType == sensor.MeasurableType).Min
                 ? "(!)"
                 : String.Empty;
             OnPropertyChanged("Value");
-            OnPropertyChanged("NumberOfTimes");
+            OnPropertyChanged("N");
             OnPropertyChanged("IsCritical");
         }
 

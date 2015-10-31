@@ -20,7 +20,7 @@
         </DockPanel>
              
         <ScrollViewer BorderBrush="Black" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,65,0,-1">
-                <Grid x:Name="PlantsGrid"></Grid>
+            <Grid x:Name="PlantsGrid"></Grid>
           
         </ScrollViewer>
     </Grid>
