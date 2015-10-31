@@ -20,16 +20,18 @@ namespace PlantsWpf.SavingData
         private readonly IMeasurableParameterMappingRepository _measurableParameterMappingRepository;
         private readonly IPlantMappingRepository _plantMappingRepository;
         private readonly ISensorMappingRepository _sensorMappingRepository;
+        private readonly IPlantsAreaMappingRepository _plantsAreaMappingRepository;
 
         public DbModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection,
             IMeasurableParameterMappingRepository measurableParameterMappingRepository,
-            IPlantMappingRepository plantMappingRepository, ISensorMappingRepository sensorMappingRepository)
+            IPlantMappingRepository plantMappingRepository, ISensorMappingRepository sensorMappingRepository, IPlantsAreaMappingRepository plantsAreaMappingRepository)
         {
             _plantsAreas = plantsAreas;
             _sensorsCollection = sensorsCollection;
             _measurableParameterMappingRepository = measurableParameterMappingRepository;
             _plantMappingRepository = plantMappingRepository;
             _sensorMappingRepository = sensorMappingRepository;
+            _plantsAreaMappingRepository = plantsAreaMappingRepository;
             _dbMapper = new DbMapper();
         }
 
@@ -86,6 +88,23 @@ namespace PlantsWpf.SavingData
                 _measurableParameterMappingRepository.Delete(sensor.MeasurableParameter.Id);
             }
         }
+
+        public void RemovePlantsArea(PlantsArea plantsArea)
+        {
+            _plantsAreaMappingRepository.Delete(plantsArea.Id);
+            _plantMappingRepository.Delete(plantsArea.Plant.Id);
+
+            foreach (Sensor sensor in plantsArea.Sensors)
+            {
+                _sensorMappingRepository.Delete(sensor.Id);
+                _measurableParameterMappingRepository.Delete(sensor.MeasurableParameter.Id);
+            }
+
+            plantsArea.Sensors.ToList().ForEach(s => _sensorsCollection.RemoveSensor(s));
+            plantsArea.Sensors.Clear();
+            _plantsAreas.RemovePlantsArea(plantsArea);
+        }
+
 
         public void SaveAddedPlantsArea(PlantsArea plantsArea)
         {

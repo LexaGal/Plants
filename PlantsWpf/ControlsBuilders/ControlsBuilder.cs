@@ -50,7 +50,7 @@ namespace PlantsWpf.ControlsBuilders
             Button sensorsToAddButton = new Button
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(150, 10, 0, 0),
+                Margin = new Thickness(145, 10, 0, 0),
                 Content = "Sensors",
                 Width = 70,
                 Height = 30
@@ -60,7 +60,7 @@ namespace PlantsWpf.ControlsBuilders
                 Width = 40,
                 Height = 30,
                 Content = "Add",
-                Margin = new Thickness(220, -30, 0, 0),
+                Margin = new Thickness(215, -30, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Visibility = Visibility.Collapsed
             };
@@ -69,7 +69,7 @@ namespace PlantsWpf.ControlsBuilders
                 Width = 40,
                 Height = 30,
                 Content = "Close",
-                Margin = new Thickness(260, -30, 0, 0),
+                Margin = new Thickness(255, -30, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Visibility = Visibility.Collapsed
             };
@@ -157,6 +157,25 @@ namespace PlantsWpf.ControlsBuilders
             stackPanel.Children.Add(closeSensorsToAddButton);
             
             return stackPanel;
+        }
+
+        public Button CreateRemovePlantsAreaButton(Action<PlantsArea> removePlantsArea, PlantsArea area)
+        {
+            Button removePlantsAreaButton = new Button
+            {
+                Margin = new Thickness(0, -50, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top,
+                Content = "Remove",
+                Width = 70,
+                Height = 30
+            };
+
+            removePlantsAreaButton.Click += (sender, args) =>
+            {
+                removePlantsArea(area);
+            };
+            return removePlantsAreaButton;
         }
     }
 }

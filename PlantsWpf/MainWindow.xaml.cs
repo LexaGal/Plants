@@ -148,12 +148,12 @@ namespace PlantsWpf
             Weather.SetWeather(WeatherTypesEnum.Warm);
 
             _dbModifier = new DbModifier(_plantsAreas, _sensorsCollection, new MeasurableParameterMappingRepository(),
-                new PlantMappingRepository(), new SensorMappingRepository());
+                new PlantMappingRepository(), new SensorMappingRepository(), new PlantsAreaMappingRepository());
         }
 
         private void SetPlantsGrid(int numberInRow)
         {
-            const int sizeHorizontal = 1360;
+            const int sizeHorizontal = 1352;
             const int sizeVertical = 410;
             try
             {
@@ -201,8 +201,8 @@ namespace PlantsWpf
             plantAreaPanel.Children.Add(new Label
             {
                 VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Content = string.Format("{0} (plant id: {1})", area.Plant.Name, area.Plant.Id)
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Content = area.ToString()
             });
 
             BindingList<DataGridSensorView> dataGridSensorViews = new BindingList<DataGridSensorView>(
@@ -216,14 +216,16 @@ namespace PlantsWpf
                 dataGridSensorToAddViews, SaveSensor, dataGridSensorViews);
 
             FrameworkElementFactory removeSensorsButtonTemplate = controlsBuilder.CreateButtonTemplate(area,
-                dataGridSensorViews,
-                RemoveSensor, dataGridSensorToAddViews);
+                dataGridSensorViews, RemoveSensor, dataGridSensorToAddViews);
 
             DataGrid sensorViewsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews,
                 removeSensorsButtonTemplate);
             
             DataGrid serviceStatesDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area);
-            
+
+            Button removePlantsAreaButton = controlsBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
+
+            plantAreaPanel.Children.Add(removePlantsAreaButton);
             plantAreaPanel.Children.Add(sensorViewsDataGrid);
             plantAreaPanel.Children.Add(serviceStatesDataGrid);
             plantAreaPanel.Children.Add(buttonsPanel);
@@ -260,7 +262,13 @@ namespace PlantsWpf
         {
             _dbModifier.RemoveSensor(area, sensor);
         }
-
+        
+        private void RemovePlantsArea(PlantsArea area)
+        {
+            _dbModifier.RemovePlantsArea(area);
+            SetPlantsGrid(3);
+        }
+        
         private void SavePlantsArea(PlantsArea plantsArea)
         {
             _dbModifier.SaveAddedPlantsArea(plantsArea);

@@ -26,5 +26,15 @@ namespace PlantingLib.Plants
             AllPlantsAreas.Add(area);
             AllPlantsAreas = AllPlantsAreas.OrderBy(p => p.Plant.Name).ToList();
         }
+
+        public bool RemovePlantsArea(PlantsArea area)
+        {
+            if (AllPlantsAreas.All(s => s.Id != area.Id))
+            {
+                return false;
+            }
+            AllPlantsAreas.Remove(area);
+            return true;
+        }
     }
 }

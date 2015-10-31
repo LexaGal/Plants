@@ -95,5 +95,9 @@ namespace PlantingLib.Plants
             return sensors;
         }
 
-       }
+        public override string ToString()
+        {
+            return String.Format("Plant's name: {0}\nPlant's id: {1}\nPlant's number: {2}", Plant.Name, Plant.Id, Number);
+        }
+    }
 }

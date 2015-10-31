@@ -8,14 +8,17 @@ namespace Database.DatabaseStructure.Repository.Concrete
     {
         public override bool Edit(Guid id, PlantMapping value)
         {
-            PlantMapping plantMapping = Context.PlantsSet.Find(id);
-            if (plantMapping == null)
+            using (Context = new PlantingDb())
             {
-                throw new ArgumentNullException("PlantMapping is null");
+                PlantMapping plantMapping = Context.PlantsSet.Find(id);
+                if (plantMapping == null)
+                {
+                    throw new ArgumentNullException("id", "Can't find plantMapping with such id");
+                }
+                value.CopyTo(plantMapping);
+                Context.SaveChanges();
+                return true;
             }
-            value.CopyTo(plantMapping);
-            Context.SaveChanges();
-            return true;
         }
     }
 }
