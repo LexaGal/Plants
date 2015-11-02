@@ -33,10 +33,10 @@ namespace PlantingLib.ParametersFunctions
         }
 
         public abstract double NewFunctionValue();
-        
-        public void ResetFunction()
+
+        public void ResetFunction(double newFunctionValue)
         {
-            CurrentFunctionValue = MeasurableParameter.Optimal;
+            CurrentFunctionValue = newFunctionValue;
         }       
     }
 }

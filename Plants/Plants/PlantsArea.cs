@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 
@@ -16,6 +17,7 @@ namespace PlantingLib.Plants
         public IList<Sensor> Sensors { get; private set; }
         public int Number { get; private set; }
         public PlantsAreaServiceState PlantsAreaServiceState { get; set; }
+        public ServicesSchedulesState ServicesSchedulesState { get; set; }
 
         public PlantsArea(Plant plant, int number)
         {

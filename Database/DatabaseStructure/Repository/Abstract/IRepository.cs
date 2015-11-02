@@ -8,7 +8,7 @@ namespace Database.DatabaseStructure.Repository.Abstract
         IQueryable<T> GetAll();
         T Get(Guid id);
         bool Add(T value);
-        bool Edit(Guid id, T value);
+        bool Edit(T value);
         bool Delete(Guid id);
     }
 }

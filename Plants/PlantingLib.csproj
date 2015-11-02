@@ -93,6 +93,8 @@
     <Compile Include="Plants\PlantsAreas.cs" />
     <Compile Include="Plants\Plant.cs" />
     <Compile Include="Plants\PlantsArea.cs" />
+    <Compile Include="Plants\ServicesScheduling\ServiceSchedule.cs" />
+    <Compile Include="Plants\ServicesScheduling\ServicesSchedulesState.cs" />
     <Compile Include="Plants\ServiceStates\ServiceStateEnum.cs" />
     <Compile Include="Plants\ServiceStates\ServiceStateEqualityComparer.cs" />
     <Compile Include="Plants\ServiceStates\PlantsAreaServiceState.cs" />

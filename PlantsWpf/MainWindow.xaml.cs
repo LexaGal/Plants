@@ -14,6 +14,7 @@ using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 using PlantingLib.ServiceSystems;
@@ -81,7 +82,7 @@ namespace PlantsWpf
 
                     //restarting timer and reseting all functions values to base values (new day after night sleep)
                     SystemTimer.Restart();
-                    _sensorsCollection.AllSensors.ToList().ForEach(s => s.Function.ResetFunction());
+                    _sensorsCollection.AllSensors.ToList().ForEach(s => s.Function.ResetFunction(s.MeasurableParameter.Optimal));
                 }
 
                 SystemTimer.CurrentTimeSpan = timeSpan;
@@ -96,9 +97,10 @@ namespace PlantsWpf
             IMeasurableParameterMappingRepository measurableParameterRepository =
                 new MeasurableParameterMappingRepository();
             ISensorMappingRepository sensorRepository = new SensorMappingRepository();
+            IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
             
             _dbMapper = new DbMapper(plantRepository, plantsAreaRepository,
-                measurableParameterRepository);
+                measurableParameterRepository, serviceScheduleMappingRepository);
 
             List<SensorMapping> sensorMappings = sensorRepository.GetAll().ToList();
             _sensorsCollection = new SensorsCollection();
@@ -139,6 +141,20 @@ namespace PlantsWpf
             _plantsAreas =
                 new PlantsAreas(_plantsAreas.AllPlantsAreas.Distinct(new PlantsAreaEqualityComparer()).ToList());
 
+            //foreach (var area in _plantsAreas.AllPlantsAreas)
+            //{
+            //    ServiceScheduleMapping serviceScheduleMapping1 = new ServiceScheduleMapping(Guid.NewGuid(), area.Id,
+            //        ServiceStateEnum.Nutrienting.ToString(), 3, 15,
+            //        String.Format("{0},{1}", area.Plant.Nutrient.Id, area.Plant.SoilPh.Id));
+
+            //    ServiceScheduleMapping serviceScheduleMapping2 = new ServiceScheduleMapping(Guid.NewGuid(), area.Id,
+            //        ServiceStateEnum.Watering.ToString(), 2, 10,
+            //        String.Format("{0},{1}", area.Plant.Humidity.Id, area.Plant.Temperature.Id));
+
+            //    serviceScheduleMappingRepository.Add(serviceScheduleMapping1);
+            //    serviceScheduleMappingRepository.Add(serviceScheduleMapping2);
+            //}
+
             _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
 
             _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
@@ -147,8 +163,8 @@ namespace PlantsWpf
 
             Weather.SetWeather(WeatherTypesEnum.Warm);
 
-            _dbModifier = new DbModifier(_plantsAreas, _sensorsCollection, new MeasurableParameterMappingRepository(),
-                new PlantMappingRepository(), new SensorMappingRepository(), new PlantsAreaMappingRepository());
+            _dbModifier = new DbModifier(_plantsAreas, _sensorsCollection, measurableParameterRepository,
+                plantRepository, sensorRepository, plantsAreaRepository, serviceScheduleMappingRepository);
         }
 
         private void SetPlantsGrid(int numberInRow)
@@ -212,10 +228,13 @@ namespace PlantsWpf
                 new BindingList<DataGridSensorToAddView>(
                     area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))) {AllowNew = true};
 
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews = new BindingList<DataGridServiceScheduleView>(
+                area.ServicesSchedulesState.ServicesSchedules.ToList().ConvertAll(s => new DataGridServiceScheduleView(s))) {AllowNew = true, AllowEdit = true};
+
             StackPanel buttonsPanel = controlsBuilder.CreateButtonsPanel(area, plantAreaPanel, sensorsToAddDataGrid,
                 dataGridSensorToAddViews, SaveSensor, dataGridSensorViews);
 
-            FrameworkElementFactory removeSensorsButtonTemplate = controlsBuilder.CreateButtonTemplate(area,
+            FrameworkElementFactory removeSensorsButtonTemplate = controlsBuilder.CreateRemoveSensorButtonTemplate(area,
                 dataGridSensorViews, RemoveSensor, dataGridSensorToAddViews);
 
             DataGrid sensorViewsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews,
@@ -223,11 +242,18 @@ namespace PlantsWpf
             
             DataGrid serviceStatesDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area);
 
+            FrameworkElementFactory serviceScheduleSetUpButtonTemplate = controlsBuilder.CreateServiceScheduleSetUpButtonTemplate(area,
+                dataGridServiceScheduleViews, SaveServiceSchedule);
+
+            DataGrid serviceSchedulesDataGrid = dataGridsBuilder.CreateServicesSchedulesDataGrid(area,
+                dataGridServiceScheduleViews, serviceScheduleSetUpButtonTemplate);
+            
             Button removePlantsAreaButton = controlsBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
 
             plantAreaPanel.Children.Add(removePlantsAreaButton);
             plantAreaPanel.Children.Add(sensorViewsDataGrid);
             plantAreaPanel.Children.Add(serviceStatesDataGrid);
+            plantAreaPanel.Children.Add(serviceSchedulesDataGrid);
             plantAreaPanel.Children.Add(buttonsPanel);
 
             ScrollViewer scrollViewer = new ScrollViewer
@@ -251,6 +277,11 @@ namespace PlantsWpf
                 Child = scrollViewer
             };
             return border;
+        }
+
+        private void SaveServiceSchedule(PlantsArea area, ServiceSchedule serviceSchedule)
+        {
+            _dbModifier.SaveServiceSchedule(area, serviceSchedule);
         }
 
         private void SaveSensor(PlantsArea area, Sensor sensor)

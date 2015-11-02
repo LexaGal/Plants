@@ -60,6 +60,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ArgsForEvents\PlantsAreaEventArgs.cs" />
+    <Compile Include="DataGridObjects\ServiceScheduleView.cs" />
     <Compile Include="ListViewExtensions\DataMatrix.cs" />
     <Compile Include="ControlsBuilders\ControlsBuilder.cs" />
     <Compile Include="DataGridObjects\DataGridSensorView.cs" />

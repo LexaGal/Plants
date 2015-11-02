@@ -8,16 +8,13 @@ namespace PlantingLib.Plants
     public class Plant
     {
         public Plant(Temperature temperature, Humidity humidity, SoilPh soilPh,
-            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan, PlantNameEnum name)
+            Nutrient nutrient, PlantNameEnum name)
         {
             Id = Guid.NewGuid();
             Temperature = temperature;
             Humidity = humidity;
             SoilPh = soilPh;
             Nutrient = nutrient;
-            GrowingTime = growingTime;
-            WateringSpan = wateringSpan;
-            NutrientingSpan = nutrientingSpan;
             Name = name;
 
             MeasurableParameters = new List<MeasurableParameter>
@@ -31,16 +28,13 @@ namespace PlantingLib.Plants
         }
 
         public Plant(Guid id, Temperature temperature, Humidity humidity, SoilPh soilPh,
-            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan, PlantNameEnum name)
+            Nutrient nutrient, PlantNameEnum name)
         {
             Id = id;
             Temperature = temperature;
             Humidity = humidity;
             SoilPh = soilPh;
             Nutrient = nutrient;
-            GrowingTime = growingTime;
-            WateringSpan = wateringSpan;
-            NutrientingSpan = nutrientingSpan;
             Name = name;
 
             MeasurableParameters = new List<MeasurableParameter>
@@ -84,9 +78,6 @@ namespace PlantingLib.Plants
         public Humidity Humidity { get; private set; }
         public SoilPh SoilPh { get; private set; }
         public Nutrient Nutrient { get; private set; }
-        public TimeSpan GrowingTime { get; private set; }
-        public TimeSpan WateringSpan { get; private set; }
-        public TimeSpan NutrientingSpan { get; private set; }
         public List<MeasurableParameter> MeasurableParameters { get; private set; }
         public List<CustomParameter> CustomParameters { get; private set; }
 

@@ -11,7 +11,7 @@
         <TextBox Text="60" Name="OptimalHumidity" HorizontalAlignment="Left" Height="23" Margin="3,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" Grid.Column="1"/>
         <TextBox Text="7" Name="OptimalSoilPh" HorizontalAlignment="Left" Height="23" Margin="3,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" Grid.Column="1"/>
         <TextBox Text="14"  Name="OptimalNutrient" HorizontalAlignment="Left" Height="23" Margin="3,169,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" Grid.Column="1"/>
-        <ComboBox Name="PlantNameBox" HorizontalAlignment="Left" Margin="3,24,0,0" VerticalAlignment="Top" Width="95" Height="22" Grid.Column="1"/>
+        <ComboBox Name="PlantNameBox" HorizontalAlignment="Left" Margin="3,36,0,0" VerticalAlignment="Top" Width="95" Height="22" Grid.Column="1"/>
         <Label Content="Temperature" HorizontalAlignment="Left" Margin="1,93,0,0" VerticalAlignment="Top" Width="81" Height="26" Grid.ColumnSpan="2"/>
         <Label Content="Nutrient" HorizontalAlignment="Left" Margin="1,168,0,0" VerticalAlignment="Top" Width="81" Height="24" Grid.ColumnSpan="2"/>
         <Label Content="SoilPh" HorizontalAlignment="Left" Margin="3,144,0,0" VerticalAlignment="Top" Width="81" Height="26" Grid.ColumnSpan="2"/>
@@ -27,12 +27,10 @@
         <Label Content="Optimal" HorizontalAlignment="Left" Margin="1,68,0,0" VerticalAlignment="Top" Height="26" Width="52" Grid.Column="1"/>
         <Label Content="Min" Grid.Column="1" HorizontalAlignment="Left" Margin="49,68,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.693,0.474" Height="26" Width="30"/>
         <Label Content="Max" Grid.Column="1" HorizontalAlignment="Left" Margin="84,68,0,0" VerticalAlignment="Top" Height="26" Width="32"/>
-        <Label Content="Growing time" HorizontalAlignment="Left" Margin="3,45,0,0" VerticalAlignment="Top" Width="83" Height="26" Grid.ColumnSpan="2"/>
-        <TextBox Name="GrowingTime" Text="1000" HorizontalAlignment="Left" Height="23" Margin="4,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" Grid.Column="1"/>
         <Label Content="Add new plants area" FontStyle="Normal" FontSize="15"  Grid.Column="1" HorizontalAlignment="Left" Margin="5,-3,0,0" VerticalAlignment="Top" Height="28" Width="156"/>
-        <Label Content="Number" HorizontalAlignment="Left" Margin="101,22,0,0" VerticalAlignment="Top" Width="56" Height="26" RenderTransformOrigin="0.976,0.577" Grid.Column="1"/>
-        <TextBox Name="Number" Text="10" HorizontalAlignment="Left" Height="23" Margin="156,24,-37,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" Grid.Column="1"/>
-        <Label Name="PlantName" Content="Plant name" HorizontalAlignment="Left" Margin="4,20,0,0" VerticalAlignment="Top" Width="70" Height="26" RenderTransformOrigin="0.976,0.577"/>
+        <Label Content="Number" HorizontalAlignment="Left" Margin="101,34,0,0" VerticalAlignment="Top" Width="56" Height="26" RenderTransformOrigin="0.976,0.577" Grid.Column="1"/>
+        <TextBox Name="Number" Text="10" HorizontalAlignment="Left" Height="23" Margin="156,36,-37,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" Grid.Column="1"/>
+        <Label Name="PlantName" Content="Plant name" HorizontalAlignment="Left" Margin="4,32,0,0" VerticalAlignment="Top" Width="70" Height="26" RenderTransformOrigin="0.976,0.577"/>
         <Button Name="Save" Content="Save" Click="Save_OnClick" HorizontalAlignment="Left" Height="29" Margin="3,195,0,0" VerticalAlignment="Top" Width="64"/>
         <Button Name="ClearAll" Content="Clear all" Click="ClearAll_OnClick" HorizontalAlignment="Left" Height="29" Margin="70,195,0,0" VerticalAlignment="Top" Width="64" Grid.ColumnSpan="2"/>
         <Label Content="Sensor" Grid.Column="1" HorizontalAlignment="Left" Margin="128,69,-9,0" VerticalAlignment="Top" RenderTransformOrigin="1.737,-8.769" Height="26" Width="46"/>

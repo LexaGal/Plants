@@ -7,6 +7,7 @@ using Database.MappingTypes;
 using Mapper.MapperContext;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 
@@ -21,10 +22,11 @@ namespace PlantsWpf.SavingData
         private readonly IPlantMappingRepository _plantMappingRepository;
         private readonly ISensorMappingRepository _sensorMappingRepository;
         private readonly IPlantsAreaMappingRepository _plantsAreaMappingRepository;
+        private readonly IServiceScheduleMappingRepository _serviceScheduleMappingRepository;
 
         public DbModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection,
             IMeasurableParameterMappingRepository measurableParameterMappingRepository,
-            IPlantMappingRepository plantMappingRepository, ISensorMappingRepository sensorMappingRepository, IPlantsAreaMappingRepository plantsAreaMappingRepository)
+            IPlantMappingRepository plantMappingRepository, ISensorMappingRepository sensorMappingRepository, IPlantsAreaMappingRepository plantsAreaMappingRepository, IServiceScheduleMappingRepository serviceScheduleMappingRepository)
         {
             _plantsAreas = plantsAreas;
             _sensorsCollection = sensorsCollection;
@@ -32,7 +34,9 @@ namespace PlantsWpf.SavingData
             _plantMappingRepository = plantMappingRepository;
             _sensorMappingRepository = sensorMappingRepository;
             _plantsAreaMappingRepository = plantsAreaMappingRepository;
-            _dbMapper = new DbMapper();
+            _serviceScheduleMappingRepository = serviceScheduleMappingRepository;
+            _dbMapper = new DbMapper(_plantMappingRepository, _plantsAreaMappingRepository,
+                _measurableParameterMappingRepository, _serviceScheduleMappingRepository);
         }
 
         public void SaveAddedSensor(PlantsArea area, Sensor sensor)
@@ -48,7 +52,7 @@ namespace PlantsWpf.SavingData
                 area.Plant.AddCustomParameter(sensor.MeasurableParameter as CustomParameter);
 
                 PlantMapping plantMapping = _dbMapper.GetPlantMapping(area.Plant);
-                _plantMappingRepository.Edit(area.Plant.Id, plantMapping);
+                _plantMappingRepository.Edit(plantMapping);
 
                 ServiceState serviceState = new ServiceState(sensor.MeasurableType, true);
                 area.PlantsAreaServiceState.AddServiceState(serviceState);
@@ -83,7 +87,7 @@ namespace PlantsWpf.SavingData
                 area.Plant.RemoveCustomParameter(sensor.MeasurableParameter as CustomParameter);
 
                 PlantMapping plantMapping = _dbMapper.GetPlantMapping(area.Plant);
-                _plantMappingRepository.Edit(area.Plant.Id, plantMapping);
+                _plantMappingRepository.Edit(plantMapping);
 
                 _measurableParameterMappingRepository.Delete(sensor.MeasurableParameter.Id);
             }
@@ -93,6 +97,12 @@ namespace PlantsWpf.SavingData
         {
             _plantsAreaMappingRepository.Delete(plantsArea.Id);
             _plantMappingRepository.Delete(plantsArea.Plant.Id);
+
+            foreach (ServiceSchedule servicesSchedule in plantsArea.ServicesSchedulesState.ServicesSchedules)
+            {
+                _serviceScheduleMappingRepository.Delete(servicesSchedule.Id);
+            }
+            plantsArea.ServicesSchedulesState.ServicesSchedules.Clear();
 
             foreach (Sensor sensor in plantsArea.Sensors)
             {
@@ -145,6 +155,17 @@ namespace PlantsWpf.SavingData
             }
 
             _plantsAreas.AddPlantsArea(plantsArea);
+        }
+
+        public void SaveServiceSchedule(PlantsArea area, ServiceSchedule serviceSchedule)
+        {
+            ServiceScheduleMapping serviceScheduleMapping = _dbMapper.GetServiceScheduleMapping(serviceSchedule);
+            if (_serviceScheduleMappingRepository.Get(serviceScheduleMapping.Id) == null)
+            {
+                _serviceScheduleMappingRepository.Add(serviceScheduleMapping);
+                return;
+            }
+            _serviceScheduleMappingRepository.Edit(serviceScheduleMapping);
         }
     }
 }

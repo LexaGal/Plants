@@ -75,7 +75,7 @@ namespace PlantingLib.Sensors
        
         protected virtual void OnNewMeasuring()
         {
-            var handler = NewMeasuring;
+            EventHandler handler = NewMeasuring;
             if (handler != null)
             {
                 handler(this, new MessengingEventArgs<Sensor>(this));

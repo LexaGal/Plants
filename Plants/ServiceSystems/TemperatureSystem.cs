@@ -6,8 +6,8 @@ namespace PlantingLib.ServiceSystems
 {
     public class TemperatureSystem : ServiceSystem
     {
-        public TemperatureSystem(string measurableType, double parameterValue, PlantsArea plantsArea)
-            : base(measurableType, parameterValue, plantsArea)
+        public TemperatureSystem(string measurableType, double parameterValue, PlantsArea plantsArea, TimeSpan serviceTimeSpan)
+            : base(measurableType, parameterValue, plantsArea, serviceTimeSpan)
         {
         }
 
@@ -15,9 +15,13 @@ namespace PlantingLib.ServiceSystems
         {
             if (PlantsArea != null)
             {
-                TimeSpan timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
-                    PlantsArea.Plant.Temperature.Optimal)));
-                return timeSpan;
+                if (ServiceTimeSpan == TimeSpan.Zero)
+                {
+                    TimeSpan timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
+                                                                           PlantsArea.Plant.Temperature.Optimal)));
+                    return timeSpan;
+                }
+                return ServiceTimeSpan;
             }
             return TimeSpan.Zero;
         }

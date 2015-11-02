@@ -1,14 +1,23 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
+using PlantingLib.Plants.ServiceStates;
 using PlantsWpf.Converters;
 using PlantsWpf.DataGridObjects;
 using Binding = System.Windows.Data.Binding;
 using DataGrid = System.Windows.Controls.DataGrid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using MessageBox = System.Windows.Forms.MessageBox;
 using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace PlantsWpf.ControlsBuilders
@@ -20,7 +29,7 @@ namespace PlantsWpf.ControlsBuilders
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 116,
+                Width = 183,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
@@ -65,19 +74,46 @@ namespace PlantsWpf.ControlsBuilders
                 IsReadOnly = true
             };
 
+            DataGridTextColumn columnIsScheduled = new DataGridTextColumn
+            {
+                Width = 70,
+                Binding = new Binding("IsScheduled")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay
+                },
+                CellStyle = new Style
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsScheduled")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = "By schedule",
+                            Setters = {new Setter(Control.BackgroundProperty, Brushes.Yellow)}
+                        }
+                    }
+                },
+                IsReadOnly = true
+            };
             dataGrid.Columns.Add(columnServiceName);
             dataGrid.Columns.Add(columnIsOn);
+            dataGrid.Columns.Add(columnIsScheduled);
             dataGrid.ItemsSource = area.PlantsAreaServiceState.ServiceStates;
             return dataGrid;
         }
 
         public DataGrid CreateSensorsDataGrid(PlantsArea area, BindingList<DataGridSensorView> dataGridSensorViews,
-            FrameworkElementFactory factory)
+            FrameworkElementFactory removeSensorButtonTemplate)
         {
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 323,
+                Width = 325,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
@@ -132,6 +168,7 @@ namespace PlantsWpf.ControlsBuilders
             };
             DataGridTextColumn isCritical = new DataGridTextColumn
             {
+                Width = 27,
                 Binding = new Binding("IsCritical")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
@@ -159,7 +196,7 @@ namespace PlantsWpf.ControlsBuilders
             {
                 CellTemplate = new DataTemplate
                 {
-                    VisualTree = factory
+                    VisualTree = removeSensorButtonTemplate
                 }
             };
 
@@ -246,5 +283,126 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.ItemsSource = dataGridSensorsToAddViews;
             return dataGrid;
         }
+
+        public DataGrid CreateServicesSchedulesDataGrid(PlantsArea area,
+            BindingList<DataGridServiceScheduleView> serviceScheduleViews,
+            FrameworkElementFactory serviceScheduleSetUpButtonTemplate)
+        {
+            DataGrid dataGrid = new DataGrid
+            {
+                Margin = new Thickness(0, 10, 0, 0),
+                Width = 336,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                CanUserAddRows = true,
+                AutoGenerateColumns = false
+            };
+
+            DataGridComboBoxColumn serviceName = new DataGridComboBoxColumn
+            {
+                Header = "Service",
+                Width = 77,
+                SelectedItemBinding = new Binding("ServiceName"),
+                ItemsSource = area.PlantsAreaServiceState.ServiceStates.Select(s => s.ServiceName),
+                EditingElementStyle = new Style(typeof (ComboBox))
+                {
+                    Setters =
+                    {
+                        new EventSetter
+                        {
+                            Event = Selector.SelectionChangedEvent,
+                            Handler = new SelectionChangedEventHandler((sender, args) =>
+                            {
+                                ComboBox comboBox = sender as ComboBox;
+                                if (comboBox != null)
+                                {
+                                    if (comboBox.SelectedItem != null)
+                                    {
+                                        string service = comboBox.SelectedItem.ToString();
+
+                                        ServiceStateEnum parameter;
+                                        bool parsed = Enum.TryParse(service, out parameter);
+
+                                        if (!parsed)
+                                        {
+                                            DataGridServiceScheduleView serviceScheduleView =
+                                                serviceScheduleViews.SingleOrDefault(s => s.ServiceName == service);
+
+                                            MeasurableParameter measurableParameter = area.Plant.MeasurableParameters
+                                                .SingleOrDefault(
+                                                    m => service == String.Format("*{0}*", m.MeasurableType));
+
+                                            if (measurableParameter != null)
+                                            {
+                                                if (serviceScheduleView == null)
+                                                {
+                                                    serviceScheduleView = new DataGridServiceScheduleView
+                                                    {
+                                                        ServiceName = service,
+                                                        Parameters = measurableParameter.MeasurableType
+                                                    };
+                                                    serviceScheduleViews.Remove(serviceScheduleViews.Last());
+                                                    serviceScheduleViews.Add(serviceScheduleView);
+                                                }
+                                            }
+                                            return;
+                                        }
+                                        MessageBox.Show(@"You can add new schedule only for custom service");
+                                    }
+                                }
+                            })
+                        }
+                    }
+
+                }
+            };
+
+            List<string> parametersList = new List<string>(serviceScheduleViews.Select(s => s.Parameters));
+            parametersList.AddRange(area.Plant.MeasurableParameters.Select(s => s.MeasurableType));
+            DataGridComboBoxColumn parameters = new DataGridComboBoxColumn
+            {
+                Header = "Parameters",
+                SelectedItemBinding = new Binding("Parameters"),
+                ItemsSource = parametersList,
+
+            };
+            DataGridTextColumn servicingSpan = new DataGridTextColumn
+            {
+                Header = "Duration",
+                Binding = new Binding("ServicingSpan")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                }
+            };
+            DataGridTextColumn servicingPauseSpan = new DataGridTextColumn
+            {
+                Header = "Pause",
+                Binding =
+                    new Binding("ServicingPauseSpan")
+                    {
+                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                    }
+            };
+
+            DataGridTemplateColumn setUp = new DataGridTemplateColumn
+            {
+                CellTemplate = new DataTemplate
+                {
+                    VisualTree = serviceScheduleSetUpButtonTemplate
+                }
+            };
+
+            dataGrid.Columns.Clear();
+            dataGrid.Columns.Add(serviceName);
+            dataGrid.Columns.Add(parameters);
+            dataGrid.Columns.Add(servicingSpan);
+            dataGrid.Columns.Add(servicingPauseSpan);
+            dataGrid.Columns.Add(setUp);
+
+            dataGrid.ItemsSource = serviceScheduleViews;
+            return dataGrid;
+        }
+
     }
 }

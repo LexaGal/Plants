@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -6,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
+using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 using PlantsWpf.DataGridObjects;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -14,7 +17,7 @@ namespace PlantsWpf.ControlsBuilders
 {
     public class ControlsBuilder
     {
-        public FrameworkElementFactory CreateButtonTemplate(PlantsArea area,
+        public FrameworkElementFactory CreateRemoveSensorButtonTemplate(PlantsArea area,
             BindingList<DataGridSensorView> dataGridSensorViews, Action<PlantsArea, Sensor> removeSensor,
             BindingList<DataGridSensorToAddView> dataGridSensorToAddViews)
         {
@@ -31,10 +34,7 @@ namespace PlantsWpf.ControlsBuilders
                         dataGridSensorViews.Remove(view);
 
                         dataGridSensorToAddViews = new BindingList<DataGridSensorToAddView>(
-                            area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s)))
-                        {
-                            AllowNew = true
-                        };
+                            area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))){AllowNew = true};
 
                         removeSensor(area, view.Sensor);
                     }
@@ -42,6 +42,57 @@ namespace PlantsWpf.ControlsBuilders
                 );
             return buttonTemplate;
         }
+
+        public FrameworkElementFactory CreateServiceScheduleSetUpButtonTemplate(PlantsArea area,
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Action<PlantsArea, 
+            ServiceSchedule> saveServiceSchedule)
+        {
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
+            buttonTemplate.SetValue(ContentControl.ContentProperty, "Ok");
+            buttonTemplate.AddHandler(
+                ButtonBase.ClickEvent,
+                new RoutedEventHandler((o, e) =>
+                {
+                    DataGridServiceScheduleView view = ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
+                    if (view != null)
+                    {
+                        ServiceSchedule serviceSchedule =
+                            area.ServicesSchedulesState.ServicesSchedules.FirstOrDefault(
+                                s => s.ServiceState.ToString() == view.ServiceName);
+                        if (serviceSchedule != null)
+                        {
+                            try
+                            {
+                                serviceSchedule.ServicingSpan = TimeSpan.Parse(view.ServicingSpan);
+                                serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(view.ServicingPauseSpan);
+
+                                saveServiceSchedule(area, serviceSchedule);
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show(@"Wrong schedule data");
+                                return;
+                            }
+                            MessageBox.Show(@"Schedule data saved");
+                        }
+
+                        ServiceStateEnum parameter;
+                        bool parsed = Enum.TryParse(view.ServiceName, out parameter);
+
+
+                        //?
+                        if (parsed)
+                        {
+                            MeasurableParameter measurableParameter = area.Plant.MeasurableParameters.SingleOrDefault(p => p.MeasurableType == view.Parameters)
+                            serviceSchedule = new ServiceSchedule(area.Id, parameter, TimeSpan.Parse(view.ServicingSpan),
+                                TimeSpan.Parse(view.ServicingPauseSpan), new List<MeasurableParameter>() {});
+                        }
+                    }
+                })
+                );
+            return buttonTemplate;
+        }
+
 
         public StackPanel CreateButtonsPanel(PlantsArea area, StackPanel plantAreaPanel, 
             DataGrid sensorsToAddDataGrid, BindingList<DataGridSensorToAddView> dataGridSensorToAddViews,

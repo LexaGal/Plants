@@ -6,7 +6,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
 {
     public class SensorMappingRepository : Repository<SensorMapping>, ISensorMappingRepository
     {
-        public override bool Edit(Guid id, SensorMapping value)
+        public override bool Edit(SensorMapping value)
         {
             throw new System.NotImplementedException();
         }

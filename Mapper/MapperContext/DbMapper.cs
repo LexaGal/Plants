@@ -9,6 +9,8 @@ using Database.MappingTypes;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
+using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 
 namespace Mapper.MapperContext
@@ -18,17 +20,15 @@ namespace Mapper.MapperContext
         private readonly IPlantMappingRepository _plantRepository;
         private readonly IPlantsAreaMappingRepository _plantsAreaRepository;
         private readonly IMeasurableParameterMappingRepository _measurableParameterRepository;
+        private readonly IServiceScheduleMappingRepository _serviceScheduleMappingRepository;
 
         public DbMapper(IPlantMappingRepository plantRepository, IPlantsAreaMappingRepository plantsAreaRepository,
-            IMeasurableParameterMappingRepository measurableParameterRepository)
+            IMeasurableParameterMappingRepository measurableParameterRepository, IServiceScheduleMappingRepository serviceScheduleMappingRepository)
         {
             _plantRepository = plantRepository;
             _plantsAreaRepository = plantsAreaRepository;
             _measurableParameterRepository = measurableParameterRepository;
-        }
-
-        public DbMapper()
-        {
+            _serviceScheduleMappingRepository = serviceScheduleMappingRepository;
         }
 
         public PlantMapping GetPlantMapping(Plant plant)
@@ -44,8 +44,7 @@ namespace Mapper.MapperContext
             }
 
             return new PlantMapping(plant.Id, plant.Temperature.Id, plant.Humidity.Id,
-                plant.SoilPh.Id, plant.Nutrient.Id, (int) plant.GrowingTime.TotalSeconds,
-                (int) plant.WateringSpan.TotalSeconds, (int) plant.NutrientingSpan.TotalSeconds, plant.Name.ToString(),
+                plant.SoilPh.Id, plant.Nutrient.Id, plant.Name.ToString(),
                 builder.ToString());
         }
 
@@ -73,6 +72,22 @@ namespace Mapper.MapperContext
             return new SensorMapping(sensor.Id, sensor.PlantsArea.Id,
                 (int) sensor.MeasuringTimeout.TotalSeconds, sensor.MeasurableParameter.Id,
                 sensor.MeasurableParameter.MeasurableType, sensor.NumberOfTimes);
+        }
+
+        public ServiceScheduleMapping GetServiceScheduleMapping(ServiceSchedule serviceSchedule)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (serviceSchedule.MeasurableParameters.Count != 0)
+            {
+                serviceSchedule.MeasurableParameters.ToList().ForEach(c => builder.Append(c.Id.ToString() + ','));
+
+                builder.Remove(builder.Length - 1, 1);
+            }
+            return new ServiceScheduleMapping(serviceSchedule.Id, serviceSchedule.PlantsAreaId,
+                serviceSchedule.ServiceState.ToString(),
+                (int) serviceSchedule.ServicingSpan.TotalSeconds,
+                (int) serviceSchedule.ServicingPauseSpan.TotalSeconds, builder.ToString());
         }
 
         public MeasurableParameter RestoreMeasurableParameter(MeasurableParameterMapping measurableParameterMapping)
@@ -111,6 +126,26 @@ namespace Mapper.MapperContext
             }
         }
 
+        public ServiceSchedule RestoreServiceSchedule(ServiceScheduleMapping serviceScheduleMapping)
+        {
+            ServiceStateEnum serviceState =
+                (ServiceStateEnum) Enum.Parse(typeof (ServiceStateEnum), serviceScheduleMapping.ServiceState);
+
+            List<MeasurableParameter> measurableParameters = null;
+            if (!string.IsNullOrEmpty(serviceScheduleMapping.MeasurableParametersIds))
+            {
+                string[] ids = serviceScheduleMapping.MeasurableParametersIds.Split(',');
+                List<MeasurableParameterMapping> measurableParameterMappings =
+                    ids.Select(id => _measurableParameterRepository.Get(Guid.Parse(id))).ToList();
+
+                measurableParameters = measurableParameterMappings.Select(m => RestoreMeasurableParameter(m))
+                    .ToList();
+            }
+            return new ServiceSchedule(serviceScheduleMapping.Id, serviceScheduleMapping.PlantsAreaId, serviceState,
+                new TimeSpan(0, 0, serviceScheduleMapping.ServicingSpan),
+                new TimeSpan(0, 0, serviceScheduleMapping.ServicingPauseSpan),
+                measurableParameters);
+        }
 
         public Plant RestorePlant(PlantMapping plantMapping)
         {
@@ -132,10 +167,7 @@ namespace Mapper.MapperContext
 
                 PlantNameEnum name = (PlantNameEnum) Enum.Parse(typeof (PlantNameEnum), plantMapping.Name);
 
-                Plant plant = new Plant(plantMapping.Id, temperature, humidity, soilPh, nutrient,
-                    new TimeSpan(0, 0, plantMapping.GrowingTime),
-                    new TimeSpan(0, 0, plantMapping.WateringSpan),
-                    new TimeSpan(0, 0, plantMapping.NutrientingSpan), name);
+                Plant plant = new Plant(plantMapping.Id, temperature, humidity, soilPh, nutrient, name);
 
                 //if custom sensor
                 if (!string.IsNullOrEmpty(plantMapping.CustomParametersIds))
@@ -149,6 +181,7 @@ namespace Mapper.MapperContext
                             .ToList();
                     plant.AddCustomParameters(customParameters);
                 }
+
                 return plant;
             }
             catch (Exception e)
@@ -165,8 +198,21 @@ namespace Mapper.MapperContext
             {
                 PlantMapping plantMapping = _plantRepository.Get(plantsAreaMapping.PlantId);
                 Plant plant = RestorePlant(plantMapping);
+                
+                PlantsArea area = new PlantsArea(plantsAreaMapping.Id, plant, plantsAreaMapping.Number);
 
-                return new PlantsArea(plantsAreaMapping.Id, plant, plantsAreaMapping.Number);
+                IList<ServiceScheduleMapping> serviceScheduleMappings =
+                    _serviceScheduleMappingRepository.GetAll().AsEnumerable().Where(s => s.PlantsAreaId == area.Id).ToList();
+
+                if (serviceScheduleMappings.Count != 0)
+                {
+                    ServicesSchedulesState servicesSchedulesState = new ServicesSchedulesState();
+                    serviceScheduleMappings.ToList()
+                        .ForEach(s => servicesSchedulesState.AddServiceSchedule(RestoreServiceSchedule(s)));
+
+                    area.ServicesSchedulesState = servicesSchedulesState;
+                }
+                return area;
             }
             catch (Exception e)
             {

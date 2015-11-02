@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using PlantsWpf.Annotations;
@@ -8,6 +8,7 @@ namespace PlantingLib.Plants.ServiceStates
     public class ServiceState : INotifyPropertyChanged, ICloneable
     {
         private bool _isOn;
+        private bool _isScheduled;
         public bool IsCustom { get; private set; }
 
         public ServiceState(string serviceName, bool isCustom)
@@ -29,12 +30,21 @@ namespace PlantingLib.Plants.ServiceStates
             }
         }
 
+        public string IsScheduled
+        {
+            get { return _isScheduled ? "By schedule" : String.Empty; }
+            set
+            {
+                _isScheduled = Convert.ToBoolean(value);
+                OnPropertyChanged("IsScheduled");
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
+            PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));

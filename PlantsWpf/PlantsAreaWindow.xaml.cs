@@ -43,7 +43,6 @@ namespace PlantsWpf
                 PlantNameEnum plantName = (PlantNameEnum) Enum.Parse(typeof (PlantNameEnum),
                     PlantNameBox.SelectionBoxItem.ToString());
                 int number = Convert.ToInt32(Number.Text);
-                TimeSpan growingTime = new TimeSpan(0, 0, Convert.ToInt32(GrowingTime.Text));
 
                 int optimalT = Convert.ToInt32(OptimalTemperature.Text);
                 int minT = Convert.ToInt32(MinTemperature.Text);
@@ -65,8 +64,7 @@ namespace PlantsWpf
                 int maxN = Convert.ToInt32(MaxNutrient.Text);
                 Nutrient nutrient = new Nutrient(optimalN, minN, maxN);
 
-                Plant plant = new Plant(temperature, humidity, soilPh, nutrient,
-                    growingTime, TimeSpan.Zero, TimeSpan.Zero, plantName);
+                Plant plant = new Plant(temperature, humidity, soilPh, nutrient, plantName);
 
                 PlantsArea plantsArea = new PlantsArea(plant, number);
 

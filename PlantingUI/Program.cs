@@ -36,7 +36,7 @@ namespace PlantingUI
             ISensorMappingRepository sensorRepository = new SensorMappingRepository();
             
             DbMapper dbMapper = new DbMapper(plantRepository, plantsAreaRepository,
-                measurableParameterRepository);
+                measurableParameterRepository, null);
 
             //IList<PlantsAreaMapping> plantsAreasMappings = plantsAreaRepository.GetAll().ToList();
             
@@ -73,7 +73,7 @@ namespace PlantingUI
 
                     //restarting timer and reseting all functions values to base values (new day after night sleep)
                     SystemTimer.Restart();
-                    _sensorsCollection.AllSensors.ToList().ForEach(s => s.Function.ResetFunction());
+                    _sensorsCollection.AllSensors.ToList().ForEach(s => s.Function.ResetFunction(s.MeasurableParameter.Optimal));
                 }
 
                 SystemTimer.CurrentTimeSpan = timeSpan;

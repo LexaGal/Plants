@@ -11,11 +11,13 @@ namespace Database.DatabaseStructure.Repository.Concrete
 
         public virtual IQueryable<T> GetAll()
         {
+            //! do not using (Context = new PlantingDb())
             return Context.Set<T>().AsQueryable();
         }
 
         public virtual T Get(Guid id)
         {
+            //! do not using (Context = new PlantingDb())
             return Context.Set<T>().Find(id);
         }
 
@@ -29,7 +31,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
             }
         }
 
-        public abstract bool Edit(Guid id, T value);
+        public abstract bool Edit(T value);
        
         public virtual bool Delete(Guid id)
         {
