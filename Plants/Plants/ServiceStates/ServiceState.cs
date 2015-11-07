@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using PlantsWpf.Annotations;
@@ -6,27 +6,43 @@ using PlantsWpf.Annotations;
 namespace PlantingLib.Plants.ServiceStates
 {
     public class ServiceState : INotifyPropertyChanged, ICloneable
-    {
-        private bool _isOn;
-        public bool IsCustom { get; private set; }
-
+    {  
         public ServiceState(string serviceName, bool isCustom)
         {
             IsCustom = isCustom;
             ServiceName = IsCustom ? String.Format("*{0}*", serviceName) : serviceName;
-            _isOn = false;
+            IsRunning = false;
         }
 
+        public bool IsCustom { get; private set; }
         public string ServiceName { get; private set; }
+        public bool IsRunning { get; private set; }
 
         public string IsOn
         {
-            get { return _isOn ? "✔" : String.Empty; }
+            get { return IsRunning ? "✔" : String.Empty; }
             set
             {
-                _isOn = Convert.ToBoolean(value);
-                OnPropertyChanged("IsOn");
+                IsRunning = Convert.ToBoolean(value);
+                OnPropertyChanged();
             }
+        }
+
+        private bool _isScheduled;
+        
+        public string IsScheduled
+        {
+            get { return _isScheduled ? "✔" : String.Empty; }
+            set
+            {
+                _isScheduled = Convert.ToBoolean(value);
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsFor(string measurableType)
+        {
+            return ServiceName == String.Format("*{0}*", measurableType);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -34,7 +50,7 @@ namespace PlantingLib.Plants.ServiceStates
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
+            PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));

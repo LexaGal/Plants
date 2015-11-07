@@ -11,7 +11,7 @@ namespace PlantingLib.ParametersFunctions
         public Guid Id { get; set; }
 
         public MeasurableParameter MeasurableParameter { get; private set; }
-        public Double CurrentFunctionValue { get; set; }
+        public double CurrentFunctionValue { get; set; }
         public WeatherTypesEnum WeatherType { get; private set; }
         protected readonly Random Random;
 
@@ -33,10 +33,10 @@ namespace PlantingLib.ParametersFunctions
         }
 
         public abstract double NewFunctionValue();
-        
-        public void ResetFunction()
+
+        public void ResetFunction(double newFunctionValue)
         {
-            CurrentFunctionValue = MeasurableParameter.Optimal;
+            CurrentFunctionValue = newFunctionValue;
         }       
     }
 }

@@ -6,7 +6,6 @@ using PlantingLib.MeasuringsProviding;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
-using PlantingLib.Timers;
 
 namespace PlantingLib.Observation
 {
@@ -24,7 +23,7 @@ namespace PlantingLib.Observation
             PlantsAreas = plantsAreas;
            
             MessagesDictionary = new Dictionary<Guid, IList<MeasuringMessage>>();
-            PlantsAreas.AllPlantsAreas.ToList().ForEach(pa => MessagesDictionary.Add(pa.Id, new List<MeasuringMessage>()));
+            PlantsAreas.Areas.ToList().ForEach(pa => MessagesDictionary.Add(pa.Id, new List<MeasuringMessage>()));
         }
         
         //recieving
@@ -37,6 +36,12 @@ namespace PlantingLib.Observation
                 if (messengingEventArgs != null)
                 {
                     MeasuringMessage recievedMessage = messengingEventArgs.Object;
+                    
+                    if (recievedMessage == null)
+                    {
+                        throw new ArgumentNullException("recievedMessage");
+                    }
+
                     if (!MessagesDictionary.ContainsKey(recievedMessage.PlantsAreaId))
                     {
                         MessagesDictionary.Add(recievedMessage.PlantsAreaId, new List<MeasuringMessage>());
@@ -44,13 +49,14 @@ namespace PlantingLib.Observation
                     MessagesDictionary[recievedMessage.PlantsAreaId].Add(recievedMessage);
                     
                     Console.WriteLine(recievedMessage.ToString());
-                    Console.WriteLine("{0} Elapsed", SystemTimer.CurrentTimeSpan.TotalSeconds);
 
                     if (recievedMessage.MessageType == MessageTypeEnum.CriticalInfo)
                     {
                         //sending to scheduler
                         OnMessageSending(recievedMessage);
-                        PlantsArea area = PlantsAreas.AllPlantsAreas.FirstOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
+
+                        PlantsArea area = PlantsAreas.Areas.FirstOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
+                        
                         if (area != null)
                         {
                             Sensor sensor = area.Sensors.FirstOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);

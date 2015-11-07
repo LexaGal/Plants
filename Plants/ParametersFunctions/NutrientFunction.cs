@@ -1,4 +1,5 @@
-﻿using PlantingLib.MeasurableParameters;
+﻿using System;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 
@@ -7,12 +8,11 @@ namespace PlantingLib.ParametersFunctions
     public class NutrientFunction : ParameterFunction
     {
         public NutrientFunction(Nutrient nutrient) : base(nutrient)
-        {
-        }
+        {}
 
         public override double NewFunctionValue()
         {
-            switch (WeatherType)
+         try{   switch (WeatherType)
             {
                 case WeatherTypesEnum.Cold:
                     return CurrentFunctionValue -= 0.5 * Random.NextDouble();
@@ -46,7 +46,12 @@ namespace PlantingLib.ParametersFunctions
                     }
                     return CurrentFunctionValue;
             }
-            return CurrentFunctionValue;
+         }
+         catch (ArgumentOutOfRangeException e)
+         {
+             return CurrentFunctionValue + Random.NextDouble();
+         }
+         return CurrentFunctionValue;
         }
     }
 }

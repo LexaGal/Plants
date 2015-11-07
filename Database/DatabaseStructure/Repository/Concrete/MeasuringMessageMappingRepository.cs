@@ -6,9 +6,9 @@ namespace Database.DatabaseStructure.Repository.Concrete
 {
     public class MeasuringMessageMappingRepository : Repository<MeasuringMessageMapping>, IMeasuringMessageMappingRepository
     {
-        public override bool Edit(Guid id, MeasuringMessageMapping value)
+        public override bool Edit(MeasuringMessageMapping value)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

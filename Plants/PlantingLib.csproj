@@ -67,10 +67,10 @@
   <ItemGroup>
     <Compile Include="MeasurableParameters\CustomParameter.cs" />
     <Compile Include="MeasurableParameters\ParameterEnum.cs" />
-    <Compile Include="MeasurableParameters\ParameterInfo.cs" />
+    <Compile Include="MeasurableParameters\ParameterServices.cs" />
     <Compile Include="MessagesCreators\MeasuringMessageCreator.cs" />
     <Compile Include="Messenging\MessengingEventArgs.cs" />
-    <Compile Include="MeasuringsProviding\ISender.cs" />
+    <Compile Include="MeasuringsProviders\ISender.cs" />
     <Compile Include="Messenging\MeasuringMessage.cs" />
     <Compile Include="Observation\IReciever.cs" />
     <Compile Include="ParametersFunctions\CustomParameterFunction.cs" />
@@ -79,9 +79,9 @@
     <Compile Include="ParametersFunctions\ParameterFunction.cs" />
     <Compile Include="ParametersFunctions\SoilPhFunction.cs" />
     <Compile Include="ParametersFunctions\TemperatureFunction.cs" />
-    <Compile Include="MeasurableParameters\MeasurableParametersInfo.cs" />
+    <Compile Include="MeasurableParameters\ParameterServicesInfo.cs" />
     <Compile Include="Messenging\MessageTypeEnum.cs" />
-    <Compile Include="MeasuringsProviding\SensorsMeasuringsProvider.cs" />
+    <Compile Include="MeasuringsProviders\SensorsMeasuringsProvider.cs" />
     <Compile Include="Observation\Observer.cs" />
     <Compile Include="MeasurableParameters\MeasurableParameter.cs" />
     <Compile Include="MeasurableParameters\Humidity.cs" />
@@ -93,9 +93,11 @@
     <Compile Include="Plants\PlantsAreas.cs" />
     <Compile Include="Plants\Plant.cs" />
     <Compile Include="Plants\PlantsArea.cs" />
+    <Compile Include="Plants\ServicesScheduling\ServiceSchedule.cs" />
+    <Compile Include="Plants\ServicesScheduling\ServicesSchedulesStates.cs" />
     <Compile Include="Plants\ServiceStates\ServiceStateEnum.cs" />
     <Compile Include="Plants\ServiceStates\ServiceStateEqualityComparer.cs" />
-    <Compile Include="Plants\ServiceStates\PlantsAreaServiceState.cs" />
+    <Compile Include="Plants\ServiceStates\PlantServicesStates.cs" />
     <Compile Include="Plants\ServiceStates\ServiceState.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -114,12 +116,7 @@
     <Compile Include="Sensors\SoilPhSensor.cs" />
     <Compile Include="Timers\SystemTimer.cs" />
     <Compile Include="ServiceSystems\ServiceProvider.cs" />
-    <Compile Include="WeatherTypes\ColdWeatherMeasurer.cs" />
-    <Compile Include="WeatherTypes\HotWeatherMeasurer.cs" />
-    <Compile Include="WeatherTypes\RainyWeatherMeasurer.cs" />
-    <Compile Include="WeatherTypes\WarmWeatherMeasurer.cs" />
     <Compile Include="WeatherTypes\Weather.cs" />
-    <Compile Include="WeatherTypes\WeatherMeasurer.cs" />
     <Compile Include="WeatherTypes\WeatherTypesEnum.cs" />
   </ItemGroup>
   <ItemGroup>

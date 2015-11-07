@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.SqlServer;
 
-namespace Database
+namespace Database.MappingTypes
 {
     class DbContextConfiguration : DbConfiguration
     {

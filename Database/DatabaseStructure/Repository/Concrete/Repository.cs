@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Database.DatabaseStructure.Repository.Abstract;
 
@@ -7,29 +8,42 @@ namespace Database.DatabaseStructure.Repository.Concrete
     public abstract class Repository<T> : IRepository<T> where T: class
     {
         protected PlantingDb Context = new PlantingDb();
-        //protected string ConnectionString = ConfigurationManager.ConnectionStrings["PlantingDb"].ConnectionString;
-
-        public virtual IQueryable<T> GetAll()
+        
+        public virtual List<T> GetAll(Func<T, bool> func = null)
         {
-            return Context.Set<T>().AsQueryable();
+            using (Context = new PlantingDb())
+            {
+                if (func != null)
+                {
+                    return Context.Set<T>().Where(func).ToList();
+                }
+                return Context.Set<T>().ToList();
+            }
         }
 
         public virtual T Get(Guid id)
         {
-            return Context.Set<T>().Find(id);
-        }
-
-        public virtual bool Add(T value)
-        {
             using (Context = new PlantingDb())
             {
-                Context.Set<T>().Add(value);
-                Context.SaveChanges();
-                return true;
+                return Context.Set<T>().Find(id);
             }
         }
 
-        public abstract bool Edit(Guid id, T value);
+        public virtual bool Save(T value, Guid id)
+        {
+            using (Context = new PlantingDb())
+            {
+                if (Context.Set<T>().Find(id) == null)
+                {
+                    Context.Set<T>().Add(value);
+                    Context.SaveChanges();
+                    return true;
+                }
+                return Edit(value);
+            }
+        }
+        
+        public abstract bool Edit(T value);
        
         public virtual bool Delete(Guid id)
         {

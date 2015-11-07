@@ -7,88 +7,79 @@ namespace PlantingLib.Plants
 {
     public class Plant
     {
-        public Plant(Temperature temperature, Humidity humidity, SoilPh soilPh,
-            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan, PlantNameEnum name)
-        {
-            Id = Guid.NewGuid();
-            Temperature = temperature;
-            Humidity = humidity;
-            SoilPh = soilPh;
-            Nutrient = nutrient;
-            GrowingTime = growingTime;
-            WateringSpan = wateringSpan;
-            NutrientingSpan = nutrientingSpan;
-            Name = name;
-
-            MeasurableParameters = new List<MeasurableParameter>
-            {
-                Temperature,
-                Humidity,
-                SoilPh,
-                Nutrient
-            };
-            CustomParameters = new List<CustomParameter>();
-        }
-
-        public Plant(Guid id, Temperature temperature, Humidity humidity, SoilPh soilPh,
-            Nutrient nutrient, TimeSpan growingTime, TimeSpan wateringSpan, TimeSpan nutrientingSpan, PlantNameEnum name)
-        {
-            Id = id;
-            Temperature = temperature;
-            Humidity = humidity;
-            SoilPh = soilPh;
-            Nutrient = nutrient;
-            GrowingTime = growingTime;
-            WateringSpan = wateringSpan;
-            NutrientingSpan = nutrientingSpan;
-            Name = name;
-
-            MeasurableParameters = new List<MeasurableParameter>
-            {
-                Temperature,
-                Humidity,
-                SoilPh,
-                Nutrient
-            };
-            CustomParameters = new List<CustomParameter>(); 
-        }
-
-        public MeasurableParameter GetMeasurableParameter(string type)
-        {
-            return MeasurableParameters.First(mp => mp.MeasurableType == type);
-        }
-
-        public void AddCustomParameters(List<CustomParameter> customParameters)
-        {
-            CustomParameters.AddRange(customParameters);
-            MeasurableParameters.AddRange(customParameters);
-        }
-
-        public void AddCustomParameter(CustomParameter customParameters)
-        {
-            CustomParameters.Add(customParameters);
-            MeasurableParameters.Add(customParameters);
-        }
-
-        public bool RemoveCustomParameter(CustomParameter customParameter)
-        {
-            //!!! not .Remove(item)
-            CustomParameters.RemoveAll(cp => cp.Id == customParameter.Id);
-            MeasurableParameters.RemoveAll(cp => cp.Id == customParameter.Id);
-            return true;
-        }
-
         public Guid Id { get; private set; }
         public PlantNameEnum Name { get; private set; }
+
         public Temperature Temperature { get; private set; }
         public Humidity Humidity { get; private set; }
         public SoilPh SoilPh { get; private set; }
         public Nutrient Nutrient { get; private set; }
-        public TimeSpan GrowingTime { get; private set; }
-        public TimeSpan WateringSpan { get; private set; }
-        public TimeSpan NutrientingSpan { get; private set; }
-        public List<MeasurableParameter> MeasurableParameters { get; private set; }
-        public List<CustomParameter> CustomParameters { get; private set; }
 
+        public List<MeasurableParameter> MeasurableParameters { get; private set; }
+
+        public Plant(Guid id, Temperature temperature, Humidity humidity, SoilPh soilPh,
+            Nutrient nutrient, PlantNameEnum name)
+        {
+            Id = id;
+            Name = name;
+
+            Temperature = temperature;
+            Humidity = humidity;
+            SoilPh = soilPh;
+            Nutrient = nutrient;
+
+            MeasurableParameters = new List<MeasurableParameter>
+            {
+                Temperature,
+                Humidity,
+                SoilPh,
+                Nutrient
+            };
+        }
+
+        public MeasurableParameter GetMeasurableParameter(string type)
+        {
+            return MeasurableParameters.FirstOrDefault(mp => mp.MeasurableType == type);
+        }
+
+        public bool AddMeasurableParameters(List<MeasurableParameter> measurableParameters)
+        {
+            if (MeasurableParameters == null)
+            {
+                MeasurableParameters = new List<MeasurableParameter>();
+            }
+            if (measurableParameters != null)
+            {
+                MeasurableParameters.AddRange(measurableParameters);
+            }
+            return true;
+        }
+
+        public bool AddMeasurableParameter(MeasurableParameter measurableParameter)
+        {
+            if (MeasurableParameters == null)
+            {
+                MeasurableParameters = new List<MeasurableParameter>();
+            }
+            if (MeasurableParameters.Any(c => measurableParameter != null && c.Id == measurableParameter.Id))
+            {
+                MeasurableParameter mp = MeasurableParameters.First(c => c.Id == measurableParameter.Id);
+                mp = measurableParameter;
+                return true;
+            }
+            MeasurableParameters.Add(measurableParameter);
+            return true;
+        }
+
+        public bool RemoveMeasurableParameter(MeasurableParameter measurableParameter)
+        {
+            //!!! not .Remove(item)
+            if (MeasurableParameters == null)
+            {
+                return false;
+            }
+            MeasurableParameters.RemoveAll(cp => measurableParameter != null && cp.Id == measurableParameter.Id);
+            return true;
+        }
     }
 }

@@ -6,9 +6,9 @@ namespace Database.DatabaseStructure.Repository.Concrete
 {
     public class PlantsAreaMappingRepository : Repository<PlantsAreaMapping>, IPlantsAreaMappingRepository
     {
-        public override bool Edit(Guid id, PlantsAreaMapping value)
+        public override bool Edit(PlantsAreaMapping value)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

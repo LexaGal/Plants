@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using Database.DatabaseStructure.Repository.Abstract;
-using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Sensors;
 
 namespace Mapper.MapperContext
@@ -18,17 +18,15 @@ namespace Mapper.MapperContext
         private readonly IPlantMappingRepository _plantRepository;
         private readonly IPlantsAreaMappingRepository _plantsAreaRepository;
         private readonly IMeasurableParameterMappingRepository _measurableParameterRepository;
+        private readonly IServiceScheduleMappingRepository _serviceScheduleMappingRepository;
 
         public DbMapper(IPlantMappingRepository plantRepository, IPlantsAreaMappingRepository plantsAreaRepository,
-            IMeasurableParameterMappingRepository measurableParameterRepository)
+            IMeasurableParameterMappingRepository measurableParameterRepository, IServiceScheduleMappingRepository serviceScheduleMappingRepository)
         {
             _plantRepository = plantRepository;
             _plantsAreaRepository = plantsAreaRepository;
             _measurableParameterRepository = measurableParameterRepository;
-        }
-
-        public DbMapper()
-        {
+            _serviceScheduleMappingRepository = serviceScheduleMappingRepository;
         }
 
         public PlantMapping GetPlantMapping(Plant plant)
@@ -36,16 +34,14 @@ namespace Mapper.MapperContext
             //if custom sensor
             StringBuilder builder = new StringBuilder();
 
-            if (plant.CustomParameters.Count != 0)
+            List<MeasurableParameter> customParameters = plant.MeasurableParameters.Where(m => m is CustomParameter).ToList();
+            if (customParameters.Count != 0)
             {
-                plant.CustomParameters.ToList().ForEach(c => builder.Append(c.Id.ToString() + ','));
-
+                customParameters.ForEach(c => builder.Append(c.Id.ToString() + ','));
                 builder.Remove(builder.Length - 1, 1);
             }
-
             return new PlantMapping(plant.Id, plant.Temperature.Id, plant.Humidity.Id,
-                plant.SoilPh.Id, plant.Nutrient.Id, (int) plant.GrowingTime.TotalSeconds,
-                (int) plant.WateringSpan.TotalSeconds, (int) plant.NutrientingSpan.TotalSeconds, plant.Name.ToString(),
+                plant.SoilPh.Id, plant.Nutrient.Id, plant.Name.ToString(),
                 builder.ToString());
         }
 
@@ -73,6 +69,21 @@ namespace Mapper.MapperContext
             return new SensorMapping(sensor.Id, sensor.PlantsArea.Id,
                 (int) sensor.MeasuringTimeout.TotalSeconds, sensor.MeasurableParameter.Id,
                 sensor.MeasurableParameter.MeasurableType, sensor.NumberOfTimes);
+        }
+
+        public ServiceScheduleMapping GetServiceScheduleMapping(ServiceSchedule serviceSchedule)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (serviceSchedule.MeasurableParameters.Count != 0)
+            {
+                serviceSchedule.MeasurableParameters.ToList().ForEach(c => builder.Append(c.Id.ToString() + ','));
+                builder.Remove(builder.Length - 1, 1);
+            }
+            return new ServiceScheduleMapping(serviceSchedule.Id, serviceSchedule.PlantsAreaId,
+                serviceSchedule.ServiceName,
+                (int) serviceSchedule.ServicingSpan.TotalSeconds,
+                (int) serviceSchedule.ServicingPauseSpan.TotalSeconds, builder.ToString());
         }
 
         public MeasurableParameter RestoreMeasurableParameter(MeasurableParameterMapping measurableParameterMapping)
@@ -106,11 +117,37 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                MessageBox.Show(e.StackTrace, string.Format("MeasurableParameter Id: {0}", measurableParameterMapping.Id));
                 return null;
             }
         }
 
+        public ServiceSchedule RestoreServiceSchedule(ServiceScheduleMapping serviceScheduleMapping)
+        {
+            try
+            {
+                List<MeasurableParameter> measurableParameters = null;
+                if (!string.IsNullOrEmpty(serviceScheduleMapping.MeasurableParametersIds))
+                {
+                    string[] ids = serviceScheduleMapping.MeasurableParametersIds.Split(',');
+                    List<MeasurableParameterMapping> measurableParameterMappings =
+                        ids.Select(id => _measurableParameterRepository.Get(Guid.Parse(id))).ToList();
+
+                    measurableParameters = measurableParameterMappings.Select(RestoreMeasurableParameter)
+                        .ToList();
+                }
+                return new ServiceSchedule(serviceScheduleMapping.Id, serviceScheduleMapping.PlantsAreaId,
+                    serviceScheduleMapping.ServiceState,
+                    new TimeSpan(0, 0, serviceScheduleMapping.ServicingSpan),
+                    new TimeSpan(0, 0, serviceScheduleMapping.ServicingPauseSpan),
+                    measurableParameters);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.StackTrace, string.Format("ServiceSchedule Id: {0}", serviceScheduleMapping.Id));
+                return null;
+            }
+        }
 
         public Plant RestorePlant(PlantMapping plantMapping)
         {
@@ -131,11 +168,7 @@ namespace Mapper.MapperContext
                 Nutrient nutrient = RestoreMeasurableParameter(nutrientMapping) as Nutrient;
 
                 PlantNameEnum name = (PlantNameEnum) Enum.Parse(typeof (PlantNameEnum), plantMapping.Name);
-
-                Plant plant = new Plant(plantMapping.Id, temperature, humidity, soilPh, nutrient,
-                    new TimeSpan(0, 0, plantMapping.GrowingTime),
-                    new TimeSpan(0, 0, plantMapping.WateringSpan),
-                    new TimeSpan(0, 0, plantMapping.NutrientingSpan), name);
+                Plant plant = new Plant(plantMapping.Id, temperature, humidity, soilPh, nutrient, name);
 
                 //if custom sensor
                 if (!string.IsNullOrEmpty(plantMapping.CustomParametersIds))
@@ -144,16 +177,17 @@ namespace Mapper.MapperContext
                     List<MeasurableParameterMapping> measurableParameterMappings =
                         ids.Select(id => _measurableParameterRepository.Get(Guid.Parse(id))).ToList();
 
-                    List<CustomParameter> customParameters =
-                        measurableParameterMappings.Select(m => RestoreMeasurableParameter(m) as CustomParameter)
+                    List<MeasurableParameter> measurableParameters =
+                        measurableParameterMappings.Select(RestoreMeasurableParameter)
                             .ToList();
-                    plant.AddCustomParameters(customParameters);
+
+                    plant.AddMeasurableParameters(measurableParameters);
                 }
                 return plant;
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                MessageBox.Show(e.StackTrace, string.Format("Plant Id: {0}", plantMapping.Id));
                 return null;
             }
         }
@@ -165,62 +199,76 @@ namespace Mapper.MapperContext
             {
                 PlantMapping plantMapping = _plantRepository.Get(plantsAreaMapping.PlantId);
                 Plant plant = RestorePlant(plantMapping);
+                
+                PlantsArea area = new PlantsArea(plantsAreaMapping.Id, plant, plantsAreaMapping.Number);
 
-                return new PlantsArea(plantsAreaMapping.Id, plant, plantsAreaMapping.Number);
+                List<ServiceScheduleMapping> serviceScheduleMappings =
+                    _serviceScheduleMappingRepository.GetAll(s => s.PlantsAreaId == area.Id);
+
+                if (serviceScheduleMappings.Count != 0)
+                {
+                    serviceScheduleMappings.ToList()
+                        .ForEach(s => area.ServicesSchedulesStates.AddServiceSchedule(RestoreServiceSchedule(s)));
+                }
+                return area;
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                MessageBox.Show(e.StackTrace, string.Format("PlantsArea Id: {0}", plantsAreaMapping.Id));
                 return null;
             }
         }
 
-        public Sensor RestoreSensor(SensorMapping sensorMapping)
+        public Sensor RestoreSensor(SensorMapping sensorMapping, PlantsArea plantsArea)
         {
             try
             {
                 PlantsAreaMapping plantsAreaMapping = _plantsAreaRepository.Get(sensorMapping.PlantsAreaId);
-                PlantsArea plantsArea = RestorePlantArea(plantsAreaMapping);
+                //PlantsArea plantsArea = RestorePlantArea(plantsAreaMapping);
 
-                MeasurableParameterMapping measurableParameterMapping =
-                    _measurableParameterRepository.Get(sensorMapping.MeasurableParameterId);
-                MeasurableParameter measurableParameter = RestoreMeasurableParameter(measurableParameterMapping);
+                MeasurableParameter mp =
+                    plantsArea.Plant.MeasurableParameters.SingleOrDefault(
+                        m => m.Id == sensorMapping.MeasurableParameterId);
 
-                ParameterEnum parameter;
-                bool parsed = Enum.TryParse(measurableParameterMapping.Type, out parameter);
-
-                if (parsed)
+                if (mp != null)
                 {
-                    switch (parameter)
+                    ParameterEnum parameter;
+                    bool parsed = Enum.TryParse(mp.MeasurableType, out parameter);
+
+                    if (parsed)
                     {
-                        case ParameterEnum.Nutrient:
-                            return new NutrientSensor(sensorMapping.Id, plantsArea,
-                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Nutrient,
-                                sensorMapping.NumberOfTimes);
-                        case ParameterEnum.SoilPh:
-                            return new SoilPhSensor(sensorMapping.Id, plantsArea,
-                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as SoilPh,
-                                sensorMapping.NumberOfTimes);
-                        case ParameterEnum.Humidity:
-                            return new HumiditySensor(sensorMapping.Id, plantsArea,
-                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Humidity,
-                                sensorMapping.NumberOfTimes);
-                        case ParameterEnum.Temperature:
-                            return new TemperatureSensor(sensorMapping.Id, plantsArea,
-                                new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as Temperature,
-                                sensorMapping.NumberOfTimes);
+                        switch (parameter)
+                        {
+                            case ParameterEnum.Nutrient:
+                                return new NutrientSensor(sensorMapping.Id, plantsArea,
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Nutrient,
+                                    sensorMapping.NumberOfTimes);
+                            case ParameterEnum.SoilPh:
+                                return new SoilPhSensor(sensorMapping.Id, plantsArea,
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as SoilPh,
+                                    sensorMapping.NumberOfTimes);
+                            case ParameterEnum.Humidity:
+                                return new HumiditySensor(sensorMapping.Id, plantsArea,
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Humidity,
+                                    sensorMapping.NumberOfTimes);
+                            case ParameterEnum.Temperature:
+                                return new TemperatureSensor(sensorMapping.Id, plantsArea,
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Temperature,
+                                    sensorMapping.NumberOfTimes);
+                        }
                     }
+                    //if custom sensor
+                    return new CustomSensor(sensorMapping.Id, plantsArea,
+                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as CustomParameter,
+                        sensorMapping.NumberOfTimes);
                 }
-                //if custom sensor
-                return new CustomSensor(sensorMapping.Id, plantsArea,
-                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), measurableParameter as CustomParameter,
-                    sensorMapping.NumberOfTimes);
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                MessageBox.Show(e.StackTrace, string.Format("Sensor Id: {0}", sensorMapping.Id));
                 return null;
             }
+            return null;
         }
     }
 }

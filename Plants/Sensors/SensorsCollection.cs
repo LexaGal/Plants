@@ -5,40 +5,45 @@ namespace PlantingLib.Sensors
 {
     public class SensorsCollection
     {
-        public IList<Sensor> AllSensors { get; private set; }
+        public List<Sensor> Sensors { get; private set; }
 
         public SensorsCollection()
         {
-            AllSensors = new List<Sensor>();
+            Sensors = new List<Sensor>();
          }
 
-        public SensorsCollection(IList<Sensor> sensors)
+        public SensorsCollection(List<Sensor> sensors)
         {
-            AllSensors = sensors;
+            Sensors = sensors;
         }
 
         public bool AddSensor(Sensor sensor)
         {
-            if (AllSensors == null)
+            if (Sensors == null)
             {
-                AllSensors = new List<Sensor>();
+                Sensors = new List<Sensor>();
             }
-            if (AllSensors.Any(s => s.Id == sensor.Id))
+            if (Sensors.Any(s => s.Id == sensor.Id))
             {
-                return false;
+                Sensor old = Sensors.First(s => s.Id == sensor.Id);
+                old = sensor;
+                return true;
             } 
-            AllSensors.Add(sensor);
+            Sensors.Add(sensor);
             return true;
         }
 
         public bool RemoveSensor(Sensor sensor)
         {
-            if (AllSensors.All(s => s.Id != sensor.Id))
+            if (Sensors != null)
             {
-                return false;
+                if (Sensors.All(s => s.Id != sensor.Id))
+                {
+                    return false;
+                }
+                return Sensors.Remove(sensor);
             }
-            AllSensors.Remove(sensor);
-            return true;
+            return false;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 
@@ -6,8 +7,8 @@ namespace PlantingLib.ServiceSystems
 {
     public class NutrientSystem : ServiceSystem
     {
-        public NutrientSystem(string measurableType, double parameterValue, PlantsArea plantsArea)
-            : base(measurableType, parameterValue, plantsArea)
+        public NutrientSystem(string measurableType, double parameterValue, PlantsArea plantsArea, TimeSpan serviceTimeSpan)
+            : base(measurableType, parameterValue, plantsArea, serviceTimeSpan)
         {
         }
 
@@ -15,19 +16,23 @@ namespace PlantingLib.ServiceSystems
         {
             if (PlantsArea != null)
             {
-                TimeSpan timeSpan;
-                if (MeasurableType == ParameterEnum.Nutrient.ToString())
+                if (ServiceTimeSpan == TimeSpan.Zero)
                 {
-                    timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
-                                                                  PlantsArea.Plant.Nutrient.Optimal))*2);
-                    return timeSpan;
+                    TimeSpan timeSpan;
+                    if (MeasurableType == ParameterEnum.Nutrient.ToString())
+                    {
+                        timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
+                                                                      PlantsArea.Plant.Nutrient.Optimal))*2);
+                        return timeSpan;
+                    }
+                    if (MeasurableType == ParameterEnum.SoilPh.ToString())
+                    {
+                        timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
+                                                                      PlantsArea.Plant.SoilPh.Optimal))*4);
+                        return timeSpan;
+                    }
                 }
-                if (MeasurableType == ParameterEnum.SoilPh.ToString())
-                {
-                    timeSpan = new TimeSpan(0, 0, (int)(Math.Abs(ParameterValue -
-                                                                  PlantsArea.Plant.SoilPh.Optimal))*4);
-                    return timeSpan;
-                }
+                return ServiceTimeSpan;
             }
             return TimeSpan.Zero;
         }

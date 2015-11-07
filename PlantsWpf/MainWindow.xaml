@@ -8,10 +8,10 @@
             <!--<Button Name="Load" Content="Load" HorizontalAlignment="Left" Margin="10,8,0,0"
                 VerticalAlignment="Top" Width="49" Height="26" Click="Load_OnClick" />-->
 
-            <Button Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,9,0,0"
+            <Button Name="Start" Content="Start" IsEnabled="False" Visibility="Collapsed" HorizontalAlignment="Left" Margin="10,9,0,0"
                 VerticalAlignment="Top" Width="54" Height="26" Click="Start_OnClick" />
 
-            <Button Content="Pause" Name="Pause" HorizontalAlignment="Left" Height="27" Margin="10,9,0,0"
+            <Button Content="Pause" Name="Pause" Visibility="Collapsed" HorizontalAlignment="Left" Height="27" Margin="10,9,0,0"
                     VerticalAlignment="Top" Width="56" Click="Pause_OnClick"/>
 
             <ComboBox Name="WeatherBox"  Margin="10,10,0,0" HorizontalAlignment="Left"

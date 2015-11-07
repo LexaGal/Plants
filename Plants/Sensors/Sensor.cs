@@ -10,55 +10,44 @@ namespace PlantingLib.Sensors
     {
         public Guid Id { get; private set; }
         public TimeSpan MeasuringTimeout { get; set; }
+        
         public PlantsArea PlantsArea { get; private set; }
-        public MeasurableParameter MeasurableParameter { get; private set; }
-        public ParameterFunction Function { get; set; }
-        public bool IsOn { get; set; }
-        public string MeasurableType { get; private set; }
+        public MeasurableParameter MeasurableParameter { get; set; }
+        public ParameterFunction Function { get; protected set; }
+        public string MeasurableType { get; set; }
+        
         public int NumberOfTimes { get; set; }
+        public bool IsOn { get; set; }
+
         public bool IsCustom { get; set; }
 
-        protected Sensor(PlantsArea plantsArea, TimeSpan measuringTimeout, MeasurableParameter measurableParameter,
-            int numberOfTimes)
-        {
-            Id = Guid.NewGuid();
-            PlantsArea = plantsArea;
-            if (plantsArea != null)
-            {
-                plantsArea.AddSensor(this);
-            }
-            MeasuringTimeout = measuringTimeout;
-            MeasurableParameter = measurableParameter;
-            MeasurableType = MeasurableParameter.MeasurableType;
-            IsOn = true;
-            IsCustom = this is CustomSensor;
-            NumberOfTimes = numberOfTimes;
-        }
-
-        protected Sensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, MeasurableParameter measurableParameter, int numberOfTimes)
+        protected Sensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout,
+             MeasurableParameter measurableParameter, int numberOfTimes = 0)
         {
             Id = id;
+
             PlantsArea = plantsArea;
             if (plantsArea != null)
             {
                 plantsArea.AddSensor(this);
             }
+
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
             MeasurableType = MeasurableParameter.MeasurableType;
-            IsOn = true;
-            IsCustom = this is CustomSensor;
+
             NumberOfTimes = numberOfTimes;
+            IsOn = true;
         }
-
-        public void SetMeasuringTimeout(TimeSpan timeSpan)
-        {
-            MeasuringTimeout = timeSpan;
-        }
-
+        
         public void SetPlantsArea(PlantsArea area)
         {
             PlantsArea = area;
+        }
+
+        public void SetFunction(ParameterFunction function)
+        {
+            Function = function;
         }
 
         public double GetNewMeasuring
@@ -75,7 +64,7 @@ namespace PlantingLib.Sensors
        
         protected virtual void OnNewMeasuring()
         {
-            var handler = NewMeasuring;
+            EventHandler handler = NewMeasuring;
             if (handler != null)
             {
                 handler(this, new MessengingEventArgs<Sensor>(this));

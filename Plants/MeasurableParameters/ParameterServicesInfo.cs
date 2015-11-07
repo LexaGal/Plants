@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using PlantingLib.Plants.ServiceStates;
 
 namespace PlantingLib.MeasurableParameters
 {
-    public static class MeasurableParametersInfo
+    public static class ParameterServicesInfo
     {
-        public static List<ParameterInfo> ParametersInfo;
+        public static List<ParameterServices> ParametersServices;
 
-        public static ParameterInfo GetParameterInfo(string mt)
+        public static ParameterServices GetParameterInfo(string mt)
         {
-            return ParametersInfo.SingleOrDefault(p => p.MeasurableType == mt);
+            return ParametersServices.SingleOrDefault(p => p.MeasurableType == mt);
         }
 
         public static void SetBaseParameters()
         {
-            ParametersInfo = new List<ParameterInfo>
+            ParametersServices = new List<ParameterServices>
             {
-                new ParameterInfo(ParameterEnum.Nutrient.ToString(),
+                new ParameterServices(ParameterEnum.Nutrient.ToString(),
                     new List<ServiceState> {new ServiceState(ServiceStateEnum.Nutrienting.ToString(), false)}),
-                new ParameterInfo(ParameterEnum.SoilPh.ToString(),
+                new ParameterServices(ParameterEnum.SoilPh.ToString(),
                     new List<ServiceState> {new ServiceState(ServiceStateEnum.Nutrienting.ToString(), false)}),
-                new ParameterInfo(ParameterEnum.Humidity.ToString(),
+                new ParameterServices(ParameterEnum.Humidity.ToString(),
                     new List<ServiceState> {new ServiceState(ServiceStateEnum.Watering.ToString(), false)}),
-                new ParameterInfo(ParameterEnum.Temperature.ToString(),
+                new ParameterServices(ParameterEnum.Temperature.ToString(),
                     new List<ServiceState>
                     {
                         new ServiceState(ServiceStateEnum.Warming.ToString(), false),

@@ -12,9 +12,6 @@ namespace Database.MappingTypes
         public Guid HumidityId { get; set; }
         public Guid SoilPhId { get; set; }
         public Guid NutrientId { get; set; }
-        public int GrowingTime { get; set; }
-        public int WateringSpan { get; set; }
-        public int NutrientingSpan { get; set; }
         public string Name { get; set; }
         public string CustomParametersIds { get; set; }
 
@@ -23,32 +20,26 @@ namespace Database.MappingTypes
         }
 
         public PlantMapping(Guid id, Guid temperatureId, Guid humidityId, Guid soilPhId, Guid nutrientId,
-            int growingTime, int wateringSpan, int nutrientingSpan, string name, string customParametersIds)
+             string name, string customParametersIds)
         {
             Id = id;
             TemperatureId = temperatureId;
             HumidityId = humidityId;
             SoilPhId = soilPhId;
             NutrientId = nutrientId;
-            GrowingTime = growingTime;
-            WateringSpan = wateringSpan;
-            NutrientingSpan = nutrientingSpan;
             Name = name;
             CustomParametersIds = customParametersIds;
         }
 
-        public void CopyTo(PlantMapping pm)
+        public void CopyTo(PlantMapping plantMapping)
         {
-            pm.Id = Id;
-            pm.TemperatureId = TemperatureId;
-            pm.HumidityId = HumidityId;
-            pm.SoilPhId = SoilPhId;
-            pm.NutrientId = NutrientId;
-            pm.GrowingTime = GrowingTime;
-            pm.WateringSpan = WateringSpan;
-            pm.NutrientingSpan = NutrientingSpan;
-            pm.Name = Name;
-            pm.CustomParametersIds = CustomParametersIds;
+            plantMapping.Id = Id;
+            plantMapping.TemperatureId = TemperatureId;
+            plantMapping.HumidityId = HumidityId;
+            plantMapping.SoilPhId = SoilPhId;
+            plantMapping.NutrientId = NutrientId;
+            plantMapping.Name = Name;
+            plantMapping.CustomParametersIds = CustomParametersIds;
         }
     }
 }

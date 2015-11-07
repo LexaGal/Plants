@@ -21,3 +21,9 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Release
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Release\PlantsWpf.csproj.GenerateResource.Cache
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Release\PlantsWpf.exe
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Release\PlantsWpf.pdb
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Release\PostSharp.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Release\PostSharp.xml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\bin\Release\PlantsWpf.pssym
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Release\PlantsAreaWindow.baml
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Release\PlantsAreaWindow.g.cs
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\PlantsWpf\obj\Release\PlantsWpf.exe.postsharp

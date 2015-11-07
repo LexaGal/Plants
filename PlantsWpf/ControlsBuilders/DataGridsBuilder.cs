@@ -20,12 +20,14 @@ namespace PlantsWpf.ControlsBuilders
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 116,
+                Width = 192,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanUserAddRows = false,
-                AutoGenerateColumns = false
+                CanUserResizeColumns = false,
+                AutoGenerateColumns = false,
+                ColumnWidth = DataGridLength.SizeToHeader
             };
 
             DataGridTextColumn columnServiceName = new DataGridTextColumn
@@ -41,6 +43,7 @@ namespace PlantsWpf.ControlsBuilders
             };
             DataGridTextColumn columnIsOn = new DataGridTextColumn
             {
+                Header = "On",
                 Binding = new Binding("IsOn")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
@@ -58,57 +61,131 @@ namespace PlantsWpf.ControlsBuilders
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
                             Value = "✔",
-                            Setters = {new Setter(Control.BackgroundProperty, Brushes.LawnGreen)}
+                            Setters =
+                            {
+                                new Setter(Control.BackgroundProperty, Brushes.LawnGreen)
+                            }
                         }
                     }
                 },
                 IsReadOnly = true
             };
 
+            DataGridTextColumn columnIsScheduled = new DataGridTextColumn
+            {
+                Header = "Scheduled",
+                Width = 70,
+                Binding = new Binding("IsScheduled")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay
+                },
+                CellStyle = new Style
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsScheduled")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = "✔",
+                            Setters =
+                            {
+                                new Setter(Control.BackgroundProperty, Brushes.Yellow)
+                            }
+                        }
+                    }
+                },
+                IsReadOnly = true
+            };
             dataGrid.Columns.Add(columnServiceName);
             dataGrid.Columns.Add(columnIsOn);
-            dataGrid.ItemsSource = area.PlantsAreaServiceState.ServiceStates;
+            dataGrid.Columns.Add(columnIsScheduled);
+            dataGrid.ItemsSource = area.PlantServicesStates.ServicesStates;
             return dataGrid;
         }
 
         public DataGrid CreateSensorsDataGrid(PlantsArea area, BindingList<DataGridSensorView> dataGridSensorViews,
-            FrameworkElementFactory factory)
+            FrameworkElementFactory removeSensorButtonTemplate, FrameworkElementFactory sensorSaveButtonTemplate)
         {
             DataGrid dataGrid = new DataGrid
             {
                 Margin = new Thickness(0, 10, 0, 0),
-                Width = 323,
-                HorizontalAlignment = HorizontalAlignment.Center,
+                Width = 436,
+                HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                CanUserAddRows = false,
-                AutoGenerateColumns = false
+                CanUserAddRows = true,
+                CanUserDeleteRows = false,
+                CanUserResizeColumns = true,
+                AutoGenerateColumns = false,
+                ColumnWidth = DataGridLength.SizeToHeader,
             };
 
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
                 Header = "Measurable",
                 Width = 73,
-                Binding = new Binding("Measurable"),
-                IsReadOnly = true
+                Binding = new Binding("Measurable")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                },
+
+                CellStyle = new Style(typeof (Button))
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsCustom"),
+                            Value = false.ToString(),
+                            Setters =
+                            {
+                                new Setter(UIElement.IsEnabledProperty, false)
+                            }
+                        }
+                    }
+                }
             };
+            DataGridTextColumn timeout = new DataGridTextColumn
+            {
+                Header = "Timeout",
+                Binding = new Binding("Timeout")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    Mode = BindingMode.TwoWay
+                }
+            }; 
             DataGridTextColumn optimal = new DataGridTextColumn
             {
                 Header = "Optimal",
-                Binding = new Binding("Optimal"),
-                IsReadOnly = true
+                Binding = new Binding("Optimal")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    Mode = BindingMode.TwoWay
+                }
             };
             DataGridTextColumn min = new DataGridTextColumn
             {
                 Header = "Min",
-                Binding = new Binding("Min"),
-                IsReadOnly = true
+                Binding = new Binding("Min")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    Mode = BindingMode.TwoWay
+                }
             };
             DataGridTextColumn max = new DataGridTextColumn
             {
                 Header = "Max",
-                Binding = new Binding("Max"),
-                IsReadOnly = true
+                Binding = new Binding("Max")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    Mode = BindingMode.TwoWay
+                }
             };
             DataGridTextColumn value = new DataGridTextColumn
             {
@@ -132,9 +209,11 @@ namespace PlantsWpf.ControlsBuilders
             };
             DataGridTextColumn isCritical = new DataGridTextColumn
             {
+                Header = "SOS",
                 Binding = new Binding("IsCritical")
                 {
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay
                 },
                 IsReadOnly = true,
                 CellStyle = new Style
@@ -148,8 +227,11 @@ namespace PlantsWpf.ControlsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = "SOS",
-                            Setters = {new Setter(Control.BackgroundProperty, Brushes.Red)}
+                            Value = " SOS",
+                            Setters =
+                            {
+                                new Setter(Control.BackgroundProperty, Brushes.Red)
+                            }
                         }
                     }
                 }
@@ -157,20 +239,78 @@ namespace PlantsWpf.ControlsBuilders
 
             DataGridTemplateColumn remove = new DataGridTemplateColumn
             {
+                Header = "X",
                 CellTemplate = new DataTemplate
                 {
-                    VisualTree = factory
+                    VisualTree = removeSensorButtonTemplate
+                },
+                CellStyle = new Style(typeof (Button))
+                {
+                    TargetType = typeof(DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsCustom"),
+                            Value = false.ToString(),
+                            Setters =
+                            {
+                                new Setter(UIElement.IsEnabledProperty, false)
+                            }
+                        }
+                    }
+                }
+            };
+            DataGridTemplateColumn save = new DataGridTemplateColumn
+            {
+                Header = "Ok",
+                CellTemplate = new DataTemplate
+                {
+                    VisualTree = sensorSaveButtonTemplate
+                },
+                CellStyle = new Style(typeof (Button))
+                {
+                    TargetType = typeof (DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsModified")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = false.ToString(),
+                            Setters =
+                            {
+                                new Setter(UIElement.IsEnabledProperty, false)
+                            }
+                        },
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsModified")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = true.ToString(),
+                            Setters =
+                            {
+                                new Setter(UIElement.IsEnabledProperty, true)
+                            }
+                        }
+                    }
                 }
             };
 
             dataGrid.Columns.Clear();
             dataGrid.Columns.Add(measurableType);
+            dataGrid.Columns.Add(timeout);
             dataGrid.Columns.Add(optimal);
             dataGrid.Columns.Add(min);
             dataGrid.Columns.Add(max);
             dataGrid.Columns.Add(value);
             dataGrid.Columns.Add(numberOfTimes);
             dataGrid.Columns.Add(isCritical);
+            dataGrid.Columns.Add(save);
             dataGrid.Columns.Add(remove);
 
             dataGrid.ItemsSource = dataGridSensorViews;
@@ -188,7 +328,8 @@ namespace PlantsWpf.ControlsBuilders
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanUserAddRows = true,
-                AutoGenerateColumns = false,
+                CanUserResizeColumns = false,
+                AutoGenerateColumns = false
             };
 
             DataGridTextColumn measurableType = new DataGridTextColumn
@@ -246,5 +387,113 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.ItemsSource = dataGridSensorsToAddViews;
             return dataGrid;
         }
+
+        public DataGrid CreateServicesSchedulesDataGrid(PlantsArea area,
+            BindingList<DataGridServiceScheduleView> serviceScheduleViews,
+            FrameworkElementFactory serviceScheduleSaveButtonTemplate)
+        {
+            DataGrid dataGrid = new DataGrid
+            {
+                Margin = new Thickness(0, 10, 0, 0),
+                Width = 344,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                CanUserAddRows = false,
+                CanUserDeleteRows = false,
+                CanUserResizeColumns = true,
+                AutoGenerateColumns = false,
+                ColumnWidth = DataGridLength.Auto
+            };
+
+            DataGridTextColumn serviceName = new DataGridTextColumn
+            {
+                Header = "Service",
+                Width = 77,
+                Binding = new Binding("ServiceName")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                },
+                IsReadOnly = true
+            };
+
+            DataGridTextColumn parameters = new DataGridTextColumn
+            {
+                Header = "Parameters",
+                Binding = new Binding("Parameters")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                },
+                IsReadOnly = true
+            };
+            DataGridTextColumn servicingSpan = new DataGridTextColumn
+            {
+                Header = "Duration",
+                Binding = new Binding("ServicingSpan")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    Mode = BindingMode.TwoWay
+                }
+            };
+            DataGridTextColumn servicingPauseSpan = new DataGridTextColumn
+            {
+                Header = "Pause",
+                Binding = new Binding("ServicingPauseSpan")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    Mode = BindingMode.TwoWay
+                }
+            };
+
+            DataGridTemplateColumn save = new DataGridTemplateColumn
+            {
+                CellTemplate = new DataTemplate
+                {
+                    VisualTree = serviceScheduleSaveButtonTemplate
+                },
+                CellStyle = new Style(typeof(Button))
+                {
+                    TargetType = typeof(DataGridCell),
+                    Triggers =
+                    {
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsModified")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = false.ToString(),
+                            Setters =
+                            {
+                                new Setter(UIElement.IsEnabledProperty, false)
+                            }
+                        },
+                        new DataTrigger
+                        {
+                            Binding = new Binding("IsModified")
+                            {
+                                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                            },
+                            Value = true.ToString(),
+                            Setters =
+                            {
+                                new Setter(UIElement.IsEnabledProperty, true)
+                            }
+                        }
+                    }
+                }
+            };
+
+            dataGrid.Columns.Clear();
+            dataGrid.Columns.Add(serviceName);
+            dataGrid.Columns.Add(parameters);
+            dataGrid.Columns.Add(servicingSpan);
+            dataGrid.Columns.Add(servicingPauseSpan);
+            dataGrid.Columns.Add(save);
+
+            dataGrid.ItemsSource = serviceScheduleViews;
+            return dataGrid;
+        }
+
     }
 }

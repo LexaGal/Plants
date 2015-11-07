@@ -1,4 +1,5 @@
-﻿using PlantingLib.MeasurableParameters;
+﻿using System;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 
@@ -8,12 +9,11 @@ namespace PlantingLib.ParametersFunctions
     {
         public SoilPhFunction(SoilPh soilPh)
             : base(soilPh)
-        {
-        }
+        {}
 
         public override double NewFunctionValue()
         {
-            switch (WeatherType)
+         try{   switch (WeatherType)
             {
                 case WeatherTypesEnum.Cold:
                     return CurrentFunctionValue += 0.125 * Random.Next(-1, 2);
@@ -47,7 +47,12 @@ namespace PlantingLib.ParametersFunctions
                     }
                     return CurrentFunctionValue;
             }
-            return CurrentFunctionValue;
+         }
+         catch (ArgumentOutOfRangeException e)
+         {
+             return CurrentFunctionValue + Random.NextDouble();
+         }
+         return CurrentFunctionValue;
         }
     }
 }

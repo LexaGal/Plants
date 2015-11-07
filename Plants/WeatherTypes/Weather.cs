@@ -21,25 +21,5 @@ namespace PlantingLib.WeatherTypes
             WeatherType = type;
             OnWeatherTypeChanged();
         }
-
-        public static WeatherMeasurer GetWeatherMeasurer()
-        {
-            switch (WeatherType)
-            {
-                    case WeatherTypesEnum.Cold:
-                    return new ColdWeatherMeasurer();
-
-                    case WeatherTypesEnum.Warm:
-                    return new WarmWeatherMeasurer();
-
-                    case WeatherTypesEnum.Hot:
-                    return new HotWeatherMeasurer();
-
-                    case WeatherTypesEnum.Rainy:
-                    return new RainyWeatherMeasurer();
-
-                default: return new WarmWeatherMeasurer();
-            }
-        }
     }
 }

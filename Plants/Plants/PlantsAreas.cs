@@ -5,36 +5,39 @@ namespace PlantingLib.Plants
 {
     public class PlantsAreas
     {
-        public IList<PlantsArea> AllPlantsAreas { get; private set; }
+        public List<PlantsArea> Areas { get; private set; }
 
         public PlantsAreas()
         {
-            AllPlantsAreas = new List<PlantsArea>();
+            Areas = new List<PlantsArea>();
         }
 
-        public PlantsAreas(IList<PlantsArea> areas)
+        public PlantsAreas(List<PlantsArea> areas)
         {
-            AllPlantsAreas = areas;
+            Areas = areas;
         }
 
         public void AddPlantsArea(PlantsArea area)
         {
-            if (AllPlantsAreas == null)
+            if (Areas == null)
             {
-                AllPlantsAreas = new List<PlantsArea>();
+                Areas = new List<PlantsArea>();
             }
-            AllPlantsAreas.Add(area);
-            AllPlantsAreas = AllPlantsAreas.OrderBy(p => p.Plant.Name).ToList();
+            Areas.Add(area);
+            Areas = Areas.OrderBy(p => p.Plant.Name).ToList();
         }
 
         public bool RemovePlantsArea(PlantsArea area)
         {
-            if (AllPlantsAreas.All(s => s.Id != area.Id))
+            if (Areas != null)
             {
-                return false;
+                if (Areas.All(s => s.Id != area.Id))
+                {
+                    return false;
+                }
+                return Areas.Remove(area);
             }
-            AllPlantsAreas.Remove(area);
-            return true;
+            return false;
         }
     }
 }

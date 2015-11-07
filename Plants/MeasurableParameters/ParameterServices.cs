@@ -3,12 +3,12 @@ using PlantingLib.Plants.ServiceStates;
 
 namespace PlantingLib.MeasurableParameters
 {
-    public class ParameterInfo
+    public class ParameterServices
     {
         public string MeasurableType { get; private set; }
         public IEnumerable<ServiceState> ServiceStates { get; private set; }
 
-        public ParameterInfo(string measurableType, IEnumerable<ServiceState> serviceStates)
+        public ParameterServices(string measurableType, IEnumerable<ServiceState> serviceStates)
         {
             MeasurableType = measurableType;
             ServiceStates = serviceStates;
