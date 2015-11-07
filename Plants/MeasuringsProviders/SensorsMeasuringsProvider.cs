@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.MessagesCreators;
 using PlantingLib.Messenging;
@@ -17,7 +18,7 @@ namespace PlantingLib.MeasuringsProviders
 
         public void SendMessages(TimeSpan timeSpan)
         {
-            foreach (Sensor sensor in SensorCollection.Sensors)//.Where(sensor => sensor.IsOn))
+            foreach (Sensor sensor in SensorCollection.Sensors.Where(sensor => sensor.IsOn))
             {
                 if ((int) timeSpan.TotalSeconds%(int) sensor.MeasuringTimeout.TotalSeconds == 0)
                 {

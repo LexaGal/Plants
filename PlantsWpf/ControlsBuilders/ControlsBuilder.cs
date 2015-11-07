@@ -18,9 +18,9 @@ namespace PlantsWpf.ControlsBuilders
     public class ControlsBuilder
     {
         public FrameworkElementFactory CreateRemoveSensorButtonTemplate(PlantsArea area,
-            BindingList<DataGridSensorView> dataGridSensorViews, Action<PlantsArea, Sensor> removeSensor)
+            BindingList<DataGridSensorView> dataGridSensorViews, Func<PlantsArea, Sensor, bool> removeSensor)
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "X");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
@@ -31,11 +31,6 @@ namespace PlantsWpf.ControlsBuilders
                     {
                         removeSensor(area, view.Sensor);
                         dataGridSensorViews.Remove(view);
-
-                        //dataGridSensorToAddViews = new BindingList<DataGridSensorToAddView>(
-                        //    area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))){AllowNew = true};
-
-                        removeSensor(area, view.Sensor);
                     }
                 })
                 );
@@ -44,7 +39,7 @@ namespace PlantsWpf.ControlsBuilders
 
         public FrameworkElementFactory CreateSensorSaveButtonTemplate(PlantsArea area,
             BindingList<DataGridSensorView> dataGridSensorViews,
-            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Action<PlantsArea, Sensor, ServiceSchedule> saveSensor)
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Func<PlantsArea, Sensor, ServiceSchedule, bool> saveSensor)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "Ok");
@@ -83,12 +78,6 @@ namespace PlantsWpf.ControlsBuilders
                                 
                                 area.PlantsAreaServicesStates.AddServiceState(serviceState);
 
-                                //if (ParameterServicesInfo.GetParameterInfo(sensor.MeasurableType) == null)
-                                //{
-                                //    ParameterServicesInfo.ParametersServices.Add(new ParameterServices(sensor.MeasurableType,
-                                //        new List<ServiceState> { serviceState }));
-                                //}
-
                                 ServiceSchedule serviceSchedule = 
                                     new ServiceSchedule(Guid.NewGuid(), area.Id,
                                         serviceState.ServiceName, new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
@@ -114,8 +103,8 @@ namespace PlantsWpf.ControlsBuilders
         }
 
         public FrameworkElementFactory CreateServiceScheduleSaveButtonTemplate(PlantsArea area,
-            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Action<PlantsArea, 
-            ServiceSchedule> saveServiceSchedule)
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Func<PlantsArea, 
+            ServiceSchedule, bool> saveServiceSchedule)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "Ok");
@@ -160,6 +149,7 @@ namespace PlantsWpf.ControlsBuilders
                                 servicingSpan, servicingPauseSpan, new List<MeasurableParameter> {measurableParameter});
                         }
                         saveServiceSchedule(area, serviceSchedule);
+                        
                         MessageBox.Show(@"Schedule data saved");
                         view.IsModified = false.ToString();
                     }
@@ -284,7 +274,7 @@ namespace PlantsWpf.ControlsBuilders
             return stackPanel;
         }
 
-        public Button CreateRemovePlantsAreaButton(Action<PlantsArea> removePlantsArea, PlantsArea area)
+        public Button CreateRemovePlantsAreaButton(Func<PlantsArea, bool> removePlantsArea, PlantsArea area)
         {
             Button removePlantsAreaButton = new Button
             {
@@ -292,8 +282,8 @@ namespace PlantsWpf.ControlsBuilders
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Content = "X",
-                Width = 15,
-                Height = 20
+                Width = 25,
+                Height = 30
             };
 
             removePlantsAreaButton.Click += (sender, args) =>

@@ -42,40 +42,43 @@ namespace PlantingLib.Plants
             return MeasurableParameters.FirstOrDefault(mp => mp.MeasurableType == type);
         }
 
-        public bool AddCustomParameters(List<CustomParameter> customParameters)
+        public bool AddMeasurableParameters(List<MeasurableParameter> measurableParameters)
         {
             if (MeasurableParameters == null)
             {
                 MeasurableParameters = new List<MeasurableParameter>();
             }
-            MeasurableParameters.AddRange(customParameters);
+            if (measurableParameters != null)
+            {
+                MeasurableParameters.AddRange(measurableParameters);
+            }
             return true;
         }
 
-        public bool AddCustomParameter(CustomParameter customParameter)
+        public bool AddMeasurableParameter(MeasurableParameter measurableParameter)
         {
             if (MeasurableParameters == null)
             {
                 MeasurableParameters = new List<MeasurableParameter>();
             }
-            if (MeasurableParameters.Any(c => c.Id == customParameter.Id))
+            if (MeasurableParameters.Any(c => measurableParameter != null && c.Id == measurableParameter.Id))
             {
-                MeasurableParameter cp = MeasurableParameters.First(c => c.Id == customParameter.Id);
-                cp = customParameter;
+                MeasurableParameter mp = MeasurableParameters.First(c => c.Id == measurableParameter.Id);
+                mp = measurableParameter;
                 return true;
             }
-            MeasurableParameters.Add(customParameter);
+            MeasurableParameters.Add(measurableParameter);
             return true;
         }
 
-        public bool RemoveCustomParameter(CustomParameter customParameter)
+        public bool RemoveMeasurableParameter(MeasurableParameter measurableParameter)
         {
             //!!! not .Remove(item)
             if (MeasurableParameters == null)
             {
                 return false;
             }
-            MeasurableParameters.RemoveAll(cp => cp.Id == customParameter.Id);
+            MeasurableParameters.RemoveAll(cp => measurableParameter != null && cp.Id == measurableParameter.Id);
             return true;
         }
     }

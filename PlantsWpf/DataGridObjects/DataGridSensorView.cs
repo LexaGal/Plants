@@ -166,7 +166,7 @@ namespace PlantsWpf.DataGridObjects
                          _sensor.MeasurableParameter.Max ||
                          _sensor.Function.CurrentFunctionValue <
                          _sensor.MeasurableParameter.Min
-                ? "SOS"
+                ? " SOS"
                 : String.Empty;
         }
 

@@ -231,10 +231,6 @@ namespace PlantsWpf
                         AllowRemove = true
                     };
 
-            //BindingList<DataGridSensorToAddView> dataGridSensorToAddViews =
-            //    new BindingList<DataGridSensorToAddView>(
-            //        area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))) {AllowNew = true};
-
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews =
                 new BindingList<DataGridServiceScheduleView>(
                     area.ServicesSchedulesStates.ServicesSchedules.ToList()
@@ -245,9 +241,6 @@ namespace PlantsWpf
                             AllowRemove = false,
                             AllowEdit = true
                         };
-
-            //StackPanel buttonsPanel = controlsBuilder.CreateButtonsPanel(area, plantAreaPanel, sensorsToAddDataGrid,
-            //    dataGridSensorToAddViews, SaveSensor, dataGridSensorViews);
 
             FrameworkElementFactory removeSensorButtonTemplate = controlsBuilder.CreateRemoveSensorButtonTemplate(area,
                 dataGridSensorViews, RemoveSensor);
@@ -273,7 +266,6 @@ namespace PlantsWpf
             plantAreaPanel.Children.Add(sensorViewsDataGrid);
             plantAreaPanel.Children.Add(serviceStatesDataGrid);
             plantAreaPanel.Children.Add(serviceSchedulesDataGrid);
-            //plantAreaPanel.Children.Add(buttonsPanel);
 
             ScrollViewer scrollViewer = new ScrollViewer
             {
@@ -298,37 +290,45 @@ namespace PlantsWpf
             return border;
         }
 
-        private void SaveServiceSchedule(PlantsArea area, ServiceSchedule serviceSchedule)
+        private bool SaveServiceSchedule(PlantsArea area, ServiceSchedule serviceSchedule)
         {
-            _dbModifier.SaveServiceSchedule(area, serviceSchedule);
+            return _dbModifier.SaveServiceSchedule(area, serviceSchedule);
         }
 
-        private void SaveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
+        private bool SaveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
-            _dbModifier.SaveSensor(area, sensor, serviceSchedule);
+            return _dbModifier.SaveSensor(area, sensor, serviceSchedule);
         }
 
-        private void SavePlantsArea(PlantsArea plantsArea)
+        private bool AddPlantsArea(PlantsArea plantsArea)
         {
-            _dbModifier.SavePlantsArea(plantsArea);
-            SetPlantsGrid(3);
+            if (_dbModifier.AddPlantsArea(plantsArea))
+            {
+                SetPlantsGrid(3);
+                return true;
+            }
+            return false;
         }
 
-        private void RemoveSensor(PlantsArea area, Sensor sensor)
+        private bool RemoveSensor(PlantsArea area, Sensor sensor)
         {
             if (_dbModifier.RemoveSensor(area, sensor))
             {
                 MessageBox.Show(String.Format("{0} sensor removed", sensor.MeasurableType));
+                return true;
             }
+            return false;
         }
 
-        private void RemovePlantsArea(PlantsArea area)
+        private bool RemovePlantsArea(PlantsArea area)
         {
             if (_dbModifier.RemovePlantsArea(area))
             {
                 SetPlantsGrid(3);
                 MessageBox.Show(String.Format("{0}\narea removed", area));
+                return true;
             }
+            return false;
         }
 
         private void Start_OnClick(object sender, RoutedEventArgs e)
@@ -367,7 +367,7 @@ namespace PlantsWpf
         public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
         {
             PlantsArea plantsArea = e.PlantsArea;
-            SavePlantsArea(plantsArea);
+            AddPlantsArea(plantsArea);
         }
     }
 }

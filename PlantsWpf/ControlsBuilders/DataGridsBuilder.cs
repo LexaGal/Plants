@@ -224,7 +224,7 @@ namespace PlantsWpf.ControlsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = "SOS",
+                            Value = " SOS",
                             Setters =
                             {
                                 new Setter(Control.BackgroundProperty, Brushes.Red)
@@ -428,7 +428,7 @@ namespace PlantsWpf.ControlsBuilders
                 Header = "Duration",
                 Binding = new Binding("ServicingSpan")
                 {
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay
                 }
             };
@@ -437,7 +437,7 @@ namespace PlantsWpf.ControlsBuilders
                 Header = "Pause",
                 Binding = new Binding("ServicingPauseSpan")
                 {
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay
                 }
             };

@@ -66,8 +66,8 @@ namespace PlantsWpf.DataGridObjects
             set
             {
                 _servicingPauseSpan = value;
-                _serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(_servicingPauseSpan);
                 OnPropertyChanged();
+                _serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(_servicingPauseSpan);
                 IsModified = true.ToString();
             }
         }

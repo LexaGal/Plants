@@ -44,7 +44,7 @@ namespace PlantingLib.Plants
             {
                 Sensors = new List<Sensor>();
             }
-            if (Sensors.Any(s => s.Id == sensor.Id))
+            if (Sensors.Any(s => sensor != null && s.Id == sensor.Id))
             {
                 Sensor old = Sensors.First(s => s.Id == sensor.Id);
                 old = sensor;
@@ -59,7 +59,7 @@ namespace PlantingLib.Plants
         {
             if (Sensors != null)
             {
-                if (Sensors.All(s => s.Id != sensor.Id))
+                if (Sensors.All(s => sensor != null && s.Id != sensor.Id))
                 {
                     return false;
                 }

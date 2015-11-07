@@ -177,11 +177,11 @@ namespace Mapper.MapperContext
                     List<MeasurableParameterMapping> measurableParameterMappings =
                         ids.Select(id => _measurableParameterRepository.Get(Guid.Parse(id))).ToList();
 
-                    List<CustomParameter> customParameters =
-                        measurableParameterMappings.Select(m => RestoreMeasurableParameter(m) as CustomParameter)
+                    List<MeasurableParameter> measurableParameters =
+                        measurableParameterMappings.Select(RestoreMeasurableParameter)
                             .ToList();
 
-                    plant.AddCustomParameters(customParameters);
+                    plant.AddMeasurableParameters(measurableParameters);
                 }
                 return plant;
             }
