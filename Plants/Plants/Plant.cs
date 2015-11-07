@@ -7,35 +7,26 @@ namespace PlantingLib.Plants
 {
     public class Plant
     {
-        public Plant(Temperature temperature, Humidity humidity, SoilPh soilPh,
-            Nutrient nutrient, PlantNameEnum name)
-        {
-            Id = Guid.NewGuid();
-            Temperature = temperature;
-            Humidity = humidity;
-            SoilPh = soilPh;
-            Nutrient = nutrient;
-            Name = name;
+        public Guid Id { get; private set; }
+        public PlantNameEnum Name { get; private set; }
 
-            MeasurableParameters = new List<MeasurableParameter>
-            {
-                Temperature,
-                Humidity,
-                SoilPh,
-                Nutrient
-            };
-            CustomParameters = new List<CustomParameter>();
-        }
+        public Temperature Temperature { get; private set; }
+        public Humidity Humidity { get; private set; }
+        public SoilPh SoilPh { get; private set; }
+        public Nutrient Nutrient { get; private set; }
+
+        public List<MeasurableParameter> MeasurableParameters { get; private set; }
 
         public Plant(Guid id, Temperature temperature, Humidity humidity, SoilPh soilPh,
             Nutrient nutrient, PlantNameEnum name)
         {
             Id = id;
+            Name = name;
+
             Temperature = temperature;
             Humidity = humidity;
             SoilPh = soilPh;
             Nutrient = nutrient;
-            Name = name;
 
             MeasurableParameters = new List<MeasurableParameter>
             {
@@ -44,42 +35,48 @@ namespace PlantingLib.Plants
                 SoilPh,
                 Nutrient
             };
-            CustomParameters = new List<CustomParameter>(); 
         }
 
         public MeasurableParameter GetMeasurableParameter(string type)
         {
-            return MeasurableParameters.First(mp => mp.MeasurableType == type);
+            return MeasurableParameters.FirstOrDefault(mp => mp.MeasurableType == type);
         }
 
-        public void AddCustomParameters(List<CustomParameter> customParameters)
+        public bool AddCustomParameters(List<CustomParameter> customParameters)
         {
-            CustomParameters.AddRange(customParameters);
+            if (MeasurableParameters == null)
+            {
+                MeasurableParameters = new List<MeasurableParameter>();
+            }
             MeasurableParameters.AddRange(customParameters);
+            return true;
         }
 
-        public void AddCustomParameter(CustomParameter customParameters)
+        public bool AddCustomParameter(CustomParameter customParameter)
         {
-            CustomParameters.Add(customParameters);
-            MeasurableParameters.Add(customParameters);
+            if (MeasurableParameters == null)
+            {
+                MeasurableParameters = new List<MeasurableParameter>();
+            }
+            if (MeasurableParameters.Any(c => c.Id == customParameter.Id))
+            {
+                MeasurableParameter cp = MeasurableParameters.First(c => c.Id == customParameter.Id);
+                cp = customParameter;
+                return true;
+            }
+            MeasurableParameters.Add(customParameter);
+            return true;
         }
 
         public bool RemoveCustomParameter(CustomParameter customParameter)
         {
             //!!! not .Remove(item)
-            CustomParameters.RemoveAll(cp => cp.Id == customParameter.Id);
+            if (MeasurableParameters == null)
+            {
+                return false;
+            }
             MeasurableParameters.RemoveAll(cp => cp.Id == customParameter.Id);
             return true;
         }
-
-        public Guid Id { get; private set; }
-        public PlantNameEnum Name { get; private set; }
-        public Temperature Temperature { get; private set; }
-        public Humidity Humidity { get; private set; }
-        public SoilPh SoilPh { get; private set; }
-        public Nutrient Nutrient { get; private set; }
-        public List<MeasurableParameter> MeasurableParameters { get; private set; }
-        public List<CustomParameter> CustomParameters { get; private set; }
-
     }
 }

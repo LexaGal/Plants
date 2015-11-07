@@ -18,8 +18,7 @@ namespace PlantsWpf.ControlsBuilders
     public class ControlsBuilder
     {
         public FrameworkElementFactory CreateRemoveSensorButtonTemplate(PlantsArea area,
-            BindingList<DataGridSensorView> dataGridSensorViews, Action<PlantsArea, Sensor> removeSensor,
-            BindingList<DataGridSensorToAddView> dataGridSensorToAddViews)
+            BindingList<DataGridSensorView> dataGridSensorViews, Action<PlantsArea, Sensor> removeSensor)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "X");
@@ -33,8 +32,8 @@ namespace PlantsWpf.ControlsBuilders
                         removeSensor(area, view.Sensor);
                         dataGridSensorViews.Remove(view);
 
-                        dataGridSensorToAddViews = new BindingList<DataGridSensorToAddView>(
-                            area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))){AllowNew = true};
+                        //dataGridSensorToAddViews = new BindingList<DataGridSensorToAddView>(
+                        //    area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))){AllowNew = true};
 
                         removeSensor(area, view.Sensor);
                     }
@@ -43,7 +42,78 @@ namespace PlantsWpf.ControlsBuilders
             return buttonTemplate;
         }
 
-        public FrameworkElementFactory CreateServiceScheduleSetUpButtonTemplate(PlantsArea area,
+        public FrameworkElementFactory CreateSensorSaveButtonTemplate(PlantsArea area,
+            BindingList<DataGridSensorView> dataGridSensorViews,
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Action<PlantsArea, Sensor, ServiceSchedule> saveSensor)
+        {
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
+            buttonTemplate.SetValue(ContentControl.ContentProperty, "Ok");
+            buttonTemplate.AddHandler(
+                ButtonBase.ClickEvent,
+                new RoutedEventHandler((o, e) =>
+                {
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+
+                    if (dataGridSensorView != null)
+                    {
+                        try
+                        {
+                            if (dataGridSensorView.Sensor != null)
+                            {
+                                dataGridSensorView.UpdateSource();
+                                saveSensor(area, dataGridSensorView.Sensor, null);
+                            }
+                            else
+                            {
+                                CustomParameter customParameter =
+                                    new CustomParameter(Guid.NewGuid(), Convert.ToInt32(dataGridSensorView.Optimal),
+                                        Convert.ToInt32(dataGridSensorView.Min), Convert.ToInt32(dataGridSensorView.Max),
+                                        dataGridSensorView.Measurable);
+
+                                CustomSensor sensor =
+                                    new CustomSensor(Guid.NewGuid(), area,
+                                        TimeSpan.Parse(dataGridSensorView.Timeout), customParameter, 0);
+                                
+                                dataGridSensorView.Sensor = sensor;
+                                dataGridSensorView.UpdateSource();
+                                dataGridSensorView.UpdateView();
+
+                                ServiceState serviceState = 
+                                    new ServiceState(sensor.MeasurableType, true);
+                                
+                                area.PlantsAreaServicesStates.AddServiceState(serviceState);
+
+                                //if (ParameterServicesInfo.GetParameterInfo(sensor.MeasurableType) == null)
+                                //{
+                                //    ParameterServicesInfo.ParametersServices.Add(new ParameterServices(sensor.MeasurableType,
+                                //        new List<ServiceState> { serviceState }));
+                                //}
+
+                                ServiceSchedule serviceSchedule = 
+                                    new ServiceSchedule(Guid.NewGuid(), area.Id,
+                                        serviceState.ServiceName, new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
+                                        new List<MeasurableParameter> { sensor.MeasurableParameter });
+                                
+                                area.ServicesSchedulesStates.AddServiceSchedule(serviceSchedule);
+
+                                dataGridServiceScheduleViews.Add(new DataGridServiceScheduleView(serviceSchedule));
+                                
+                                saveSensor(area, sensor, serviceSchedule);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show(@"Wrong sensor data");
+                            return;
+                        }
+                        MessageBox.Show(@"Sensor data saved");
+                    }
+                })
+                );
+            return buttonTemplate;
+        }
+
+        public FrameworkElementFactory CreateServiceScheduleSaveButtonTemplate(PlantsArea area,
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Action<PlantsArea, 
             ServiceSchedule> saveServiceSchedule)
         {
@@ -53,40 +123,45 @@ namespace PlantsWpf.ControlsBuilders
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridServiceScheduleView view = ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
+                    DataGridServiceScheduleView view = ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
+
                     if (view != null)
                     {
                         ServiceSchedule serviceSchedule =
-                            area.ServicesSchedulesState.ServicesSchedules.FirstOrDefault(
+                            area.ServicesSchedulesStates.ServicesSchedules.FirstOrDefault(
                                 s => s.ServiceState.ToString() == view.ServiceName);
+
+                        TimeSpan servicingSpan;
+                        TimeSpan servicingPauseSpan;
+
+                        try
+                        {
+                            servicingSpan = TimeSpan.Parse(view.ServicingSpan);
+                            servicingPauseSpan = TimeSpan.Parse(view.ServicingPauseSpan);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show(@"Wrong schedule data");
+                            return;
+                        }
+
                         if (serviceSchedule != null)
                         {
-                            try
-                            {
-                                serviceSchedule.ServicingSpan = TimeSpan.Parse(view.ServicingSpan);
-                                serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(view.ServicingPauseSpan);
-
-                                saveServiceSchedule(area, serviceSchedule);
-                            }
-                            catch (Exception)
-                            {
-                                MessageBox.Show(@"Wrong schedule data");
-                                return;
-                            }
-                            MessageBox.Show(@"Schedule data saved");
+                            serviceSchedule.ServicingSpan = servicingSpan;
+                            serviceSchedule.ServicingPauseSpan = servicingPauseSpan;
                         }
-
-                        ServiceStateEnum parameter;
-                        bool parsed = Enum.TryParse(view.ServiceName, out parameter);
-
-
-                        //?
-                        if (parsed)
+                        else
                         {
-                            MeasurableParameter measurableParameter = area.Plant.MeasurableParameters.SingleOrDefault(p => p.MeasurableType == view.Parameters)
-                            serviceSchedule = new ServiceSchedule(area.Id, parameter, TimeSpan.Parse(view.ServicingSpan),
-                                TimeSpan.Parse(view.ServicingPauseSpan), new List<MeasurableParameter>() {});
+                            MeasurableParameter measurableParameter =
+                                area.Plant.MeasurableParameters.SingleOrDefault(
+                                    p => p.MeasurableType == view.Parameters);
+
+                            serviceSchedule = new ServiceSchedule(area.Id, view.ServiceName,
+                                servicingSpan, servicingPauseSpan, new List<MeasurableParameter> {measurableParameter});
                         }
+                        saveServiceSchedule(area, serviceSchedule);
+                        MessageBox.Show(@"Schedule data saved");
+                        view.IsModified = false.ToString();
                     }
                 })
                 );
@@ -151,15 +226,14 @@ namespace PlantsWpf.ControlsBuilders
 
                         if (sensor != null)
                         {
-                            int i = Convert.ToInt32(dataGridSensorToAddView.Timeout);
+                            TimeSpan timeSpan = TimeSpan.Parse(dataGridSensorToAddView.Timeout);
 
-                            if (i <= 0)
+                            if (timeSpan.TotalSeconds <= 0)
                             {
                                 throw new FormatException();
                             }
 
-                            sensor.MeasuringTimeout = new TimeSpan(0, 0,
-                                Convert.ToInt32(dataGridSensorToAddView.Timeout));
+                            sensor.MeasuringTimeout = timeSpan;
 
                             dataGridSensorToAddViews.Remove(dataGridSensorToAddView);
                         }
@@ -174,16 +248,16 @@ namespace PlantsWpf.ControlsBuilders
                                 continue;
                             }
 
-                            TimeSpan timeout = new TimeSpan(0, 0, Convert.ToInt32(dataGridSensorToAddView.Timeout));
+                            TimeSpan timeout = TimeSpan.Parse(dataGridSensorToAddView.Timeout);
                             CustomParameter customParameter =
-                                new CustomParameter(Convert.ToInt32(dataGridSensorToAddView.Optimal),
+                                new CustomParameter(Guid.NewGuid(), Convert.ToInt32(dataGridSensorToAddView.Optimal),
                                     Convert.ToInt32(dataGridSensorToAddView.Min),
                                     Convert.ToInt32(dataGridSensorToAddView.Max), dataGridSensorToAddView.Measurable);
-                            sensor = new CustomSensor(area, timeout, customParameter, 0);
+                            sensor = new CustomSensor(Guid.NewGuid(), area, timeout, customParameter, 0);
                         }
 
                         saveSensor(area, sensor);
-                        
+
                         dataGridSensorViews.Add(new DataGridSensorView(sensor));
                     }
 
@@ -214,12 +288,12 @@ namespace PlantsWpf.ControlsBuilders
         {
             Button removePlantsAreaButton = new Button
             {
-                Margin = new Thickness(0, -50, 0, 0),
+                Margin = new Thickness(0, -50, 25, 0),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
-                Content = "Remove",
-                Width = 70,
-                Height = 30
+                Content = "X",
+                Width = 15,
+                Height = 20
             };
 
             removePlantsAreaButton.Click += (sender, args) =>

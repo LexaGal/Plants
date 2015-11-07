@@ -14,12 +14,12 @@ namespace PlantingLib.ServiceSystems
         public PlantsArea PlantsArea { get; private set; }
         public string MeasurableType { get; private set; }
         public double ParameterValue { get; private set; }
+        
         private Timer _timer;
-        private Func<ServiceMessage, ServiceMessage> _func;
-        //private int _nIntervals;
         protected TimeSpan ServiceTimeSpan;
         private MeasurableParameter _measurableParameter;
-
+        private ServiceMessage _serviceMessage;
+        
         protected ServiceSystem(string measurableType, double parameterValue, PlantsArea plantsArea, TimeSpan serviceTimeSpan)
         {
             PlantsArea = plantsArea;
@@ -28,7 +28,7 @@ namespace PlantingLib.ServiceSystems
             ServiceTimeSpan = serviceTimeSpan;
         }
 
-        public void SetServiceStateIsOn(bool serviceIsOn)
+        public void SetServiceStateToOn(bool serviceIsOn)
         {
             Sensor sensor = PlantsArea.Sensors.SingleOrDefault(s => s.MeasurableParameter.MeasurableType == MeasurableType);
             if (sensor != null)
@@ -46,25 +46,25 @@ namespace PlantingLib.ServiceSystems
                 switch (parameter)
                 {
                     case ParameterEnum.Humidity:
-                        serviceState = PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Watering.ToString());
                         break;
                     case ParameterEnum.Temperature:
                         if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
                         {
-                            serviceState = PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                            serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
                                 s => s.ServiceName == ServiceStateEnum.Warming.ToString());
                             break;
                         }
-                        serviceState = PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Cooling.ToString());
                         break;
                     case ParameterEnum.SoilPh:
-                        serviceState = PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Nutrienting.ToString());
                         break;
                     case ParameterEnum.Nutrient:
-                        serviceState = PlantsArea.PlantsAreaServiceState.ServiceStates.First(
+                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Nutrienting.ToString());
                         break;
                 }
@@ -78,8 +78,8 @@ namespace PlantingLib.ServiceSystems
             }
 
             //if custom service state
-            serviceState = PlantsArea.PlantsAreaServiceState.ServiceStates
-                .FirstOrDefault(s => s.ServiceName == String.Format("*{0}*", MeasurableType));
+            serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates
+                .FirstOrDefault(s => s.IsFor(MeasurableType));
             if (serviceState != null)
             {
                 serviceState.IsOn = serviceIsOn.ToString();
@@ -101,15 +101,19 @@ namespace PlantingLib.ServiceSystems
         public void ServiceTime_Elapsed(object sender, ElapsedEventArgs e)
         {
             _measurableParameter = PlantsArea.Plant.GetMeasurableParameter(MeasurableType);
-            if (SystemTimer.IsEnabled)
+            if (_measurableParameter != null)
             {
-                // TimeSpan.Zero is for service of message SOS, not of schedule
-                if (ServiceTimeSpan == TimeSpan.Zero)
+                if (SystemTimer.IsEnabled)
                 {
-                    ServiceMessage serviceMessage = new ServiceMessage(PlantsArea.Id, MeasurableType,
-                        _measurableParameter.Optimal, ComputeTimeForService());
+                    // TimeSpan.Zero is for service of message SOS, not of schedule
+                    if (ServiceTimeSpan == TimeSpan.Zero)
+                    {
 
-                    _func(serviceMessage);
+                        ServiceMessage serviceMessage = new ServiceMessage(PlantsArea.Id, MeasurableType,
+                            _measurableParameter.Optimal, new TimeSpan((int) _timer.Interval));
+
+                        _serviceMessage = serviceMessage;
+                    }
 
                     ResetSensorFunction(_measurableParameter.Optimal);
                 }
@@ -124,21 +128,20 @@ namespace PlantingLib.ServiceSystems
                         ResetSensorFunction(ParameterValue + ServiceTimeSpan.TotalSeconds);
                     }
                 }
-
-                SetServiceStateIsOn(false);
-             }
+                SetServiceStateToOn(false);
+            }
         }
 
-        public void StartService(Func<ServiceMessage, ServiceMessage> func)
+        public ServiceMessage Service()
         {
-            SetServiceStateIsOn(true);
-
-            _func = func;
+            SetServiceStateToOn(true);
 
             _timer = new Timer(ComputeTimeForService().TotalMilliseconds);
             _timer.Elapsed += ServiceTime_Elapsed;
             _timer.AutoReset = false;
             _timer.Enabled = true;
+
+            return _serviceMessage;
         }
     }
 }

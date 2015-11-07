@@ -10,7 +10,6 @@ using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
-using PlantingLib.Timers;
 using Timer = System.Timers.Timer;
 
 namespace PlantingLib.ServiceSystems
@@ -19,38 +18,49 @@ namespace PlantingLib.ServiceSystems
     {
         public ISender<MeasuringMessage> Sender { get; private set; }
         public PlantsAreas PlantsAreas { get; private set; }
+        private readonly Timer _timer;
 
         public ServiceProvider(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)
         {
             Sender = sender;
+            
             //subscribing
             sender.MessageSending += RecieveMessage;
 
             PlantsAreas = plantsAreas;
-            Timer timer = new Timer(1000);
-            timer.Elapsed += ServiceTimer_Tick;
-            timer.AutoReset = true;
-            timer.Enabled = true;
-        
+            _timer = new Timer(1000);
+            _timer.Elapsed += ServiceTimer_Tick;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+        }
+
+        public void StopServices()
+        {
+            _timer.Stop();
+        }
+
+        public void StartServices()
+        {
+            _timer.Start();
         }
 
         private void ServiceTimer_Tick(object sender, ElapsedEventArgs e)
         {
-            foreach (PlantsArea area in PlantsAreas.AllPlantsAreas)
+            foreach (PlantsArea area in PlantsAreas.Areas)
             {
-                foreach (ServiceSchedule servicesSchedule in area.ServicesSchedulesState.ServicesSchedules)
+                foreach (ServiceSchedule servicesSchedule in area.ServicesSchedulesStates.ServicesSchedules)
                 {
                     ServiceState serviceState =
-                        area.PlantsAreaServiceState.ServiceStates.FirstOrDefault(
+                        area.PlantsAreaServicesStates.ServicesStates.FirstOrDefault(
                             s => s.ServiceName == servicesSchedule.ServiceState.ToString());
 
                     // if service state is on -> ignore schedule, !!! set LastServicingTime = DateTime.Now;
-                    if (serviceState != null && serviceState.IsOn == "✔")
+                    if (serviceState != null && serviceState.IsRunning)
                     {
                         servicesSchedule.LastServicingTime = DateTime.Now;
                         continue;
                     }
-
+    
                     if (DateTime.Now.TimeOfDay.Subtract(servicesSchedule.LastServicingTime.TimeOfDay).TotalSeconds >=
                         servicesSchedule.ServicingPauseSpan.TotalSeconds)
                     {
@@ -66,15 +76,14 @@ namespace PlantingLib.ServiceSystems
                                 ServiceSystem serviceSystem = GetServiceSystem(measurableParameter.MeasurableType,
                                    parameterValue, area, servicesSchedule.ServicingSpan);
 
-                                serviceSystem.StartService(GetServiceDescription);
+                                ServiceMessage serviceMessage = serviceSystem.Service();
                             }
                         }
                     }
                 }
             }
         }
-
-
+        
         //recieving
         public void RecieveMessage(object sender, EventArgs eventArgs)
         {
@@ -87,10 +96,10 @@ namespace PlantingLib.ServiceSystems
                     MeasuringMessage recievedMessage = messengingEventArgs.Object;
                 
                     ServiceSystem serviceSystem = GetServiceSystem(recievedMessage.MeasurableType, 
-                        recievedMessage.ParameterValue, PlantsAreas.AllPlantsAreas.First(pa =>
+                        recievedMessage.ParameterValue, PlantsAreas.Areas.First(pa =>
                             pa.Id == recievedMessage.PlantsAreaId), TimeSpan.Zero);
 
-                    serviceSystem.StartService(GetServiceDescription);
+                    ServiceMessage serviceMessage = serviceSystem.Service();
                 }
             }
             catch (Exception e)
@@ -121,12 +130,6 @@ namespace PlantingLib.ServiceSystems
             }
             return new CustomSystem(measurableType, parameterValue, plantsArea, servicingSpan);
         }
-
-
-        public ServiceMessage GetServiceDescription(ServiceMessage serviceMessage)
-        {
-            Console.WriteLine("\n{0}\n", serviceMessage);
-            return serviceMessage;
-        }
+        
     }
 }

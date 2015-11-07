@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using PlantingLib.MeasurableParameters;
-using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
@@ -12,40 +11,30 @@ namespace PlantingLib.Plants
     public class PlantsArea
     {
         public Guid Id { get; private set; }
+        public int Number { get; private set; }
 
         public Plant Plant { get; private set; }
-        public IList<Sensor> Sensors { get; private set; }
-        public int Number { get; private set; }
-        public PlantsAreaServiceState PlantsAreaServiceState { get; set; }
-        public ServicesSchedulesState ServicesSchedulesState { get; set; }
-
-        public PlantsArea(Plant plant, int number)
-        {
-            Id = Guid.NewGuid();
-            Plant = plant;
-            Number = number;
-            PlantsAreaServiceState = new PlantsAreaServiceState();
-            MeasurableParametersInfo.ParametersInfo
-                .SelectMany(l => l.ServiceStates)
-                .Distinct(new ServiceStateEqualityComparer())
-                .Where(s => !s.IsCustom)
-                .ToList()
-                .ForEach(s => PlantsAreaServiceState.AddServiceState(s.Clone() as ServiceState));
-            Sensors = new List<Sensor>();
-        }
+        
+        public List<Sensor> Sensors { get; private set; }
+        public PlantsAreaServicesStates PlantsAreaServicesStates { get; private set; }
+        public ServicesSchedulesStates ServicesSchedulesStates { get; private set; }
 
         public PlantsArea(Guid id, Plant plant, int number)
         {
             Id = id;
             Plant = plant;
             Number = number;
-            PlantsAreaServiceState = new PlantsAreaServiceState();
-            MeasurableParametersInfo.ParametersInfo
+
+            ServicesSchedulesStates = new ServicesSchedulesStates();
+
+            PlantsAreaServicesStates = new PlantsAreaServicesStates();
+            ParameterServicesInfo.ParametersServices
                 .SelectMany(l => l.ServiceStates)
                 .Distinct(new ServiceStateEqualityComparer())
                 .Where(s => !s.IsCustom)
                 .ToList()
-                .ForEach(s => PlantsAreaServiceState.AddServiceState(s.Clone() as ServiceState));
+                .ForEach(s => PlantsAreaServicesStates.AddServiceState(s.Clone() as ServiceState));
+            
             Sensors = new List<Sensor>();
         }
 
@@ -57,7 +46,9 @@ namespace PlantingLib.Plants
             }
             if (Sensors.Any(s => s.Id == sensor.Id))
             {
-                return false;
+                Sensor old = Sensors.First(s => s.Id == sensor.Id);
+                old = sensor;
+                return true;
             }
             Sensors.Add(sensor);
             sensor.SetPlantsArea(this);
@@ -66,13 +57,17 @@ namespace PlantingLib.Plants
 
         public bool RemoveSensor(Sensor sensor)
         {
-            if (Sensors.All(s => s.Id != sensor.Id))
+            if (Sensors != null)
             {
-                return false;
+                if (Sensors.All(s => s.Id != sensor.Id))
+                {
+                    return false;
+                }
+                Sensors.Remove(sensor);
+                sensor.SetPlantsArea(null);
+                return true;
             }
-            Sensors.Remove(sensor);
-            sensor.SetPlantsArea(null);
-            return true;
+            return false;
         }
 
         public List<Sensor> FindMainSensorsToAdd()
@@ -80,19 +75,19 @@ namespace PlantingLib.Plants
             List<Sensor> sensors = new List<Sensor>();
             if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.Temperature.ToString()))
             {
-                sensors.Add(new TemperatureSensor(null, new TimeSpan(0, 0, 1), Plant.Temperature, 0));
+                sensors.Add(new TemperatureSensor(Guid.NewGuid(), null, new TimeSpan(0, 0, 1), Plant.Temperature, 0));
             }
             if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.Humidity.ToString()))
             {
-                sensors.Add(new HumiditySensor(null, new TimeSpan(0, 0, 1), Plant.Humidity, 0));
+                sensors.Add(new HumiditySensor(Guid.NewGuid(), null, new TimeSpan(0, 0, 1), Plant.Humidity, 0));
             }
             if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.SoilPh.ToString()))
             {
-                sensors.Add(new SoilPhSensor(null, new TimeSpan(0, 0, 1), Plant.SoilPh, 0));
+                sensors.Add(new SoilPhSensor(Guid.NewGuid(), null, new TimeSpan(0, 0, 1), Plant.SoilPh, 0));
             }
             if (Sensors.All(sensor => sensor.MeasurableType != ParameterEnum.Nutrient.ToString()))
             {
-                sensors.Add(new NutrientSensor(null, new TimeSpan(0, 0, 1), Plant.Nutrient, 0));
+                sensors.Add(new NutrientSensor(Guid.NewGuid(), null, new TimeSpan(0, 0, 1), Plant.Nutrient, 0));
             }
             return sensors;
         }

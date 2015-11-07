@@ -1,4 +1,5 @@
-﻿using PlantingLib.MeasurableParameters;
+﻿using System;
+using PlantingLib.MeasurableParameters;
 using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 
@@ -8,12 +9,11 @@ namespace PlantingLib.ParametersFunctions
     {
         public TemperatureFunction(Temperature temperature)
             : base(temperature)
-        {
-        }
+        {}
 
         public override double NewFunctionValue()
         {
-            switch (WeatherType)
+         try{   switch (WeatherType)
             {
                 case WeatherTypesEnum.Cold:
                     if (SystemTimer.CurrentTimeSpan.Seconds < SystemTimer.RestartTimeSpan.TotalSeconds / 3)
@@ -72,7 +72,12 @@ namespace PlantingLib.ParametersFunctions
                     }
                     return CurrentFunctionValue;
             }
-            return CurrentFunctionValue;
+         }
+         catch (ArgumentOutOfRangeException e)
+         {
+             return CurrentFunctionValue + Random.NextDouble();
+         }
+         return CurrentFunctionValue;
         }
     }
 }

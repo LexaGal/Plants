@@ -2,11 +2,11 @@ using System.ComponentModel;
 
 namespace PlantingLib.Plants.ServicesScheduling
 {
-    public class ServicesSchedulesState
+    public class ServicesSchedulesStates
     {
         public BindingList<ServiceSchedule> ServicesSchedules { get; private set; }
 
-        public ServicesSchedulesState()
+        public ServicesSchedulesStates()
         {
             ServicesSchedules = new BindingList<ServiceSchedule>
             {
@@ -16,9 +16,14 @@ namespace PlantingLib.Plants.ServicesScheduling
             };
         }
 
-        public void AddServiceSchedule(ServiceSchedule serviceSchedule)
+        public bool AddServiceSchedule(ServiceSchedule serviceSchedule)
         {
+            if (ServicesSchedules == null)
+            {
+                ServicesSchedules = new BindingList<ServiceSchedule>();
+            }
             ServicesSchedules.Add(serviceSchedule);
+            return true;
         }
 
         public bool RemoveServiceState(ServiceSchedule serviceSchedule)

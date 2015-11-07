@@ -15,7 +15,6 @@ namespace PlantingLib.Timers
             _timer.Elapsed += handler;
             _timer.AutoReset = true;
             _timer.Enabled = true;
-            Console.ReadLine();
         }
 
         public static bool IsEnabled
@@ -25,18 +24,27 @@ namespace PlantingLib.Timers
 
         public static void Restart()
         {
-            _timer.Stop();
-            _timer.Start();
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Start();
+            }
         }
 
         public static void Enable()
         {
-            _timer.Enabled = true;
+            if (_timer != null)
+            {
+                _timer.Enabled = true;
+            }
         }
 
         public static void Disable()
         {
-            _timer.Enabled = false;
+            if (_timer != null)
+            {
+                _timer.Enabled = false;
+            }
         }
     }
 }

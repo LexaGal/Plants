@@ -8,7 +8,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
     {
         public override bool Edit(MeasuringMessageMapping value)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

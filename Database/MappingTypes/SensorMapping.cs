@@ -30,5 +30,15 @@ namespace Database.MappingTypes
             Type = type;
             NumberOfTimes = numberOfTimes;
         }
+
+        public void CopyTo(SensorMapping sensorMapping)
+        {
+            sensorMapping.Id = Id;
+            sensorMapping.PlantsAreaId = PlantsAreaId;
+            sensorMapping.MeasuringTimeout = MeasuringTimeout;
+            sensorMapping.MeasurableParameterId = MeasurableParameterId;
+            sensorMapping.Type = Type;
+            sensorMapping.NumberOfTimes = NumberOfTimes;
+        }
     }
 }

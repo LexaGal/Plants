@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using PlantingLib.MeasurableParameters;
 
 namespace PlantingLib.Messenging
 {

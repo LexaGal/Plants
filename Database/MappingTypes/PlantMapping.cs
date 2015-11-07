@@ -31,15 +31,15 @@ namespace Database.MappingTypes
             CustomParametersIds = customParametersIds;
         }
 
-        public void CopyTo(PlantMapping pm)
+        public void CopyTo(PlantMapping plantMapping)
         {
-            pm.Id = Id;
-            pm.TemperatureId = TemperatureId;
-            pm.HumidityId = HumidityId;
-            pm.SoilPhId = SoilPhId;
-            pm.NutrientId = NutrientId;
-            pm.Name = Name;
-            pm.CustomParametersIds = CustomParametersIds;
+            plantMapping.Id = Id;
+            plantMapping.TemperatureId = TemperatureId;
+            plantMapping.HumidityId = HumidityId;
+            plantMapping.SoilPhId = SoilPhId;
+            plantMapping.NutrientId = NutrientId;
+            plantMapping.Name = Name;
+            plantMapping.CustomParametersIds = CustomParametersIds;
         }
     }
 }

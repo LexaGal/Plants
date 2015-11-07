@@ -8,7 +8,18 @@ namespace Database.DatabaseStructure.Repository.Concrete
     {
         public override bool Edit(SensorMapping value)
         {
-            throw new System.NotImplementedException();
+            using (Context = new PlantingDb())
+            {
+                SensorMapping sensorMapping = Context.SensorsSet.Find(value.Id);
+                if (sensorMapping == null)
+                {
+                    throw new ArgumentNullException("value", "Can't find sensorMapping  with such id");
+                }
+                value.CopyTo(sensorMapping);
+                Context.SaveChanges();
+                return true;
+            }
+     
         }
     }
 }

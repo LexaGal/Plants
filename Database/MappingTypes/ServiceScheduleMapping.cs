@@ -30,15 +30,14 @@ namespace Database.MappingTypes
             MeasurableParametersIds = measurableParametersIds;
         }
 
-        public void CopyTo(ServiceScheduleMapping ssm)
+        public void CopyTo(ServiceScheduleMapping serviceScheduleMapping)
         {
-            ssm.Id = Id;
-            ssm.PlantsAreaId = PlantsAreaId;
-            ssm.ServiceState = ServiceState;
-            ssm.ServicingSpan = ServicingSpan;
-            ssm.ServicingPauseSpan = ServicingPauseSpan;
-            ssm.MeasurableParametersIds = MeasurableParametersIds;
-        
+            serviceScheduleMapping.Id = Id;
+            serviceScheduleMapping.PlantsAreaId = PlantsAreaId;
+            serviceScheduleMapping.ServiceState = ServiceState;
+            serviceScheduleMapping.ServicingSpan = ServicingSpan;
+            serviceScheduleMapping.ServicingPauseSpan = ServicingPauseSpan;
+            serviceScheduleMapping.MeasurableParametersIds = MeasurableParametersIds;
         }
     }
 }

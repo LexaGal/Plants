@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
+using PlantingLib.Plants.ServicesScheduling;
+using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 using PlantsWpf.ArgsForEvents;
 
@@ -29,6 +31,7 @@ namespace PlantsWpf
         public PlantsAreaWindow()
         {
             InitializeComponent();
+            
             foreach (string name in  Enum.GetNames(typeof (PlantNameEnum)))
             {
                 PlantNameBox.Items.Add(name);
@@ -47,62 +50,100 @@ namespace PlantsWpf
                 int optimalT = Convert.ToInt32(OptimalTemperature.Text);
                 int minT = Convert.ToInt32(MinTemperature.Text);
                 int maxT = Convert.ToInt32(MaxTemperature.Text);
-                Temperature temperature = new Temperature(optimalT, minT, maxT);
+                Temperature temperature = new Temperature(Guid.NewGuid(), optimalT, minT, maxT);
+
+                if (!temperature.IsValid())
+                {
+                    throw new ApplicationException("Fields for Temperature are not valid - numeric values >= 0 and <= 100!");
+                }
 
                 int optimalH = Convert.ToInt32(OptimalHumidity.Text);
                 int minH = Convert.ToInt32(MinHumidity.Text);
                 int maxH = Convert.ToInt32(MaxHumidity.Text);
-                Humidity humidity = new Humidity(optimalH, minH, maxH);
+                Humidity humidity = new Humidity(Guid.NewGuid(), optimalH, minH, maxH);
+
+                if (!humidity.IsValid())
+                {
+                    throw new ApplicationException("Fields for Humidity are not valid - numeric values >= 0 and <= 100!");
+                }
 
                 int optimalS = Convert.ToInt32(OptimalSoilPh.Text);
                 int minS = Convert.ToInt32(MinSoilPh.Text);
                 int maxS = Convert.ToInt32(MaxSoilPh.Text);
-                SoilPh soilPh = new SoilPh(optimalS, minS, maxS);
+                SoilPh soilPh = new SoilPh(Guid.NewGuid(), optimalS, minS, maxS);
+
+                if (!soilPh.IsValid())
+                {
+                    throw new ApplicationException("Fields for SoilPh are not valid - numeric values >= 0 and <= 100!");
+                }
 
                 int optimalN = Convert.ToInt32(OptimalNutrient.Text);
                 int minN = Convert.ToInt32(MinNutrient.Text);
                 int maxN = Convert.ToInt32(MaxNutrient.Text);
-                Nutrient nutrient = new Nutrient(optimalN, minN, maxN);
+                Nutrient nutrient = new Nutrient(Guid.NewGuid(), optimalN, minN, maxN);
 
-                Plant plant = new Plant(temperature, humidity, soilPh, nutrient, plantName);
+                if (!nutrient.IsValid())
+                {
+                    throw new ApplicationException("Fields for Nutrient are not valid - numeric values >= 0 and <= 100!");
+                }
 
-                PlantsArea plantsArea = new PlantsArea(plant, number);
+                Plant plant = new Plant(Guid.NewGuid(), temperature, humidity, soilPh, nutrient, plantName);
 
-                int temperatureTimeout = Convert.ToInt32(TemperatureTimeout.Text);
-                int humidityTimeout = Convert.ToInt32(HumidityTimeout.Text);
-                int soilPhTimeout = Convert.ToInt32(SoilPhTimeout.Text);
-                int nutrientTimeout = Convert.ToInt32(NutrientTimeout.Text);
+                PlantsArea plantsArea = new PlantsArea(Guid.NewGuid(), plant, number);
 
-                if (TemperatureCheckBox.IsChecked != null && (bool) TemperatureCheckBox.IsChecked)
+                try
                 {
-                    plantsArea.AddSensor(new TemperatureSensor(plantsArea, new TimeSpan(0, 0, temperatureTimeout),
-                        temperature, 0));
+                    TimeSpan temperatureTimeout = TimeSpan.Parse(TemperatureTimeout.Text);
+                    TimeSpan humidityTimeout = TimeSpan.Parse(HumidityTimeout.Text);
+                    TimeSpan soilPhTimeout = TimeSpan.Parse(SoilPhTimeout.Text);
+                    TimeSpan nutrientTimeout = TimeSpan.Parse(NutrientTimeout.Text);
+
+                    Sensor ts = new TemperatureSensor(Guid.NewGuid(), plantsArea, temperatureTimeout, temperature, 0);
+                    if (TemperatureCheckBox.IsChecked != null && !(bool) TemperatureCheckBox.IsChecked){ts.IsOn = false;}
+
+                    Sensor hs = new HumiditySensor(Guid.NewGuid(), plantsArea, humidityTimeout, humidity, 0);
+                    if (HumidityCheckBox.IsChecked != null && !(bool) HumidityCheckBox.IsChecked){hs.IsOn = false;}
+
+                    Sensor ss = new SoilPhSensor(Guid.NewGuid(), plantsArea, soilPhTimeout, soilPh, 0);
+                    if (SoilPhCheckBox.IsChecked != null && !(bool) SoilPhCheckBox.IsChecked){ss.IsOn = false;}
+
+                    Sensor ns = new NutrientSensor(Guid.NewGuid(), plantsArea, nutrientTimeout, nutrient, 0);
+                    if (NutrientCheckBox.IsChecked != null && !(bool) NutrientCheckBox.IsChecked){ns.IsOn = false;}
+
                 }
-                if (HumidityCheckBox.IsChecked != null && (bool) HumidityCheckBox.IsChecked)
+                catch (Exception)
                 {
-                    plantsArea.AddSensor(new HumiditySensor(plantsArea, new TimeSpan(0, 0, humidityTimeout), humidity, 0));
+                    MessageBox.Show(@"Please, fill in all timeouts with TimeSpan values >= 0!");
+                    return null;
                 }
-                if (SoilPhCheckBox.IsChecked != null && (bool) SoilPhCheckBox.IsChecked)
-                {
-                    plantsArea.AddSensor(new SoilPhSensor(plantsArea, new TimeSpan(0, 0, soilPhTimeout), soilPh, 0));
-                }
-                if (NutrientCheckBox.IsChecked != null && (bool) NutrientCheckBox.IsChecked)
-                {
-                    plantsArea.AddSensor(new NutrientSensor(plantsArea, new TimeSpan(0, 0, nutrientTimeout), nutrient, 0));
-                }
+
+                plantsArea.ServicesSchedulesStates.AddServiceSchedule(new ServiceSchedule(Guid.NewGuid(), plantsArea.Id,
+                    ServiceStateEnum.Nutrienting.ToString(), new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
+                    new List<MeasurableParameter> {plantsArea.Plant.Nutrient, plantsArea.Plant.SoilPh}));
+
+                plantsArea.ServicesSchedulesStates.AddServiceSchedule(new ServiceSchedule(Guid.NewGuid(), plantsArea.Id,
+                    ServiceStateEnum.Watering.ToString(), new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0), 
+                    new List<MeasurableParameter> { plantsArea.Plant.Humidity, plantsArea.Plant.Temperature }));
+                
                 return plantsArea;
             }
-            catch (FormatException)
+            catch (ApplicationException e)
             {
-                MessageBox.Show(@"Please, fill in all fields with numeric values > 0!");
+                MessageBox.Show(e.Message);
                 return null;
             }
+            catch (FormatException e)
+            {
+                MessageBox.Show(e.Message);
+                return null;
+            }
+        
         }
 
         private void Save_OnClick(object sender, RoutedEventArgs e)
         {
             PlantsArea plantsArea = GetPlantsArea();
-            if (PlantsAreaEvent != null)
+            if (plantsArea != null && PlantsAreaEvent != null)
             {
                 PlantsAreaEvent(this, new PlantsAreaEventArgs(plantsArea));
             }
@@ -116,10 +157,13 @@ namespace PlantsWpf
                 {
                     (visual as TextBox).Text = String.Empty;
                 }
-
                 if (visual is ComboBox)
                 {
-                    PlantNameBox.Text = PlantNameBox.Items[0].ToString();
+                    (visual as ComboBox).Text = (visual as ComboBox).Items[0].ToString();
+                }
+                if (visual is CheckBox)
+                {
+                    (visual as CheckBox).IsChecked = false;
                 }
             }
         }

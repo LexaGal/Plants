@@ -24,5 +24,14 @@ namespace Database.MappingTypes
 
         public MeasurableParameterMapping()
         {}
+
+        public void CopyTo(MeasurableParameterMapping measurableParameterMapping)
+        {
+            measurableParameterMapping.Id = Id;
+            measurableParameterMapping.Optimal = Optimal;
+            measurableParameterMapping.Min = Min;
+            measurableParameterMapping.Max = Max;
+            measurableParameterMapping.Type = Type;
+        }
     }
 }

@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Linq;
+using PlantingLib.MeasuringsProviding;
 using PlantingLib.MessagesCreators;
 using PlantingLib.Messenging;
 using PlantingLib.Sensors;
 
-namespace PlantingLib.MeasuringsProviding
+namespace PlantingLib.MeasuringsProviders
 {
     public class SensorsMeasuringsProvider : ISender<MeasuringMessage>
     {
-        public SensorsCollection Sensors { get; private set; }
+        public SensorsCollection SensorCollection { get; private set; }
         
-        public SensorsMeasuringsProvider(SensorsCollection sensors)
+        public SensorsMeasuringsProvider(SensorsCollection sensorCollection)
         {
-            Sensors = sensors;
+            SensorCollection = sensorCollection;
         }
 
         public void SendMessages(TimeSpan timeSpan)
         {
-            foreach (Sensor sensor in Sensors.AllSensors.Where(sensor => sensor.IsOn))
+            foreach (Sensor sensor in SensorCollection.Sensors)//.Where(sensor => sensor.IsOn))
             {
                 if ((int) timeSpan.TotalSeconds%(int) sensor.MeasuringTimeout.TotalSeconds == 0)
                 {
@@ -26,6 +26,7 @@ namespace PlantingLib.MeasuringsProviding
                             sensor.PlantsArea.Id, sensor.GetNewMeasuring);
 
                     MeasuringMessage message = measuringMessageCreator.CreateMessage();
+
                     //sending to observer
                     OnMessageSending(message);
                 }
