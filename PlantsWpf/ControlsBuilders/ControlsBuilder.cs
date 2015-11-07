@@ -18,7 +18,9 @@ namespace PlantsWpf.ControlsBuilders
     public class ControlsBuilder
     {
         public FrameworkElementFactory CreateRemoveSensorButtonTemplate(PlantsArea area,
-            BindingList<DataGridSensorView> dataGridSensorViews, Func<PlantsArea, Sensor, bool> removeSensor)
+            BindingList<DataGridSensorView> dataGridSensorViews, 
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews,
+            Func<PlantsArea, Sensor, ServiceSchedule, bool> removeSensor)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "X");
@@ -26,11 +28,34 @@ namespace PlantsWpf.ControlsBuilders
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridSensorView view = ((FrameworkElement) o).DataContext as DataGridSensorView;
-                    if (view != null)
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+                    if (dataGridSensorView != null)
                     {
-                        removeSensor(area, view.Sensor);
-                        dataGridSensorViews.Remove(view);
+                        if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) == 0)
+                        {
+                            MessageBox.Show(String.Format("Sensor with measurable '{0}' does not exist",
+                                dataGridSensorView.Measurable));
+                            return;
+                        }
+
+                        ServiceState serviceState = area.PlantServicesStates.ServicesStates.SingleOrDefault(
+                            state => state.IsFor(dataGridSensorView.Measurable));
+
+                        if (serviceState != null)
+                        {
+                            DataGridServiceScheduleView dataGridServiceScheduleView =
+                                dataGridServiceScheduleViews.SingleOrDefault(
+                                    s => s.ServiceName == serviceState.ServiceName);
+
+                            ServiceSchedule serviceSchedule =
+                                area.ServicesSchedulesStates.ServicesSchedules.SingleOrDefault(
+                                    schedule => schedule.ServiceName == serviceState.ServiceName);
+
+                            removeSensor(area, dataGridSensorView.Sensor, serviceSchedule);
+
+                            dataGridSensorViews.Remove(dataGridSensorView);
+                            dataGridServiceScheduleViews.Remove(dataGridServiceScheduleView);
+                        }
                     }
                 })
                 );
@@ -60,6 +85,13 @@ namespace PlantsWpf.ControlsBuilders
                             }
                             else
                             {
+                                if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) != 1)
+                                {
+                                    MessageBox.Show(String.Format("Sensor with measurable '{0}' already exists",
+                                        dataGridSensorView.Measurable));
+                                    return;
+                                }
+
                                 CustomParameter customParameter =
                                     new CustomParameter(Guid.NewGuid(), Convert.ToInt32(dataGridSensorView.Optimal),
                                         Convert.ToInt32(dataGridSensorView.Min), Convert.ToInt32(dataGridSensorView.Max),
@@ -75,8 +107,8 @@ namespace PlantsWpf.ControlsBuilders
 
                                 ServiceState serviceState = 
                                     new ServiceState(sensor.MeasurableType, true);
-                                
-                                area.PlantsAreaServicesStates.AddServiceState(serviceState);
+
+                                area.PlantServicesStates.AddServiceState(serviceState);
 
                                 ServiceSchedule serviceSchedule = 
                                     new ServiceSchedule(Guid.NewGuid(), area.Id,
@@ -118,7 +150,7 @@ namespace PlantsWpf.ControlsBuilders
                     {
                         ServiceSchedule serviceSchedule =
                             area.ServicesSchedulesStates.ServicesSchedules.FirstOrDefault(
-                                s => s.ServiceState.ToString() == view.ServiceName);
+                                s => s.ServiceName.ToString() == view.ServiceName);
 
                         TimeSpan servicingSpan;
                         TimeSpan servicingPauseSpan;

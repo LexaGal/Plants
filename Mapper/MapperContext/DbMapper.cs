@@ -81,7 +81,7 @@ namespace Mapper.MapperContext
                 builder.Remove(builder.Length - 1, 1);
             }
             return new ServiceScheduleMapping(serviceSchedule.Id, serviceSchedule.PlantsAreaId,
-                serviceSchedule.ServiceState,
+                serviceSchedule.ServiceName,
                 (int) serviceSchedule.ServicingSpan.TotalSeconds,
                 (int) serviceSchedule.ServicingPauseSpan.TotalSeconds, builder.ToString());
         }

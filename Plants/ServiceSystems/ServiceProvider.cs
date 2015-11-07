@@ -51,8 +51,8 @@ namespace PlantingLib.ServiceSystems
                 foreach (ServiceSchedule servicesSchedule in area.ServicesSchedulesStates.ServicesSchedules)
                 {
                     ServiceState serviceState =
-                        area.PlantsAreaServicesStates.ServicesStates.FirstOrDefault(
-                            s => s.ServiceName == servicesSchedule.ServiceState.ToString());
+                        area.PlantServicesStates.ServicesStates.FirstOrDefault(
+                            s => s.ServiceName == servicesSchedule.ServiceName.ToString());
 
                     // if service state is on -> ignore schedule, !!! set LastServicingTime = DateTime.Now;
                     if (serviceState != null && serviceState.IsRunning)

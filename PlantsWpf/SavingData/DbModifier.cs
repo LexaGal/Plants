@@ -195,7 +195,7 @@ namespace PlantsWpf.SavingData
             }
         } 
 
-        public bool RemoveSensor(PlantsArea area, Sensor sensor)
+        public bool RemoveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
             try
             {
@@ -205,12 +205,12 @@ namespace PlantsWpf.SavingData
                 {
                     //if custom sensor
                     ServiceState serviceState =
-                        area.PlantsAreaServicesStates.ServicesStates.FirstOrDefault(
+                        area.PlantServicesStates.ServicesStates.FirstOrDefault(
                             s => s.IsFor(sensor.MeasurableType));
 
                     if (serviceState != null)
                     {
-                        if (area.PlantsAreaServicesStates.RemoveServiceState(serviceState))
+                        if (area.PlantServicesStates.RemoveServiceState(serviceState))
                         {
                             if (area.Plant.RemoveMeasurableParameter(sensor.MeasurableParameter))
                             {
@@ -219,13 +219,17 @@ namespace PlantsWpf.SavingData
                                 {
                                     if (_measurableParameterMappingRepository.Delete(sensor.MeasurableParameter.Id))
                                     {
-                                        ServiceSchedule servicesSchedule =
-                                            area.ServicesSchedulesStates.ServicesSchedules.SingleOrDefault(
-                                                s => s.ServiceState == serviceState.ServiceName);
-
-                                        if (servicesSchedule != null)
+                                        if (serviceSchedule != null)
                                         {
-                                            return _serviceScheduleMappingRepository.Delete(servicesSchedule.Id);
+                                            return _serviceScheduleMappingRepository.Delete(serviceSchedule.Id);
+                                        }
+                                        
+                                        serviceSchedule = area.ServicesSchedulesStates.ServicesSchedules.SingleOrDefault(
+                                                s => s.ServiceName == serviceState.ServiceName);
+
+                                        if (serviceSchedule != null)
+                                        {
+                                            return _serviceScheduleMappingRepository.Delete(serviceSchedule.Id);
                                         }
                                     }
                                 }

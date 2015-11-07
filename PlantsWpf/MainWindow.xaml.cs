@@ -138,7 +138,6 @@ namespace PlantsWpf
                 {
                     Sensor sensor = _dbMapper.RestoreSensor(sensorMapping, area);
                     _sensorsCollection.AddSensor(sensor);
-                    //area.AddSensor(sensor);
                 }
             }
             
@@ -148,13 +147,7 @@ namespace PlantsWpf
                 foreach (Sensor source in area.Sensors.Where(s => s.IsCustom))
                 {
                     ServiceState serviceState = new ServiceState(source.MeasurableType, true);
-                    area.PlantsAreaServicesStates.AddServiceState(serviceState);
-
-                    //if (ParameterServicesInfo.GetParameterInfo(source.MeasurableType) == null)
-                    //{
-                    //    ParameterServicesInfo.ParametersServices.Add(new ParameterServices(source.MeasurableType,
-                    //        new List<ServiceState> { serviceState }));
-                    //}
+                    area.PlantServicesStates.AddServiceState(serviceState);
                 }
             }
 
@@ -237,13 +230,13 @@ namespace PlantsWpf
                         .ConvertAll(s => new DataGridServiceScheduleView(s)))
                         {
                             RaiseListChangedEvents = true,
-                            AllowNew = false,
-                            AllowRemove = false,
+                            AllowNew = true,
+                            AllowRemove = true,
                             AllowEdit = true
                         };
 
             FrameworkElementFactory removeSensorButtonTemplate = controlsBuilder.CreateRemoveSensorButtonTemplate(area,
-                dataGridSensorViews, RemoveSensor);
+                dataGridSensorViews, dataGridServiceScheduleViews, RemoveSensor);
 
             FrameworkElementFactory sensorSaveButtonTemplate = controlsBuilder.CreateSensorSaveButtonTemplate(area,
                 dataGridSensorViews, dataGridServiceScheduleViews, SaveSensor);
@@ -310,9 +303,9 @@ namespace PlantsWpf
             return false;
         }
 
-        private bool RemoveSensor(PlantsArea area, Sensor sensor)
+        private bool RemoveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
-            if (_dbModifier.RemoveSensor(area, sensor))
+            if (_dbModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
                 MessageBox.Show(String.Format("{0} sensor removed", sensor.MeasurableType));
                 return true;

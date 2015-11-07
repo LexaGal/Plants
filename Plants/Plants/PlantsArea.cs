@@ -16,7 +16,7 @@ namespace PlantingLib.Plants
         public Plant Plant { get; private set; }
         
         public List<Sensor> Sensors { get; private set; }
-        public PlantsAreaServicesStates PlantsAreaServicesStates { get; private set; }
+        public PlantServicesStates PlantServicesStates { get; private set; }
         public ServicesSchedulesStates ServicesSchedulesStates { get; private set; }
 
         public PlantsArea(Guid id, Plant plant, int number)
@@ -27,13 +27,13 @@ namespace PlantingLib.Plants
 
             ServicesSchedulesStates = new ServicesSchedulesStates();
 
-            PlantsAreaServicesStates = new PlantsAreaServicesStates();
+            PlantServicesStates = new PlantServicesStates();
             ParameterServicesInfo.ParametersServices
                 .SelectMany(l => l.ServiceStates)
                 .Distinct(new ServiceStateEqualityComparer())
                 .Where(s => !s.IsCustom)
                 .ToList()
-                .ForEach(s => PlantsAreaServicesStates.AddServiceState(s.Clone() as ServiceState));
+                .ForEach(s => PlantServicesStates.AddServiceState(s.Clone() as ServiceState));
             
             Sensors = new List<Sensor>();
         }

@@ -18,6 +18,7 @@ namespace PlantsWpf.DataGridObjects
         private string _max;
         private string _timeout;
         private string _isModified;
+        private string _measurable;
 
         public string Timeout
         {
@@ -26,7 +27,14 @@ namespace PlantsWpf.DataGridObjects
             {
                 _timeout = value;
                 OnPropertyChanged();
-                _sensor.MeasuringTimeout = TimeSpan.Parse(Timeout);
+                try
+                {
+                    _sensor.MeasuringTimeout = TimeSpan.Parse(Timeout);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
                 IsModified = true.ToString();
             }
         }
@@ -38,7 +46,14 @@ namespace PlantsWpf.DataGridObjects
             {
                 _optimal = value;
                 OnPropertyChanged();
-                _sensor.MeasurableParameter.Optimal = Convert.ToInt32(Optimal);
+                try
+                {
+                    _sensor.MeasurableParameter.Optimal = Convert.ToInt32(Optimal);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
                 IsModified = true.ToString();
             }
         }
@@ -50,7 +65,14 @@ namespace PlantsWpf.DataGridObjects
             {
                 _min = value;
                 OnPropertyChanged();
-                _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
+                try
+                {
+                    _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
                 IsModified = true.ToString();
             }
         }
@@ -62,7 +84,14 @@ namespace PlantsWpf.DataGridObjects
             {
                 _max = value;
                 OnPropertyChanged();
-                _sensor.MeasurableParameter.Max = Convert.ToInt32(Max);
+                try
+                {
+                    _sensor.MeasurableParameter.Max = Convert.ToInt32(Max);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
                 IsModified = true.ToString();
             }
         }
@@ -118,7 +147,17 @@ namespace PlantsWpf.DataGridObjects
             }
         }
 
-        public string Measurable { get; set; }
+        public string Measurable
+        {
+            get { return _measurable; }
+            set
+            {
+                if (value == _measurable) return;
+                _measurable = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string IsCustom { get; set; }
         
         public DataGridSensorView()

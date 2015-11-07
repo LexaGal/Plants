@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace PlantingLib.Plants.ServiceStates
 {
-    public class PlantsAreaServicesStates
+    public class PlantServicesStates
     {
         public BindingList<ServiceState> ServicesStates { get; private set; }
 
-        public PlantsAreaServicesStates()
+        public PlantServicesStates()
         {
             ServicesStates = new BindingList<ServiceState>
             {

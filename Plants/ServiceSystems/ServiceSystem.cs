@@ -46,25 +46,25 @@ namespace PlantingLib.ServiceSystems
                 switch (parameter)
                 {
                     case ParameterEnum.Humidity:
-                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
+                        serviceState = PlantsArea.PlantServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Watering.ToString());
                         break;
                     case ParameterEnum.Temperature:
                         if (ParameterValue < PlantsArea.Plant.Temperature.Optimal)
                         {
-                            serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
+                            serviceState = PlantsArea.PlantServicesStates.ServicesStates.First(
                                 s => s.ServiceName == ServiceStateEnum.Warming.ToString());
                             break;
                         }
-                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
+                        serviceState = PlantsArea.PlantServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Cooling.ToString());
                         break;
                     case ParameterEnum.SoilPh:
-                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
+                        serviceState = PlantsArea.PlantServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Nutrienting.ToString());
                         break;
                     case ParameterEnum.Nutrient:
-                        serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates.First(
+                        serviceState = PlantsArea.PlantServicesStates.ServicesStates.First(
                             s => s.ServiceName == ServiceStateEnum.Nutrienting.ToString());
                         break;
                 }
@@ -78,7 +78,7 @@ namespace PlantingLib.ServiceSystems
             }
 
             //if custom service state
-            serviceState = PlantsArea.PlantsAreaServicesStates.ServicesStates
+            serviceState = PlantsArea.PlantServicesStates.ServicesStates
                 .FirstOrDefault(s => s.IsFor(MeasurableType));
             if (serviceState != null)
             {

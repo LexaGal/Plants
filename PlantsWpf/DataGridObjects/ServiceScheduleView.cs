@@ -55,7 +55,14 @@ namespace PlantsWpf.DataGridObjects
             {
                 _servicingSpan = value;
                 OnPropertyChanged();
-                _serviceSchedule.ServicingSpan = TimeSpan.Parse(_servicingSpan);
+                try
+                {
+                    _serviceSchedule.ServicingSpan = TimeSpan.Parse(_servicingSpan);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
                 IsModified = true.ToString();
             }
         }
@@ -67,7 +74,14 @@ namespace PlantsWpf.DataGridObjects
             {
                 _servicingPauseSpan = value;
                 OnPropertyChanged();
-                _serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(_servicingPauseSpan);
+                try
+                {
+                    _serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(_servicingPauseSpan);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
                 IsModified = true.ToString();
             }
         }
@@ -80,7 +94,7 @@ namespace PlantsWpf.DataGridObjects
         {
             _serviceSchedule = serviceSchedule;
             
-            ServiceName = _serviceSchedule.ServiceState;
+            ServiceName = _serviceSchedule.ServiceName;
 
             StringBuilder builder = new StringBuilder();
             _serviceSchedule.MeasurableParameters.ToList()

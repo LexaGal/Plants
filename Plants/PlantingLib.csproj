@@ -97,7 +97,7 @@
     <Compile Include="Plants\ServicesScheduling\ServicesSchedulesStates.cs" />
     <Compile Include="Plants\ServiceStates\ServiceStateEnum.cs" />
     <Compile Include="Plants\ServiceStates\ServiceStateEqualityComparer.cs" />
-    <Compile Include="Plants\ServiceStates\PlantsAreaServicesStates.cs" />
+    <Compile Include="Plants\ServiceStates\PlantServicesStates.cs" />
     <Compile Include="Plants\ServiceStates\ServiceState.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

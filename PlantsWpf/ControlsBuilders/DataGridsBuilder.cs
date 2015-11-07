@@ -104,7 +104,7 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.Columns.Add(columnServiceName);
             dataGrid.Columns.Add(columnIsOn);
             dataGrid.Columns.Add(columnIsScheduled);
-            dataGrid.ItemsSource = area.PlantsAreaServicesStates.ServicesStates;
+            dataGrid.ItemsSource = area.PlantServicesStates.ServicesStates;
             return dataGrid;
         }
 
@@ -129,7 +129,10 @@ namespace PlantsWpf.ControlsBuilders
             {
                 Header = "Measurable",
                 Width = 73,
-                Binding = new Binding("Measurable"),
+                Binding = new Binding("Measurable")
+                {
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                },
 
                 CellStyle = new Style(typeof (Button))
                 {
