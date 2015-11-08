@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
@@ -17,6 +18,71 @@ namespace PlantsWpf.ControlsBuilders
 {
     public class ControlsBuilder
     {
+        public FrameworkElementFactory CreateOnOffSensorButtonTemplate()
+        {
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (CheckBox));
+            buttonTemplate.SetValue(UIElement.ClipToBoundsProperty, true);
+            buttonTemplate.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsOffByUser")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+            });
+
+            buttonTemplate.AddHandler(
+                ToggleButton.CheckedEvent,
+                new RoutedEventHandler((o, e) =>
+                {
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+                    if (dataGridSensorView != null)
+                    {
+                        dataGridSensorView.IsOffByUser = true.ToString();
+                    }
+                }));
+
+            buttonTemplate.AddHandler(
+                ToggleButton.UncheckedEvent,
+                new RoutedEventHandler((o, e) =>
+                {
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+                    if (dataGridSensorView != null)
+                    {
+                        dataGridSensorView.IsOffByUser = false.ToString();
+                    }
+                }));
+            
+            return buttonTemplate;
+        }
+
+        public FrameworkElementFactory CreateOnOffServiceScheduleButtonTemplate()
+        {
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(CheckBox));
+            buttonTemplate.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsOn")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+            });
+
+            buttonTemplate.AddHandler(
+                ToggleButton.CheckedEvent,
+                new RoutedEventHandler((o, e) =>
+                {
+                    DataGridServiceScheduleView dataGridServiceScheduleView = ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
+                    if (dataGridServiceScheduleView != null)
+                    {
+                        dataGridServiceScheduleView.IsOn = true.ToString();
+                    }
+                }));
+            buttonTemplate.AddHandler(
+                ToggleButton.UncheckedEvent,
+                new RoutedEventHandler((o, e) =>
+                {
+                    DataGridServiceScheduleView dataGridServiceScheduleView = ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
+                    if (dataGridServiceScheduleView != null)
+                    {
+                        dataGridServiceScheduleView.IsOn = false.ToString();
+                    }
+                }));
+            return buttonTemplate;
+        }
+
         public FrameworkElementFactory CreateRemoveSensorButtonTemplate(PlantsArea area,
             BindingList<DataGridSensorView> dataGridSensorViews, 
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews,
@@ -33,7 +99,7 @@ namespace PlantsWpf.ControlsBuilders
                     {
                         if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) == 0)
                         {
-                            MessageBox.Show(String.Format("Sensor with measurable '{0}' does not exist",
+                            MessageBox.Show(String.Format("'{0}': sensor with such measurable does not exist",
                                 dataGridSensorView.Measurable));
                             return;
                         }
@@ -124,10 +190,10 @@ namespace PlantsWpf.ControlsBuilders
                         }
                         catch (Exception)
                         {
-                            MessageBox.Show(@"Wrong sensor data");
+                            MessageBox.Show(String.Format("'{0}': wrong sensor data", dataGridSensorView.Measurable));
                             return;
                         }
-                        MessageBox.Show(@"Sensor data saved");
+                        MessageBox.Show(String.Format("'{0}': sensor data saved", dataGridSensorView.Measurable));
                     }
                 })
                 );
@@ -144,25 +210,26 @@ namespace PlantsWpf.ControlsBuilders
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridServiceScheduleView view = ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
+                    DataGridServiceScheduleView dataGridServiceScheduleView = ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
 
-                    if (view != null)
+                    if (dataGridServiceScheduleView != null)
                     {
                         ServiceSchedule serviceSchedule =
                             area.ServicesSchedulesStates.ServicesSchedules.FirstOrDefault(
-                                s => s.ServiceName.ToString() == view.ServiceName);
+                                s => s.ServiceName.ToString() == dataGridServiceScheduleView.ServiceName);
 
                         TimeSpan servicingSpan;
                         TimeSpan servicingPauseSpan;
 
                         try
                         {
-                            servicingSpan = TimeSpan.Parse(view.ServicingSpan);
-                            servicingPauseSpan = TimeSpan.Parse(view.ServicingPauseSpan);
+                            servicingSpan = TimeSpan.Parse(dataGridServiceScheduleView.ServicingSpan);
+                            servicingPauseSpan = TimeSpan.Parse(dataGridServiceScheduleView.ServicingPauseSpan);
                         }
                         catch (Exception)
                         {
-                            MessageBox.Show(@"Wrong schedule data");
+                            MessageBox.Show(String.Format("'{0}': wrong schedule data",
+                                    dataGridServiceScheduleView.ServiceName));
                             return;
                         }
 
@@ -175,142 +242,141 @@ namespace PlantsWpf.ControlsBuilders
                         {
                             MeasurableParameter measurableParameter =
                                 area.Plant.MeasurableParameters.SingleOrDefault(
-                                    p => p.MeasurableType == view.Parameters);
+                                    p => p.MeasurableType == dataGridServiceScheduleView.Parameters);
 
-                            serviceSchedule = new ServiceSchedule(area.Id, view.ServiceName,
+                            serviceSchedule = new ServiceSchedule(Guid.NewGuid(), area.Id, dataGridServiceScheduleView.ServiceName,
                                 servicingSpan, servicingPauseSpan, new List<MeasurableParameter> {measurableParameter});
                         }
                         saveServiceSchedule(area, serviceSchedule);
                         
-                        MessageBox.Show(@"Schedule data saved");
-                        view.IsModified = false.ToString();
+                        MessageBox.Show(String.Format("'{0}': schedule data saved", dataGridServiceScheduleView.ServiceName));
+                        dataGridServiceScheduleView.IsModified = false.ToString();
                     }
                 })
                 );
             return buttonTemplate;
         }
+        
+        //public StackPanel CreateButtonsPanel(PlantsArea area, StackPanel plantAreaPanel, 
+        //    DataGrid sensorsToAddDataGrid, BindingList<DataGridSensorToAddView> dataGridSensorToAddViews,
+        //    Action<PlantsArea, Sensor> saveSensor, BindingList<DataGridSensorView> dataGridSensorViews) 
+        //{
+        //    Button sensorsToAddButton = new Button
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Left,
+        //        Margin = new Thickness(145, 10, 0, 0),
+        //        Content = "Sensors",
+        //        Width = 70,
+        //        Height = 30
+        //    };
+        //    Button addSensorButton = new Button
+        //    {
+        //        Width = 40,
+        //        Height = 30,
+        //        Content = "Add",
+        //        Margin = new Thickness(215, -30, 0, 0),
+        //        HorizontalAlignment = HorizontalAlignment.Left,
+        //        Visibility = Visibility.Collapsed
+        //    };
+        //    Button closeSensorsToAddButton = new Button
+        //    {
+        //        Width = 40,
+        //        Height = 30,
+        //        Content = "Close",
+        //        Margin = new Thickness(255, -30, 0, 0),
+        //        HorizontalAlignment = HorizontalAlignment.Left,
+        //        Visibility = Visibility.Collapsed
+        //    };
 
+        //    DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
 
-        public StackPanel CreateButtonsPanel(PlantsArea area, StackPanel plantAreaPanel, 
-            DataGrid sensorsToAddDataGrid, BindingList<DataGridSensorToAddView> dataGridSensorToAddViews,
-            Action<PlantsArea, Sensor> saveSensor, BindingList<DataGridSensorView> dataGridSensorViews) 
-        {
-            Button sensorsToAddButton = new Button
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(145, 10, 0, 0),
-                Content = "Sensors",
-                Width = 70,
-                Height = 30
-            };
-            Button addSensorButton = new Button
-            {
-                Width = 40,
-                Height = 30,
-                Content = "Add",
-                Margin = new Thickness(215, -30, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Visibility = Visibility.Collapsed
-            };
-            Button closeSensorsToAddButton = new Button
-            {
-                Width = 40,
-                Height = 30,
-                Content = "Close",
-                Margin = new Thickness(255, -30, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Visibility = Visibility.Collapsed
-            };
+        //    sensorsToAddButton.Click += (sender, args) =>
+        //    {
+        //        dataGridSensorToAddViews = new BindingList<DataGridSensorToAddView>(
+        //            area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))) {AllowNew = true};
 
-            DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
+        //        sensorsToAddDataGrid = dataGridsBuilder.CreateSensorsToAddDataGrid(area, dataGridSensorToAddViews);
+        //        plantAreaPanel.Children.Add(sensorsToAddDataGrid);
+        //        sensorsToAddButton.IsEnabled = false;
+        //        addSensorButton.Visibility = Visibility.Visible;
+        //        closeSensorsToAddButton.Visibility = Visibility.Visible;
+        //    };
 
-            sensorsToAddButton.Click += (sender, args) =>
-            {
-                dataGridSensorToAddViews = new BindingList<DataGridSensorToAddView>(
-                    area.FindMainSensorsToAdd().ConvertAll(s => new DataGridSensorToAddView(s))) {AllowNew = true};
+        //    addSensorButton.Click += (o, e) =>
+        //    {
+        //        try
+        //        {
+        //            foreach (DataGridSensorToAddView dataGridSensorToAddView in
+        //                    dataGridSensorToAddViews.Where(d => d.Add == "yes").ToList())
+        //            {
+        //                Sensor sensor = area.FindMainSensorsToAdd().SingleOrDefault(s =>
+        //                    s.MeasurableType == dataGridSensorToAddView.Measurable);
 
-                sensorsToAddDataGrid = dataGridsBuilder.CreateSensorsToAddDataGrid(area, dataGridSensorToAddViews);
-                plantAreaPanel.Children.Add(sensorsToAddDataGrid);
-                sensorsToAddButton.IsEnabled = false;
-                addSensorButton.Visibility = Visibility.Visible;
-                closeSensorsToAddButton.Visibility = Visibility.Visible;
-            };
+        //                if (sensor != null)
+        //                {
+        //                    TimeSpan timeSpan = TimeSpan.Parse(dataGridSensorToAddView.Timeout);
 
-            addSensorButton.Click += (o, e) =>
-            {
-                try
-                {
-                    foreach (DataGridSensorToAddView dataGridSensorToAddView in
-                            dataGridSensorToAddViews.Where(d => d.Add == "yes").ToList())
-                    {
-                        Sensor sensor = area.FindMainSensorsToAdd().SingleOrDefault(s =>
-                            s.MeasurableType == dataGridSensorToAddView.Measurable);
+        //                    if (timeSpan.TotalSeconds <= 0)
+        //                    {
+        //                        throw new FormatException();
+        //                    }
 
-                        if (sensor != null)
-                        {
-                            TimeSpan timeSpan = TimeSpan.Parse(dataGridSensorToAddView.Timeout);
+        //                    sensor.MeasuringTimeout = timeSpan;
 
-                            if (timeSpan.TotalSeconds <= 0)
-                            {
-                                throw new FormatException();
-                            }
+        //                    dataGridSensorToAddViews.Remove(dataGridSensorToAddView);
+        //                }
 
-                            sensor.MeasuringTimeout = timeSpan;
+        //                //if custom sensor
+        //                else
+        //                {
+        //                    if (dataGridSensorViews.Any(s => s.Measurable == dataGridSensorToAddView.Measurable))
+        //                    {
+        //                        MessageBox.Show(String.Format("Sensor with measurable '{0}' already exists",
+        //                            dataGridSensorToAddView.Measurable));
+        //                        continue;
+        //                    }
 
-                            dataGridSensorToAddViews.Remove(dataGridSensorToAddView);
-                        }
+        //                    TimeSpan timeout = TimeSpan.Parse(dataGridSensorToAddView.Timeout);
+        //                    CustomParameter customParameter =
+        //                        new CustomParameter(Guid.NewGuid(), Convert.ToInt32(dataGridSensorToAddView.Optimal),
+        //                            Convert.ToInt32(dataGridSensorToAddView.Min),
+        //                            Convert.ToInt32(dataGridSensorToAddView.Max), dataGridSensorToAddView.Measurable);
+        //                    sensor = new CustomSensor(Guid.NewGuid(), area, timeout, customParameter, 0);
+        //                }
 
-                        //if custom sensor
-                        else
-                        {
-                            if (dataGridSensorViews.Any(s => s.Measurable == dataGridSensorToAddView.Measurable))
-                            {
-                                MessageBox.Show(String.Format("Sensor with measurable '{0}' already exists",
-                                    dataGridSensorToAddView.Measurable));
-                                continue;
-                            }
+        //                saveSensor(area, sensor);
 
-                            TimeSpan timeout = TimeSpan.Parse(dataGridSensorToAddView.Timeout);
-                            CustomParameter customParameter =
-                                new CustomParameter(Guid.NewGuid(), Convert.ToInt32(dataGridSensorToAddView.Optimal),
-                                    Convert.ToInt32(dataGridSensorToAddView.Min),
-                                    Convert.ToInt32(dataGridSensorToAddView.Max), dataGridSensorToAddView.Measurable);
-                            sensor = new CustomSensor(Guid.NewGuid(), area, timeout, customParameter, 0);
-                        }
+        //                dataGridSensorViews.Add(new DataGridSensorView(sensor));
+        //            }
 
-                        saveSensor(area, sensor);
+        //        }
+        //        catch (FormatException)
+        //        {
+        //            MessageBox.Show(@"Please, fill in fields with numeric values > 0!");
+        //        }
+        //    };
 
-                        dataGridSensorViews.Add(new DataGridSensorView(sensor));
-                    }
+        //    closeSensorsToAddButton.Click += (sender, args) =>
+        //    {
+        //        closeSensorsToAddButton.Visibility = Visibility.Collapsed;
+        //        addSensorButton.Visibility = Visibility.Collapsed;
+        //        sensorsToAddButton.IsEnabled = true;
+        //        plantAreaPanel.Children.Remove(sensorsToAddDataGrid);
+        //    };
 
-                }
-                catch (FormatException)
-                {
-                    MessageBox.Show(@"Please, fill in fields with numeric values > 0!");
-                }
-            };
-
-            closeSensorsToAddButton.Click += (sender, args) =>
-            {
-                closeSensorsToAddButton.Visibility = Visibility.Collapsed;
-                addSensorButton.Visibility = Visibility.Collapsed;
-                sensorsToAddButton.IsEnabled = true;
-                plantAreaPanel.Children.Remove(sensorsToAddDataGrid);
-            };
-
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Children.Add(sensorsToAddButton);
-            stackPanel.Children.Add(addSensorButton);
-            stackPanel.Children.Add(closeSensorsToAddButton);
+        //    StackPanel stackPanel = new StackPanel();
+        //    stackPanel.Children.Add(sensorsToAddButton);
+        //    stackPanel.Children.Add(addSensorButton);
+        //    stackPanel.Children.Add(closeSensorsToAddButton);
             
-            return stackPanel;
-        }
+        //    return stackPanel;
+        //}
 
         public Button CreateRemovePlantsAreaButton(Func<PlantsArea, bool> removePlantsArea, PlantsArea area)
         {
             Button removePlantsAreaButton = new Button
             {
-                Margin = new Thickness(0, -50, 25, 0),
+                Margin = new Thickness(0, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Content = "X",

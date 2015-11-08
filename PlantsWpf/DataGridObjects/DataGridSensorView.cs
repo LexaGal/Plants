@@ -19,6 +19,18 @@ namespace PlantsWpf.DataGridObjects
         private string _timeout;
         private string _isModified;
         private string _measurable;
+        private string _isOffByUser;
+
+        public string IsOffByUser
+        {
+            get { return _isOffByUser; }
+            set
+            {
+                _isOffByUser = value;
+                OnPropertyChanged();
+                _sensor.IsOffByUser = Convert.ToBoolean(IsOffByUser);
+            }
+        }
 
         public string Timeout
         {
@@ -180,6 +192,8 @@ namespace PlantsWpf.DataGridObjects
            
             IsModified = false.ToString();
 
+            IsOffByUser = _sensor.IsOffByUser.ToString();
+
             UpdateView(); 
         }
 
@@ -205,8 +219,8 @@ namespace PlantsWpf.DataGridObjects
                          _sensor.MeasurableParameter.Max ||
                          _sensor.Function.CurrentFunctionValue <
                          _sensor.MeasurableParameter.Min
-                ? " SOS"
-                : String.Empty;
+                ? true.ToString()
+                : false.ToString();
         }
 
         private void GetNewMeasuring(object sender, EventArgs eventArgs)

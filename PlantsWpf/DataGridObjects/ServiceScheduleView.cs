@@ -16,7 +16,27 @@ namespace PlantsWpf.DataGridObjects
         private string _serviceName;
         private string _parameters;
         private string _isModified;
-       
+        private string _isOn;
+
+        public string IsOn
+        {
+            get { return _isOn; }
+            set
+            {
+                if (value == _isOn) return;
+                _isOn = value;
+                try
+                {
+                    _serviceSchedule.IsOn = Convert.ToBoolean(IsOn);
+                }
+                catch (Exception )
+                {
+                    return;
+                }
+                OnPropertyChanged();
+            }
+        }
+
         public string IsModified
         {
             get { return _isModified; }
@@ -105,6 +125,8 @@ namespace PlantsWpf.DataGridObjects
 
             ServicingSpan = _serviceSchedule.ServicingSpan.ToString();
             ServicingPauseSpan = _serviceSchedule.ServicingPauseSpan.ToString();
+
+            IsOn = true.ToString();
 
             IsModified = false.ToString();
         }

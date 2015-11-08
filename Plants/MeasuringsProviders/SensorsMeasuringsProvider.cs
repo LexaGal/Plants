@@ -18,7 +18,7 @@ namespace PlantingLib.MeasuringsProviders
 
         public void SendMessages(TimeSpan timeSpan)
         {
-            foreach (Sensor sensor in SensorCollection.Sensors.Where(sensor => sensor.IsOn))
+            foreach (Sensor sensor in SensorCollection.Sensors.Where(sensor => sensor.IsOn && !sensor.IsOffByUser))
             {
                 if ((int) timeSpan.TotalSeconds%(int) sensor.MeasuringTimeout.TotalSeconds == 0)
                 {

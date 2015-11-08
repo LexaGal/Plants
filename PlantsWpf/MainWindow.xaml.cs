@@ -57,7 +57,7 @@ namespace PlantsWpf
 
             Weather.SetWeather(WeatherTypesEnum.Warm);
 
-            SetPlantsGrid(3);
+            SetPlantsGrid(1);
 
             SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
         }
@@ -138,6 +138,7 @@ namespace PlantsWpf
                 {
                     Sensor sensor = _dbMapper.RestoreSensor(sensorMapping, area);
                     _sensorsCollection.AddSensor(sensor);
+                    sensor.IsOn = true;
                 }
             }
             
@@ -163,8 +164,8 @@ namespace PlantsWpf
 
         private void SetPlantsGrid(int numberInRow)
         {
-            const int sizeHorizontal = 1352;
-            const int sizeVertical = 640;
+            const int sizeHorizontal = 1330;
+            const int sizeVertical = 260;
             try
             {
                 PlantsGrid.Children.Clear();
@@ -195,7 +196,6 @@ namespace PlantsWpf
 
         private Border CreateBorderedPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
         {
-            DataGrid sensorsToAddDataGrid = new DataGrid();
             DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
             ControlsBuilder controlsBuilder = new ControlsBuilder();
 
@@ -203,9 +203,9 @@ namespace PlantsWpf
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Orientation = Orientation.Vertical,
-                Width = 445,
-                Height = 630,
+                Orientation = Orientation.Horizontal,
+                Width = 1330,
+                Height = 250,
                 CanVerticallyScroll = true
             };
 
@@ -241,17 +241,22 @@ namespace PlantsWpf
             FrameworkElementFactory sensorSaveButtonTemplate = controlsBuilder.CreateSensorSaveButtonTemplate(area,
                 dataGridSensorViews, dataGridServiceScheduleViews, SaveSensor);
 
+            FrameworkElementFactory onOffSensorButtonTemplate = controlsBuilder.CreateOnOffSensorButtonTemplate();
+            
             DataGrid sensorViewsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews,
-                removeSensorButtonTemplate, sensorSaveButtonTemplate);
+                removeSensorButtonTemplate, sensorSaveButtonTemplate, onOffSensorButtonTemplate);
 
             DataGrid serviceStatesDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area);
 
             FrameworkElementFactory serviceScheduleSaveButtonTemplate =
                 controlsBuilder.CreateServiceScheduleSaveButtonTemplate(area,
                     dataGridServiceScheduleViews, SaveServiceSchedule);
+            
+            FrameworkElementFactory onOffServiceScheduleButtonTemplate =
+                controlsBuilder.CreateOnOffServiceScheduleButtonTemplate();
 
             DataGrid serviceSchedulesDataGrid = dataGridsBuilder.CreateServicesSchedulesDataGrid(area,
-                dataGridServiceScheduleViews, serviceScheduleSaveButtonTemplate);
+                dataGridServiceScheduleViews, serviceScheduleSaveButtonTemplate, onOffServiceScheduleButtonTemplate);
 
             Button removePlantsAreaButton = controlsBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
 
@@ -273,8 +278,8 @@ namespace PlantsWpf
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 BorderBrush = Brushes.Black,
-                Background = Brushes.LightBlue,
-                BorderThickness = new Thickness(3),
+                Background = Brushes.LightSteelBlue,
+                BorderThickness = new Thickness(2),
                 Width = plantAreaPanel.Width,
                 Height = plantAreaPanel.Height,
                 Margin = new Thickness(marginLeft, marginTop, 0, 0),
@@ -297,7 +302,8 @@ namespace PlantsWpf
         {
             if (_dbModifier.AddPlantsArea(plantsArea))
             {
-                SetPlantsGrid(3);
+                SetPlantsGrid(1);
+                MessageBox.Show(String.Format("{0}\narea added", plantsArea));
                 return true;
             }
             return false;
@@ -307,7 +313,7 @@ namespace PlantsWpf
         {
             if (_dbModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
-                MessageBox.Show(String.Format("{0} sensor removed", sensor.MeasurableType));
+                MessageBox.Show(String.Format("'{0}': sensor removed", sensor.MeasurableType));
                 return true;
             }
             return false;
@@ -317,7 +323,7 @@ namespace PlantsWpf
         {
             if (_dbModifier.RemovePlantsArea(area))
             {
-                SetPlantsGrid(3);
+                SetPlantsGrid(1);
                 MessageBox.Show(String.Format("{0}\narea removed", area));
                 return true;
             }

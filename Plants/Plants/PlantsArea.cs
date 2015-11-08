@@ -94,7 +94,7 @@ namespace PlantingLib.Plants
 
         public override string ToString()
         {
-            return String.Format("Plant's name: {0}\nPlant's id: {1}\nPlant's number: {2}", Plant.Name, Plant.Id, Number);
+            return String.Format("Plant's name: {0}\nPlant's number: {1}", Plant.Name, Number);
         }
     }
 }

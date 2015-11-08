@@ -30,7 +30,10 @@ namespace PlantingLib.ServiceSystems
 
         public void SetServiceStateToOn(bool serviceIsOn)
         {
-            Sensor sensor = PlantsArea.Sensors.SingleOrDefault(s => s.MeasurableParameter.MeasurableType == MeasurableType);
+            Sensor sensor =
+                PlantsArea.Sensors
+                    .SingleOrDefault(s => s.MeasurableParameter.MeasurableType == MeasurableType);
+            
             if (sensor != null)
             {
                  sensor.IsOn = !serviceIsOn;

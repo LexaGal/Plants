@@ -70,8 +70,7 @@ namespace PlantsWpf.SavingData
 
                 if (serviceSchedule != null)
                 {
-                    if (!(area.ServicesSchedulesStates.AddServiceSchedule(serviceSchedule) &&
-                          SaveServiceSchedule(area, serviceSchedule)))
+                    if (!SaveServiceSchedule(area, serviceSchedule))
                     {
                         return false;
                     }

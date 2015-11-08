@@ -48,7 +48,8 @@ namespace PlantingLib.ServiceSystems
         {
             foreach (PlantsArea area in PlantsAreas.Areas)
             {
-                foreach (ServiceSchedule servicesSchedule in area.ServicesSchedulesStates.ServicesSchedules)
+                foreach (ServiceSchedule servicesSchedule in area.ServicesSchedulesStates
+                    .ServicesSchedules.Where(schedule => schedule.IsOn))
                 {
                     ServiceState serviceState =
                         area.PlantServicesStates.ServicesStates.FirstOrDefault(

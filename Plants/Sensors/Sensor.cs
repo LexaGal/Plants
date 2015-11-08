@@ -17,8 +17,9 @@ namespace PlantingLib.Sensors
         public string MeasurableType { get; set; }
         
         public int NumberOfTimes { get; set; }
+    
         public bool IsOn { get; set; }
-
+        public bool IsOffByUser { get; set; }
         public bool IsCustom { get; set; }
 
         protected Sensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout,
@@ -38,6 +39,7 @@ namespace PlantingLib.Sensors
 
             NumberOfTimes = numberOfTimes;
             IsOn = true;
+            IsOffByUser = false;
         }
         
         public void SetPlantsArea(PlantsArea area)
