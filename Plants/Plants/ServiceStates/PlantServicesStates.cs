@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace PlantingLib.Plants.ServiceStates
@@ -15,6 +16,18 @@ namespace PlantingLib.Plants.ServiceStates
                 AllowEdit = true,
                 AllowRemove = true
             };
+        }
+
+        public ServiceState GetServiceState(Func<ServiceState, bool> func)
+        {
+            try
+            {
+                return ServicesStates.SingleOrDefault(func);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
         }
 
         public bool AddServiceState(ServiceState serviceState)

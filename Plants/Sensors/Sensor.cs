@@ -14,8 +14,15 @@ namespace PlantingLib.Sensors
         public PlantsArea PlantsArea { get; private set; }
         public MeasurableParameter MeasurableParameter { get; set; }
         public ParameterFunction Function { get; protected set; }
-        public string MeasurableType { get; set; }
-        
+
+        public string MeasurableType
+        {
+            get
+            {
+                return MeasurableParameter.MeasurableType;
+            }
+        }
+
         public int NumberOfTimes { get; set; }
     
         public bool IsOn { get; set; }
@@ -35,7 +42,6 @@ namespace PlantingLib.Sensors
 
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
-            MeasurableType = MeasurableParameter.MeasurableType;
 
             NumberOfTimes = numberOfTimes;
             IsOn = true;
@@ -69,7 +75,7 @@ namespace PlantingLib.Sensors
             EventHandler handler = NewMeasuring;
             if (handler != null)
             {
-                handler(this, new MessengingEventArgs<Sensor>(this));
+                handler(this, EventArgs.Empty);
             }
         }
     }

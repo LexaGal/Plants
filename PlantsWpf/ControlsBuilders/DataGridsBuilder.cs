@@ -34,7 +34,6 @@ namespace PlantsWpf.ControlsBuilders
             DataGridTextColumn columnServiceName = new DataGridTextColumn
             {
                 Header = "Service",
-                Width = 90,
                 Binding = new Binding("ServiceName")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
@@ -75,7 +74,6 @@ namespace PlantsWpf.ControlsBuilders
             DataGridTextColumn columnIsScheduled = new DataGridTextColumn
             {
                 Header = "Scheduled",
-                Width = 70,
                 Binding = new Binding("IsScheduled")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
@@ -121,18 +119,20 @@ namespace PlantsWpf.ControlsBuilders
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanUserAddRows = true,
                 CanUserDeleteRows = false,
-                CanUserResizeColumns = true,
+                CanUserResizeColumns = false,
                 AutoGenerateColumns = false,
-                ColumnWidth = DataGridLength.Auto,
+                ColumnWidth = DataGridLength.Auto
             };
 
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
                 Header = "Measurable",
-                Width = 73,
                 Binding = new Binding("Measurable")
                 {
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                    UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = true,
+                    ValidatesOnExceptions = true,
                 },
 
                 CellStyle = new Style(typeof (TextBox))
@@ -158,7 +158,9 @@ namespace PlantsWpf.ControlsBuilders
                 Binding = new Binding("Timeout")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
-                    Mode = BindingMode.TwoWay
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = true,
+                    ValidatesOnExceptions = true,
                 }
             };
             DataGridTextColumn optimal = new DataGridTextColumn
@@ -167,7 +169,9 @@ namespace PlantsWpf.ControlsBuilders
                 Binding = new Binding("Optimal")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
-                    Mode = BindingMode.TwoWay
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = true,
+                    ValidatesOnExceptions = true,
                 }
             };
             DataGridTextColumn min = new DataGridTextColumn
@@ -176,7 +180,9 @@ namespace PlantsWpf.ControlsBuilders
                 Binding = new Binding("Min")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
-                    Mode = BindingMode.TwoWay
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = true,
+                    ValidatesOnExceptions = true,
                 }
             };
             DataGridTextColumn max = new DataGridTextColumn
@@ -185,7 +191,9 @@ namespace PlantsWpf.ControlsBuilders
                 Binding = new Binding("Max")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
-                    Mode = BindingMode.TwoWay
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = true,
+                    ValidatesOnExceptions = true,
                 }
             };
             DataGridTextColumn value = new DataGridTextColumn
@@ -208,36 +216,6 @@ namespace PlantsWpf.ControlsBuilders
                 },
                 IsReadOnly = true
             };
-            //DataGridTextColumn isCritical = new DataGridTextColumn
-            //{
-            //    Header = "SOS",
-            //    Binding = new Binding("IsCritical")
-            //    {
-            //        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-            //        Mode = BindingMode.OneWay
-            //    },
-            //    IsReadOnly = true,
-            //    CellStyle = new Style
-            //    {
-            //        TargetType = typeof (DataGridCell),
-            //        Triggers =
-            //        {
-            //            new DataTrigger
-            //            {
-            //                Binding = new Binding("IsCritical")
-            //                {
-            //                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            //                },
-            //                Value = " SOS",
-            //                Setters =
-            //                {
-            //                    new Setter(Control.BackgroundProperty, Brushes.Red)
-            //                }
-            //            }
-            //        }
-            //    }
-            //};
-
             DataGridTemplateColumn remove = new DataGridTemplateColumn
             {
                 Header = "X",
@@ -454,7 +432,7 @@ namespace PlantsWpf.ControlsBuilders
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanUserAddRows = false,
                 CanUserDeleteRows = false,
-                CanUserResizeColumns = true,
+                CanUserResizeColumns = false,
                 AutoGenerateColumns = false,
                 ColumnWidth = DataGridLength.Auto
             };
@@ -462,10 +440,10 @@ namespace PlantsWpf.ControlsBuilders
             DataGridTextColumn serviceName = new DataGridTextColumn
             {
                 Header = "Service",
-                Width = 77,
                 Binding = new Binding("ServiceName")
                 {
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    Mode = BindingMode.OneWay
                 },
                 IsReadOnly = true
             };
@@ -485,7 +463,9 @@ namespace PlantsWpf.ControlsBuilders
                 Binding = new Binding("ServicingSpan")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
-                    Mode = BindingMode.TwoWay
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = true,
+                    ValidatesOnExceptions = true,
                 }
             };
             DataGridTextColumn servicingPauseSpan = new DataGridTextColumn
@@ -494,7 +474,9 @@ namespace PlantsWpf.ControlsBuilders
                 Binding = new Binding("ServicingPauseSpan")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
-                    Mode = BindingMode.TwoWay
+                    Mode = BindingMode.TwoWay,
+                    NotifyOnValidationError = true,
+                    ValidatesOnExceptions = true,
                 }
             };
 

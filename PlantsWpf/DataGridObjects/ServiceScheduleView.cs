@@ -25,14 +25,7 @@ namespace PlantsWpf.DataGridObjects
             {
                 if (value == _isOn) return;
                 _isOn = value;
-                try
-                {
-                    _serviceSchedule.IsOn = Convert.ToBoolean(IsOn);
-                }
-                catch (Exception )
-                {
-                    return;
-                }
+                _serviceSchedule.IsOn = Convert.ToBoolean(IsOn);
                 OnPropertyChanged();
             }
         }
@@ -67,7 +60,7 @@ namespace PlantsWpf.DataGridObjects
                 OnPropertyChanged();
             }
         }
-        
+
         public string ServicingSpan
         {
             get { return _servicingSpan; }
@@ -75,14 +68,7 @@ namespace PlantsWpf.DataGridObjects
             {
                 _servicingSpan = value;
                 OnPropertyChanged();
-                try
-                {
-                    _serviceSchedule.ServicingSpan = TimeSpan.Parse(_servicingSpan);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
+                _serviceSchedule.ServicingSpan = TimeSpan.Parse(_servicingSpan);
                 IsModified = true.ToString();
             }
         }
@@ -94,14 +80,7 @@ namespace PlantsWpf.DataGridObjects
             {
                 _servicingPauseSpan = value;
                 OnPropertyChanged();
-                try
-                {
-                    _serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(_servicingPauseSpan);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
+                _serviceSchedule.ServicingPauseSpan = TimeSpan.Parse(_servicingPauseSpan);
                 IsModified = true.ToString();
             }
         }
@@ -113,15 +92,11 @@ namespace PlantsWpf.DataGridObjects
         public DataGridServiceScheduleView(ServiceSchedule serviceSchedule)
         {
             _serviceSchedule = serviceSchedule;
-            
+            _serviceSchedule.NewServiceName += GetNewServiceName;
+
             ServiceName = _serviceSchedule.ServiceName;
 
-            StringBuilder builder = new StringBuilder();
-            _serviceSchedule.MeasurableParameters.ToList()
-                .ForEach(m => builder.Append(String.Format("{0}, ", m.MeasurableType)));
-            builder.Remove(builder.Length - 2, 2);
-
-            Parameters = builder.ToString();
+            Parameters = MeasurableParametersToStringView();
 
             ServicingSpan = _serviceSchedule.ServicingSpan.ToString();
             ServicingPauseSpan = _serviceSchedule.ServicingPauseSpan.ToString();
@@ -131,7 +106,28 @@ namespace PlantsWpf.DataGridObjects
             IsModified = false.ToString();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private void GetNewServiceName(object sender, EventArgs eventArgs)
+        {
+            UpdateView();
+        }
+
+        private void UpdateView()
+        {
+            ServiceName = _serviceSchedule.ServiceName;
+            Parameters = MeasurableParametersToStringView();
+        }
+
+        public string MeasurableParametersToStringView()
+        {
+            StringBuilder builder = new StringBuilder();
+            _serviceSchedule.MeasurableParameters.ToList()
+                .ForEach(m => builder.Append(String.Format("{0}, ", m.MeasurableType)));
+            builder.Remove(builder.Length - 2, 2);
+
+            return builder.ToString();   
+        }
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

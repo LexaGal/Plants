@@ -15,7 +15,8 @@ namespace PlantingLib.MeasurableParameters
 
         public bool IsValid()
         {
-            return !Regex.Match(MeasurableType, @"[^a-zA-Z0-9_ ]+").Success &&
+            return !Regex.Match(MeasurableType, @"[^a-zA-Z0-9_@]+").Success &&
+                   Min <= Max &&
                    Min <= Optimal &&
                    Max >= Optimal &&
                    Min >= 0 &&
@@ -30,6 +31,6 @@ namespace PlantingLib.MeasurableParameters
         public int Min { get; set; }
         public int Max { get; set; }
         
-        public string MeasurableType { get; protected set; }
+        public string MeasurableType { get; set; }
     }
 }

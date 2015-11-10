@@ -122,25 +122,25 @@ namespace Mapper.MapperContext
             }
         }
 
-        public ServiceSchedule RestoreServiceSchedule(ServiceScheduleMapping serviceScheduleMapping)
+        public ServiceSchedule RestoreServiceSchedule(ServiceScheduleMapping serviceScheduleMapping, List<MeasurableParameter> measurableParameters)
         {
             try
             {
-                List<MeasurableParameter> measurableParameters = null;
+                List<MeasurableParameter> mps = new List<MeasurableParameter>();
                 if (!string.IsNullOrEmpty(serviceScheduleMapping.MeasurableParametersIds))
                 {
                     string[] ids = serviceScheduleMapping.MeasurableParametersIds.Split(',');
                     List<MeasurableParameterMapping> measurableParameterMappings =
                         ids.Select(id => _measurableParameterRepository.Get(Guid.Parse(id))).ToList();
 
-                    measurableParameters = measurableParameterMappings.Select(RestoreMeasurableParameter)
-                        .ToList();
+                    measurableParameterMappings.ForEach(
+                        mapping => mps.Add(measurableParameters.Single(parameter => parameter.Id == mapping.Id)));
                 }
                 return new ServiceSchedule(serviceScheduleMapping.Id, serviceScheduleMapping.PlantsAreaId,
                     serviceScheduleMapping.ServiceState,
                     new TimeSpan(0, 0, serviceScheduleMapping.ServicingSpan),
                     new TimeSpan(0, 0, serviceScheduleMapping.ServicingPauseSpan),
-                    measurableParameters);
+                    mps);
             }
             catch (Exception e)
             {
@@ -208,7 +208,7 @@ namespace Mapper.MapperContext
                 if (serviceScheduleMappings.Count != 0)
                 {
                     serviceScheduleMappings.ToList()
-                        .ForEach(s => area.ServicesSchedulesStates.AddServiceSchedule(RestoreServiceSchedule(s)));
+                        .ForEach(s => area.ServicesSchedulesStates.AddServiceSchedule(RestoreServiceSchedule(s, area.Plant.MeasurableParameters)));
                 }
                 return area;
             }
@@ -223,9 +223,6 @@ namespace Mapper.MapperContext
         {
             try
             {
-                PlantsAreaMapping plantsAreaMapping = _plantsAreaRepository.Get(sensorMapping.PlantsAreaId);
-                //PlantsArea plantsArea = RestorePlantArea(plantsAreaMapping);
-
                 MeasurableParameter mp =
                     plantsArea.Plant.MeasurableParameters.SingleOrDefault(
                         m => m.Id == sensorMapping.MeasurableParameterId);

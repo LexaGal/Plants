@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace PlantingLib.Plants.ServicesScheduling
 {
@@ -14,6 +16,18 @@ namespace PlantingLib.Plants.ServicesScheduling
                 AllowEdit = true,
                 AllowRemove = true
             };
+        }
+
+        public ServiceSchedule GetServiceSchedule(Func<ServiceSchedule, bool> func)
+        {
+            try
+            {
+                return ServicesSchedules.SingleOrDefault(func);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
         }
 
         public bool AddServiceSchedule(ServiceSchedule serviceSchedule)

@@ -144,57 +144,103 @@ namespace PlantsWpf.ControlsBuilders
                     {
                         try
                         {
+                            ServiceState serviceState;
+                            ServiceSchedule serviceSchedule;
+
                             if (dataGridSensorView.Sensor != null)
                             {
-                                dataGridSensorView.UpdateSource();
-                                saveSensor(area, dataGridSensorView.Sensor, null);
-                            }
-                            else
-                            {
-                                if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) != 1)
+                                if (!dataGridSensorView.Sensor.MeasurableParameter.IsValid())
                                 {
-                                    MessageBox.Show(String.Format("Sensor with measurable '{0}' already exists",
-                                        dataGridSensorView.Measurable));
-                                    return;
+                                    throw new Exception();
                                 }
 
-                                CustomParameter customParameter =
-                                    new CustomParameter(Guid.NewGuid(), Convert.ToInt32(dataGridSensorView.Optimal),
-                                        Convert.ToInt32(dataGridSensorView.Min), Convert.ToInt32(dataGridSensorView.Max),
-                                        dataGridSensorView.Measurable);
+                                if (dataGridSensorView.MeasurableIsModified)
+                                {
 
-                                CustomSensor sensor =
-                                    new CustomSensor(Guid.NewGuid(), area,
-                                        TimeSpan.Parse(dataGridSensorView.Timeout), customParameter, 0);
+                                    string oldMeasurable = dataGridSensorView.Sensor.MeasurableType;
+
+                                    dataGridSensorView.Sensor.MeasurableParameter.MeasurableType =
+                                        dataGridSensorView.Measurable;
+
+                                    serviceState = dataGridSensorView.Sensor.PlantsArea
+                                        .PlantServicesStates.GetServiceState(state => state.IsFor(oldMeasurable));
+
+                                    if (serviceState != null)
+                                    {
+                                        serviceSchedule = dataGridSensorView.Sensor.PlantsArea
+                                            .ServicesSchedulesStates.GetServiceSchedule(
+                                                schedule => schedule.IsFor(serviceState.ServiceName));
+
+                                        serviceState.ServiceName = dataGridSensorView.Measurable;
+
+                                        if (serviceSchedule != null)
+                                        {
+                                            serviceSchedule.ServiceName = serviceState.ServiceName;
+                                        }
+
+                                        saveSensor(area, dataGridSensorView.Sensor, serviceSchedule);
+
+                                        dataGridSensorView.MeasurableIsModified = false;
+                                        dataGridSensorView.IsModified = false.ToString();
+
+                                        MessageBox.Show(String.Format("Sensor with measurable '{0}' updated",
+                                            dataGridSensorView.Measurable));
+
+                                        
+                                        return;
+                                    }
+                                }
+                                saveSensor(area, dataGridSensorView.Sensor, null);
                                 
-                                dataGridSensorView.Sensor = sensor;
-                                dataGridSensorView.UpdateSource();
-                                dataGridSensorView.UpdateView();
-
-                                ServiceState serviceState = 
-                                    new ServiceState(sensor.MeasurableType, true);
-
-                                area.PlantServicesStates.AddServiceState(serviceState);
-
-                                ServiceSchedule serviceSchedule = 
-                                    new ServiceSchedule(Guid.NewGuid(), area.Id,
-                                        serviceState.ServiceName, new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
-                                        new List<MeasurableParameter> { sensor.MeasurableParameter });
+                                dataGridSensorView.IsModified = false.ToString();
                                 
-                                area.ServicesSchedulesStates.AddServiceSchedule(serviceSchedule);
-
-                                dataGridServiceScheduleViews.Add(new DataGridServiceScheduleView(serviceSchedule));
+                                MessageBox.Show(String.Format("'{0}': sensor data saved", dataGridSensorView.Measurable));
                                 
-                                saveSensor(area, sensor, serviceSchedule);
+                                return;
                             }
+
+                            if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) != 1)
+                            {
+                                MessageBox.Show(String.Format("Sensor with measurable '{0}' already exists",
+                                    dataGridSensorView.Measurable));
+                                return;
+                            }
+
+                            CustomParameter customParameter =
+                                new CustomParameter(Guid.NewGuid(), Convert.ToInt32(dataGridSensorView.Optimal),
+                                    Convert.ToInt32(dataGridSensorView.Min),
+                                    Convert.ToInt32(dataGridSensorView.Max),
+                                    dataGridSensorView.Measurable);
+
+                            CustomSensor sensor =
+                                new CustomSensor(Guid.NewGuid(), area,
+                                    TimeSpan.Parse(dataGridSensorView.Timeout), customParameter, 0);
+
+                            dataGridSensorView.Sensor = sensor;
+
+                            serviceState = new ServiceState(sensor.MeasurableType, true);
+
+                            area.PlantServicesStates.AddServiceState(serviceState);
+
+                            serviceSchedule = new ServiceSchedule(Guid.NewGuid(), area.Id,
+                                    serviceState.ServiceName, new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
+                                    new List<MeasurableParameter> {sensor.MeasurableParameter});
+
+                            area.ServicesSchedulesStates.AddServiceSchedule(serviceSchedule);
+
+                            dataGridServiceScheduleViews.Add(new DataGridServiceScheduleView(serviceSchedule));
+
+                            saveSensor(area, sensor, serviceSchedule);
+
+                            dataGridSensorView.IsModified = false.ToString();
+
+                            MessageBox.Show(String.Format("'{0}': sensor data saved", dataGridSensorView.Measurable));
                         }
                         catch (Exception)
                         {
                             MessageBox.Show(String.Format("'{0}': wrong sensor data", dataGridSensorView.Measurable));
-                            return;
                         }
-                        MessageBox.Show(String.Format("'{0}': sensor data saved", dataGridSensorView.Measurable));
-                    }
+                     }
                 })
                 );
             return buttonTemplate;

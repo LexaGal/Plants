@@ -10,12 +10,25 @@ namespace PlantingLib.Plants.ServiceStates
         public ServiceState(string serviceName, bool isCustom)
         {
             IsCustom = isCustom;
-            ServiceName = IsCustom ? String.Format("*{0}*", serviceName) : serviceName;
+            ServiceName = serviceName;
             IsRunning = false;
         }
 
         public bool IsCustom { get; private set; }
-        public string ServiceName { get; private set; }
+
+        public string ServiceName
+        {
+            get
+            {
+                return _serviceName;
+            }
+            set
+            {
+                _serviceName = IsCustom ? String.Format("*{0}*", value) : value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsRunning { get; private set; }
 
         public string IsOn
@@ -29,7 +42,8 @@ namespace PlantingLib.Plants.ServiceStates
         }
 
         private bool _isScheduled;
-        
+        private string _serviceName;
+
         public string IsScheduled
         {
             get { return _isScheduled ? "✔" : String.Empty; }
@@ -56,7 +70,7 @@ namespace PlantingLib.Plants.ServiceStates
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
+        
         public object Clone()
         {
             return new ServiceState(ServiceName, IsCustom);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using PlantingLib.Messenging;
 using PlantingLib.Sensors;
 using PlantsWpf.Annotations;
@@ -39,14 +40,7 @@ namespace PlantsWpf.DataGridObjects
             {
                 _timeout = value;
                 OnPropertyChanged();
-                try
-                {
-                    _sensor.MeasuringTimeout = TimeSpan.Parse(Timeout);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
+                _sensor.MeasuringTimeout = TimeSpan.Parse(Timeout);
                 IsModified = true.ToString();
             }
         }
@@ -58,13 +52,10 @@ namespace PlantsWpf.DataGridObjects
             {
                 _optimal = value;
                 OnPropertyChanged();
-                try
+                _sensor.MeasurableParameter.Optimal = Convert.ToInt32(Optimal);
+                if (!_sensor.MeasurableParameter.IsValid())
                 {
-                    _sensor.MeasurableParameter.Optimal = Convert.ToInt32(Optimal);
-                }
-                catch (Exception)
-                {
-                    return;
+                    throw new ArgumentException();
                 }
                 IsModified = true.ToString();
             }
@@ -77,15 +68,12 @@ namespace PlantsWpf.DataGridObjects
             {
                 _min = value;
                 OnPropertyChanged();
-                try
-                {
-                    _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-                IsModified = true.ToString();
+               _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
+               if (!_sensor.MeasurableParameter.IsValid())
+               {
+                   throw new ArgumentException();
+               } 
+               IsModified = true.ToString();
             }
         }
 
@@ -96,13 +84,10 @@ namespace PlantsWpf.DataGridObjects
             {
                 _max = value;
                 OnPropertyChanged();
-                try
+                _sensor.MeasurableParameter.Max = Convert.ToInt32(Max);
+                if (!_sensor.MeasurableParameter.IsValid())
                 {
-                    _sensor.MeasurableParameter.Max = Convert.ToInt32(Max);
-                }
-                catch (Exception)
-                {
-                    return;
+                    throw new ArgumentException();
                 }
                 IsModified = true.ToString();
             }
@@ -167,8 +152,19 @@ namespace PlantsWpf.DataGridObjects
                 if (value == _measurable) return;
                 _measurable = value;
                 OnPropertyChanged();
+
+                // do not: _sensor.MeasurableParameter.MeasurableType = Measurable;
+                // oldMeasurable will overwrite
+                if (Regex.Match(Measurable, @"[^a-zA-Z0-9_@]+").Success)
+                {
+                    throw new FormatException();
+                }
+                IsModified = true.ToString();
+                MeasurableIsModified = true;
             }
         }
+
+        public bool MeasurableIsModified { get; set; }
 
         public string IsCustom { get; set; }
         
@@ -194,21 +190,9 @@ namespace PlantsWpf.DataGridObjects
 
             IsOffByUser = _sensor.IsOffByUser.ToString();
 
-            UpdateView(); 
-        }
+            MeasurableIsModified = false;
 
-        public void UpdateSource()
-        {
-            if (_sensor != null)
-            {   
-                _sensor.MeasurableType = Measurable;
-                _sensor.MeasurableParameter.Optimal = Convert.ToInt32(Optimal);
-                _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
-                _sensor.MeasurableParameter.Max = Convert.ToInt32(Max);
-                _sensor.MeasuringTimeout = TimeSpan.Parse(Timeout);
-                
-                IsModified = false.ToString();
-            }
+            UpdateView(); 
         }
 
         public void UpdateView()
@@ -225,11 +209,7 @@ namespace PlantsWpf.DataGridObjects
 
         private void GetNewMeasuring(object sender, EventArgs eventArgs)
         {
-            MessengingEventArgs<Sensor> messengingEventArgs = eventArgs as MessengingEventArgs<Sensor>;
-            if (messengingEventArgs != null)
-            {
-                UpdateView();
-            }
+            UpdateView();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
