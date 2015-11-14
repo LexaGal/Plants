@@ -24,3 +24,5 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Post
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\PostSharp.xml
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\PlantingLib.pssym
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.dll.postsharp
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.dll
+C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.pdb

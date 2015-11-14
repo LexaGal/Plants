@@ -98,16 +98,16 @@ namespace PlantsWpf
                     TimeSpan soilPhTimeout = TimeSpan.Parse(SoilPhTimeout.Text);
                     TimeSpan nutrientTimeout = TimeSpan.Parse(NutrientTimeout.Text);
 
-                    Sensor ts = new TemperatureSensor(Guid.NewGuid(), plantsArea, temperatureTimeout, temperature, 0);
+                    Sensor ts = new TemperatureSensor(Guid.NewGuid(), plantsArea, temperatureTimeout, temperature);
                     if (TemperatureCheckBox.IsChecked != null && !(bool) TemperatureCheckBox.IsChecked){ts.IsOn = false;}
 
-                    Sensor hs = new HumiditySensor(Guid.NewGuid(), plantsArea, humidityTimeout, humidity, 0);
+                    Sensor hs = new HumiditySensor(Guid.NewGuid(), plantsArea, humidityTimeout, humidity);
                     if (HumidityCheckBox.IsChecked != null && !(bool) HumidityCheckBox.IsChecked){hs.IsOn = false;}
 
-                    Sensor ss = new SoilPhSensor(Guid.NewGuid(), plantsArea, soilPhTimeout, soilPh, 0);
+                    Sensor ss = new SoilPhSensor(Guid.NewGuid(), plantsArea, soilPhTimeout, soilPh);
                     if (SoilPhCheckBox.IsChecked != null && !(bool) SoilPhCheckBox.IsChecked){ss.IsOn = false;}
 
-                    Sensor ns = new NutrientSensor(Guid.NewGuid(), plantsArea, nutrientTimeout, nutrient, 0);
+                    Sensor ns = new NutrientSensor(Guid.NewGuid(), plantsArea, nutrientTimeout, nutrient);
                     if (NutrientCheckBox.IsChecked != null && !(bool) NutrientCheckBox.IsChecked){ns.IsOn = false;}
 
                 }

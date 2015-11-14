@@ -535,7 +535,7 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.Columns.Add(save);
             dataGrid.Columns.Add(onOff);
 
-            dataGrid.RowStyle = new Style()
+            dataGrid.RowStyle = new Style
             {
                 TargetType = typeof (DataGridRow),
                 Triggers =

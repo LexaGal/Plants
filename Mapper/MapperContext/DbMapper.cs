@@ -53,7 +53,7 @@ namespace Mapper.MapperContext
         public MeasuringMessageMapping GetMeasuringMessageMapping(MeasuringMessage measuringMessage)
         {
             return new MeasuringMessageMapping(measuringMessage.Id, measuringMessage.DateTime,
-                measuringMessage.MeasurableType, measuringMessage.MeasurableType,
+                measuringMessage.MessageType.ToString(), measuringMessage.MeasurableType,
                 measuringMessage.PlantsAreaId, measuringMessage.ParameterValue);
         }
 
@@ -68,7 +68,7 @@ namespace Mapper.MapperContext
         {
             return new SensorMapping(sensor.Id, sensor.PlantsArea.Id,
                 (int) sensor.MeasuringTimeout.TotalSeconds, sensor.MeasurableParameter.Id,
-                sensor.MeasurableParameter.MeasurableType, sensor.NumberOfTimes);
+                sensor.MeasurableParameter.MeasurableType);
         }
 
         public ServiceScheduleMapping GetServiceScheduleMapping(ServiceSchedule serviceSchedule)
@@ -238,26 +238,21 @@ namespace Mapper.MapperContext
                         {
                             case ParameterEnum.Nutrient:
                                 return new NutrientSensor(sensorMapping.Id, plantsArea,
-                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Nutrient,
-                                    sensorMapping.NumberOfTimes);
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Nutrient);
                             case ParameterEnum.SoilPh:
                                 return new SoilPhSensor(sensorMapping.Id, plantsArea,
-                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as SoilPh,
-                                    sensorMapping.NumberOfTimes);
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as SoilPh);
                             case ParameterEnum.Humidity:
                                 return new HumiditySensor(sensorMapping.Id, plantsArea,
-                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Humidity,
-                                    sensorMapping.NumberOfTimes);
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Humidity);
                             case ParameterEnum.Temperature:
                                 return new TemperatureSensor(sensorMapping.Id, plantsArea,
-                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Temperature,
-                                    sensorMapping.NumberOfTimes);
+                                    new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as Temperature);
                         }
                     }
                     //if custom sensor
                     return new CustomSensor(sensorMapping.Id, plantsArea,
-                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as CustomParameter,
-                        sensorMapping.NumberOfTimes);
+                        new TimeSpan(0, 0, sensorMapping.MeasuringTimeout), mp as CustomParameter);
                 }
             }
             catch (Exception e)

@@ -7,8 +7,8 @@ namespace PlantingLib.Sensors
 {
     public class TemperatureSensor : Sensor
     {
-        public TemperatureSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, Temperature temperature, int numberOfTimes)
-            : base(id, plantsArea, measuringTimeout, temperature, numberOfTimes)
+        public TemperatureSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, Temperature temperature)
+            : base(id, plantsArea, measuringTimeout, temperature)
         {
             Function = new TemperatureFunction(temperature);
         }

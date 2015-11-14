@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.DataVisualization.Charting;
+using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviders;
+using PlantingLib.Messenging;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
@@ -194,6 +199,37 @@ namespace PlantsWpf
             }
         }
 
+        private IEnumerable<KeyValuePair<DateTime, double>> GetStatisticsFor(Guid plantsAreaId, string measurableType,
+            int number, bool onlyCritical)
+        {
+            IMeasuringMessageMappingRepository measuringMessageMappingRepository =
+                new MeasuringMessageMappingRepository();
+
+            Task<List<MeasuringMessageMapping>> measuringMessageMappingsTask;
+            if (!onlyCritical)
+            {
+                measuringMessageMappingsTask = measuringMessageMappingRepository.GetAllAsync(mapping =>
+                    mapping.MeasurableType == measurableType &&
+                    mapping.PlantsAreaId == plantsAreaId);
+            }
+            else
+            {
+                measuringMessageMappingsTask = measuringMessageMappingRepository.GetAllAsync(mapping =>
+                    mapping.MeasurableType == measurableType &&
+                    mapping.PlantsAreaId == plantsAreaId &&
+                    mapping.MessageType == MessageTypeEnum.CriticalInfo.ToString());
+            }
+            
+            List<KeyValuePair<DateTime, double>> list = new List<KeyValuePair<DateTime, double>>();
+
+            if (measuringMessageMappingsTask.Result != null)
+            {
+                measuringMessageMappingsTask.Result.ForEach(
+                    mapping => list.Add(new KeyValuePair<DateTime, double>(mapping.DateTime, mapping.ParameterValue)));
+            }
+            return list.Skip(Math.Max(0, list.Count - number));
+        }
+
         private Border CreateBorderedPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
         {
             DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
@@ -265,11 +301,111 @@ namespace PlantsWpf
             plantAreaPanel.Children.Add(serviceStatesDataGrid);
             plantAreaPanel.Children.Add(serviceSchedulesDataGrid);
 
+            //-----------------------------------------------------------------------------
+
+            Chart chart = new Chart
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Width = 1200,
+                Height = 240,
+                Background = Brushes.Beige,
+            };
+
+            LineSeries lineSeries1 = new LineSeries
+            {
+                IndependentValueBinding = new Binding("Key"),
+                DependentValueBinding = new Binding("Value"),
+                Title = "Temperature",
+            };
+
+            LineSeries lineSeries2 = new LineSeries
+            {
+                IndependentValueBinding = new Binding("Key"),
+                DependentValueBinding = new Binding("Value"),
+                Title = "Nutrient",
+            };
+
+            LineSeries lineSeries3 = new LineSeries
+            {
+                IndependentValueBinding = new Binding("Key"),
+                DependentValueBinding = new Binding("Value"),
+                Title = "Soil ph",
+            };
+
+            LineSeries lineSeries4 = new LineSeries
+            {
+                IndependentValueBinding = new Binding("Key"),
+                DependentValueBinding = new Binding("Value"),
+                Title = "Humidity",
+            };
+
+            chart.Series.Add(lineSeries1);
+            chart.Series.Add(lineSeries2);
+            chart.Series.Add(lineSeries3);
+            chart.Series.Add(lineSeries4);
+            
+            //-----------------------------------------------------------------------------
+
+            DockPanel dockPanel = new DockPanel();
+            
+            Menu menu = new Menu
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            MenuItem menuItemCharts = new MenuItem
+            {
+                Header = "Charts"
+            };
+            menuItemCharts.Click += (sender, args) =>
+            {
+                plantAreaPanel.Visibility = Visibility.Collapsed;
+                chart.Visibility = Visibility.Visible;
+                
+                IEnumerable<KeyValuePair<DateTime, double>> statistics = GetStatisticsFor(area.Id,
+                    area.Plant.Temperature.MeasurableType, 30, false);
+
+                lineSeries1.ItemsSource = statistics;    
+               
+                statistics = GetStatisticsFor(area.Id,
+                    area.Plant.Nutrient.MeasurableType, 30, false);
+
+                lineSeries2.ItemsSource = statistics;
+
+                statistics = GetStatisticsFor(area.Id,
+                        area.Plant.SoilPh.MeasurableType, 30, false);
+
+                lineSeries3.ItemsSource = statistics;
+                
+                statistics = GetStatisticsFor(area.Id,
+                    area.Plant.Humidity.MeasurableType, 30, false);
+
+                lineSeries4.ItemsSource = statistics;
+            };
+            menu.Items.Add(menuItemCharts);
+
+            MenuItem menuItemSensors = new MenuItem
+            {
+                Header = "Sensors"
+            };
+            menuItemSensors.Click += (sender, args) =>
+            {
+                plantAreaPanel.Visibility = Visibility.Visible;
+                chart.Visibility = Visibility.Collapsed;
+            };
+            menu.Items.Add(menuItemSensors);
+            
+            dockPanel.Children.Add(menu);
+            dockPanel.Children.Add(plantAreaPanel);
+            dockPanel.Children.Add(chart);
+
+            //-----------------------------------------------------------------------------
+            
             ScrollViewer scrollViewer = new ScrollViewer
             {
                 Height = plantAreaPanel.Height,
                 CanContentScroll = true,
-                Content = plantAreaPanel,
+                Content = dockPanel,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto
             };
 

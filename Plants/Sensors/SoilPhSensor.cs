@@ -7,8 +7,8 @@ namespace PlantingLib.Sensors
 {
     public class SoilPhSensor : Sensor
     {
-        public SoilPhSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, SoilPh soilPh, int numberOfTimes)
-            : base(id, plantsArea, measuringTimeout, soilPh, numberOfTimes)
+        public SoilPhSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, SoilPh soilPh)
+            : base(id, plantsArea, measuringTimeout, soilPh)
         {
             Function = new SoilPhFunction(soilPh);
         }

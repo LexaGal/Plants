@@ -7,9 +7,8 @@ namespace PlantingLib.Sensors
 {
     public class CustomSensor : Sensor
     {
-        public CustomSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, CustomParameter customParameter,
-            int numberOfTimes)
-            : base(id, plantsArea, measuringTimeout, customParameter, numberOfTimes)
+        public CustomSensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, CustomParameter customParameter)
+            : base(id, plantsArea, measuringTimeout, customParameter)
         {
             IsCustom = true;
             Function = new CustomParameterFunction(customParameter);

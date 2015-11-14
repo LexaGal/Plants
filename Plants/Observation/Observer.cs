@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Database.DatabaseStructure.Repository.Abstract;
+using Database.DatabaseStructure.Repository.Concrete;
+using Database.MappingTypes;
 using PlantingLib.MeasuringsProviding;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
@@ -13,7 +16,8 @@ namespace PlantingLib.Observation
     {
         public PlantsAreas PlantsAreas { get; private set; }
         public IDictionary<Guid, IList<MeasuringMessage>> MessagesDictionary;
-        public const int MessagesLimit = 10;
+        private const int MessagesLimit = 30;
+        private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
 
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)
         {
@@ -21,11 +25,23 @@ namespace PlantingLib.Observation
             sender.MessageSending += RecieveMessage;
 
             PlantsAreas = plantsAreas;
-           
+
             MessagesDictionary = new Dictionary<Guid, IList<MeasuringMessage>>();
             PlantsAreas.Areas.ToList().ForEach(pa => MessagesDictionary.Add(pa.Id, new List<MeasuringMessage>()));
+
+            _measuringMessageMappingRepository = new MeasuringMessageMappingRepository();
         }
-        
+
+        private void AddMeasuringMessage(MeasuringMessage measuringMessage)
+        {
+            if (!MessagesDictionary.ContainsKey(measuringMessage.PlantsAreaId))
+            {
+                MessagesDictionary.Add(measuringMessage.PlantsAreaId, new List<MeasuringMessage>());
+            }
+            MessagesDictionary[measuringMessage.PlantsAreaId].Add(measuringMessage);
+        }
+    
+
         //recieving
         public void RecieveMessage(object sender, EventArgs eventArgs)
         {
@@ -36,30 +52,25 @@ namespace PlantingLib.Observation
                 if (messengingEventArgs != null)
                 {
                     MeasuringMessage recievedMessage = messengingEventArgs.Object;
-                    
+
                     if (recievedMessage == null)
                     {
                         throw new ArgumentNullException("recievedMessage");
                     }
 
-                    if (!MessagesDictionary.ContainsKey(recievedMessage.PlantsAreaId))
-                    {
-                        MessagesDictionary.Add(recievedMessage.PlantsAreaId, new List<MeasuringMessage>());
-                    }
-                    MessagesDictionary[recievedMessage.PlantsAreaId].Add(recievedMessage);
-                    
-                    Console.WriteLine(recievedMessage.ToString());
+                    AddMeasuringMessage(recievedMessage);
 
                     if (recievedMessage.MessageType == MessageTypeEnum.CriticalInfo)
                     {
                         //sending to scheduler
                         OnMessageSending(recievedMessage);
 
-                        PlantsArea area = PlantsAreas.Areas.FirstOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
-                        
+                        PlantsArea area = PlantsAreas.Areas.SingleOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
+
                         if (area != null)
                         {
-                            Sensor sensor = area.Sensors.FirstOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
+                            Sensor sensor =
+                                area.Sensors.SingleOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
                             if (sensor != null)
                             {
                                 sensor.NumberOfTimes++;
@@ -67,10 +78,14 @@ namespace PlantingLib.Observation
                         }
                     }
 
-                    if (MessagesDictionary[recievedMessage.PlantsAreaId].Count >= MessagesLimit)
+                    if (MessagesDictionary[recievedMessage.PlantsAreaId].Count == MessagesLimit)
                     {
+                        List<MeasuringMessage> measuringMessages =
+                            MessagesDictionary[recievedMessage.PlantsAreaId].ToList();
+
+                        SaveMessages(measuringMessages);
+
                         MessagesDictionary[recievedMessage.PlantsAreaId].Clear();
-                        // to Db
                     }
                 }
             }
@@ -78,6 +93,16 @@ namespace PlantingLib.Observation
             {
                 MessageBox.Show(e.StackTrace);
             }
+        }
+
+        private async void SaveMessages(List<MeasuringMessage> measuringMessages)
+        {
+            List<MeasuringMessageMapping> measuringMessageMappings = measuringMessages
+                .ConvertAll(message => new MeasuringMessageMapping(message.Id, message.DateTime,
+                    message.MessageType.ToString(), message.MeasurableType,
+                    message.PlantsAreaId, message.ParameterValue));
+
+            await _measuringMessageMappingRepository.SaveAsync(measuringMessageMappings);
         }
 
         public event EventHandler MessageSending;

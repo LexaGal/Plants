@@ -7,8 +7,8 @@ namespace PlantingLib.Sensors
 {
     public class HumiditySensor : Sensor
     {
-        public HumiditySensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, Humidity humidity, int numberOfTimes) 
-            : base(id, plantsArea, measuringTimeout, humidity, numberOfTimes)
+        public HumiditySensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout, Humidity humidity) 
+            : base(id, plantsArea, measuringTimeout, humidity)
         {
             Function = new HumidityFunction(humidity);
         }

@@ -214,7 +214,7 @@ namespace PlantsWpf.ControlsBuilders
 
                             CustomSensor sensor =
                                 new CustomSensor(Guid.NewGuid(), area,
-                                    TimeSpan.Parse(dataGridSensorView.Timeout), customParameter, 0);
+                                    TimeSpan.Parse(dataGridSensorView.Timeout), customParameter);
 
                             dataGridSensorView.Sensor = sensor;
 
