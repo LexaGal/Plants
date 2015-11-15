@@ -6,7 +6,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using PlantingLib.Plants;
 using PlantsWpf.Converters;
-using PlantsWpf.DataGridObjects;
+using PlantsWpf.ObjectsViews;
 using Binding = System.Windows.Data.Binding;
 using Color = System.Drawing.Color;
 using DataGrid = System.Windows.Controls.DataGrid;
@@ -348,78 +348,7 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.ItemsSource = dataGridSensorViews;
             return dataGrid;
         }
-
-        //public DataGrid CreateSensorsToAddDataGrid(PlantsArea area,
-        //    BindingList<DataGridSensorToAddView> dataGridSensorsToAddViews)
-        //{
-        //    DataGrid dataGrid = new DataGrid
-        //    {
-        //        Margin = new Thickness(0, 10, 0, 0),
-        //        Width = 307,
-        //        HorizontalAlignment = HorizontalAlignment.Center,
-        //        VerticalAlignment = VerticalAlignment.Bottom,
-        //        HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-        //        CanUserAddRows = true,
-        //        CanUserResizeColumns = false,
-        //        AutoGenerateColumns = false
-        //    };
-
-        //    DataGridTextColumn measurableType = new DataGridTextColumn
-        //    {
-        //        Header = "Measurable",
-        //        Width = 77,
-        //        Binding = new Binding("Measurable")
-
-        //    };
-        //    DataGridTextColumn optimal = new DataGridTextColumn
-        //    {
-        //        Header = "Optimal",
-        //        Binding = new Binding("Optimal")
-
-        //    };
-        //    DataGridTextColumn min = new DataGridTextColumn
-        //    {
-        //        Header = "Min",
-        //        Binding = new Binding("Min")
-
-        //    };
-        //    DataGridTextColumn max = new DataGridTextColumn
-        //    {
-        //        Header = "Max",
-        //        Binding = new Binding("Max")
-
-        //    };
-        //    DataGridTextColumn timeout = new DataGridTextColumn
-        //    {
-        //        Header = "Timeout",
-        //        Binding = new Binding("Timeout")
-        //        {
-        //            UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-        //        }
-        //    };
-        //    DataGridCheckBoxColumn add = new DataGridCheckBoxColumn
-        //    {
-        //        Header = "Add",
-        //        Binding =
-        //            new Binding("Add")
-        //            {
-        //                Converter = new StringToBoolConverter(),
-        //                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-        //            }
-        //    };
-
-        //    dataGrid.Columns.Clear();
-        //    dataGrid.Columns.Add(measurableType);
-        //    dataGrid.Columns.Add(optimal);
-        //    dataGrid.Columns.Add(min);
-        //    dataGrid.Columns.Add(max);
-        //    dataGrid.Columns.Add(timeout);
-        //    dataGrid.Columns.Add(add);
-
-        //    dataGrid.ItemsSource = dataGridSensorsToAddViews;
-        //    return dataGrid;
-        //}
-
+  
         public DataGrid CreateServicesSchedulesDataGrid(PlantsArea area,
             BindingList<DataGridServiceScheduleView> serviceScheduleViews,
             FrameworkElementFactory serviceScheduleSaveButtonTemplate, FrameworkElementFactory onOffSensorButtonTemplate)
@@ -570,6 +499,5 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.ItemsSource = serviceScheduleViews;
             return dataGrid;
         }
-
-    }
+     }
 }

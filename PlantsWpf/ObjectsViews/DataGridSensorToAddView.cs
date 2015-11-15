@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using PlantingLib.Sensors;
 using PlantsWpf.Annotations;
 
-namespace PlantsWpf.DataGridObjects
+namespace PlantsWpf.ObjectsViews
 {
     public class DataGridSensorToAddView : INotifyPropertyChanged
     {

@@ -6,7 +6,7 @@ using System.Text;
 using PlantingLib.Plants.ServicesScheduling;
 using PlantsWpf.Annotations;
 
-namespace PlantsWpf.DataGridObjects
+namespace PlantsWpf.ObjectsViews
 {
     public class DataGridServiceScheduleView : INotifyPropertyChanged
     {

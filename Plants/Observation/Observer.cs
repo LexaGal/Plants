@@ -16,7 +16,7 @@ namespace PlantingLib.Observation
     {
         public PlantsAreas PlantsAreas { get; private set; }
         public IDictionary<Guid, IList<MeasuringMessage>> MessagesDictionary;
-        private const int MessagesLimit = 30;
+        private const int MessagesLimit = 10;
         private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
 
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)

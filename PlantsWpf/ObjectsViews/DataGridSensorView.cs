@@ -2,11 +2,10 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using PlantingLib.Messenging;
 using PlantingLib.Sensors;
 using PlantsWpf.Annotations;
 
-namespace PlantsWpf.DataGridObjects
+namespace PlantsWpf.ObjectsViews
 {
     public class DataGridSensorView : INotifyPropertyChanged
     {

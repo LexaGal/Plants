@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -27,8 +28,8 @@ using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
-using PlantsWpf.DataGridObjects;
-using PlantsWpf.SavingData;
+using PlantsWpf.DbDataAccessors;
+using PlantsWpf.ObjectsViews;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
@@ -45,7 +46,7 @@ namespace PlantsWpf
         private ServiceProvider _serviceProvider;
         private DbMapper _dbMapper;
         private DateTime _beginDateTime;
-        private DbModifier _dbModifier;
+        private DbDataModifier _dbDataModifier;
 
         public MainWindow()
         {
@@ -163,7 +164,7 @@ namespace PlantsWpf
 
             _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
 
-            _dbModifier = new DbModifier(_plantsAreas, _sensorsCollection, measurableParameterRepository,
+            _dbDataModifier = new DbDataModifier(_plantsAreas, _sensorsCollection, measurableParameterRepository,
                 plantRepository, sensorRepository, plantsAreaRepository, serviceScheduleMappingRepository);
         }
 
@@ -181,7 +182,7 @@ namespace PlantsWpf
                 {
                     PlantsArea area = _plantsAreas.Areas[index];
 
-                    Border borderedPlantAreaPanel = CreateBorderedPlantAreaPanel(area, marginLeft, marginTop);
+                    Border borderedPlantAreaPanel = CreateFullPlantAreaPanel(area, marginLeft, marginTop);
                     PlantsGrid.Children.Add(borderedPlantAreaPanel);
 
                     marginLeft += sizeHorizontal/numberInRow;
@@ -199,43 +200,12 @@ namespace PlantsWpf
             }
         }
 
-        private IEnumerable<KeyValuePair<DateTime, double>> GetStatisticsFor(Guid plantsAreaId, string measurableType,
-            int number, bool onlyCritical)
-        {
-            IMeasuringMessageMappingRepository measuringMessageMappingRepository =
-                new MeasuringMessageMappingRepository();
-
-            Task<List<MeasuringMessageMapping>> measuringMessageMappingsTask;
-            if (!onlyCritical)
-            {
-                measuringMessageMappingsTask = measuringMessageMappingRepository.GetAllAsync(mapping =>
-                    mapping.MeasurableType == measurableType &&
-                    mapping.PlantsAreaId == plantsAreaId);
-            }
-            else
-            {
-                measuringMessageMappingsTask = measuringMessageMappingRepository.GetAllAsync(mapping =>
-                    mapping.MeasurableType == measurableType &&
-                    mapping.PlantsAreaId == plantsAreaId &&
-                    mapping.MessageType == MessageTypeEnum.CriticalInfo.ToString());
-            }
-            
-            List<KeyValuePair<DateTime, double>> list = new List<KeyValuePair<DateTime, double>>();
-
-            if (measuringMessageMappingsTask.Result != null)
-            {
-                measuringMessageMappingsTask.Result.ForEach(
-                    mapping => list.Add(new KeyValuePair<DateTime, double>(mapping.DateTime, mapping.ParameterValue)));
-            }
-            return list.Skip(Math.Max(0, list.Count - number));
-        }
-
-        private Border CreateBorderedPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
+        private Border CreateFullPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
         {
             DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
-            ControlsBuilder controlsBuilder = new ControlsBuilder();
-
-            StackPanel plantAreaPanel = new StackPanel
+            FrameworkElementFactoriesBuilder frameworkElementFactoriesBuilder = new FrameworkElementFactoriesBuilder();
+            
+            StackPanel plantAreaSensorsPanel = new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -245,7 +215,7 @@ namespace PlantsWpf
                 CanVerticallyScroll = true
             };
 
-            plantAreaPanel.Children.Add(new Label
+            plantAreaSensorsPanel.Children.Add(new Label
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -271,13 +241,13 @@ namespace PlantsWpf
                             AllowEdit = true
                         };
 
-            FrameworkElementFactory removeSensorButtonTemplate = controlsBuilder.CreateRemoveSensorButtonTemplate(area,
+            FrameworkElementFactory removeSensorButtonTemplate = frameworkElementFactoriesBuilder.CreateRemoveSensorButtonTemplate(area,
                 dataGridSensorViews, dataGridServiceScheduleViews, RemoveSensor);
 
-            FrameworkElementFactory sensorSaveButtonTemplate = controlsBuilder.CreateSensorSaveButtonTemplate(area,
+            FrameworkElementFactory sensorSaveButtonTemplate = frameworkElementFactoriesBuilder.CreateSensorSaveButtonTemplate(area,
                 dataGridSensorViews, dataGridServiceScheduleViews, SaveSensor);
 
-            FrameworkElementFactory onOffSensorButtonTemplate = controlsBuilder.CreateOnOffSensorButtonTemplate();
+            FrameworkElementFactory onOffSensorButtonTemplate = frameworkElementFactoriesBuilder.CreateOnOffSensorButtonTemplate();
             
             DataGrid sensorViewsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews,
                 removeSensorButtonTemplate, sensorSaveButtonTemplate, onOffSensorButtonTemplate);
@@ -285,127 +255,44 @@ namespace PlantsWpf
             DataGrid serviceStatesDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area);
 
             FrameworkElementFactory serviceScheduleSaveButtonTemplate =
-                controlsBuilder.CreateServiceScheduleSaveButtonTemplate(area,
+                frameworkElementFactoriesBuilder.CreateServiceScheduleSaveButtonTemplate(area,
                     dataGridServiceScheduleViews, SaveServiceSchedule);
             
             FrameworkElementFactory onOffServiceScheduleButtonTemplate =
-                controlsBuilder.CreateOnOffServiceScheduleButtonTemplate();
+                frameworkElementFactoriesBuilder.CreateOnOffServiceScheduleButtonTemplate();
 
             DataGrid serviceSchedulesDataGrid = dataGridsBuilder.CreateServicesSchedulesDataGrid(area,
                 dataGridServiceScheduleViews, serviceScheduleSaveButtonTemplate, onOffServiceScheduleButtonTemplate);
 
-            Button removePlantsAreaButton = controlsBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
-
-            plantAreaPanel.Children.Add(removePlantsAreaButton);
-            plantAreaPanel.Children.Add(sensorViewsDataGrid);
-            plantAreaPanel.Children.Add(serviceStatesDataGrid);
-            plantAreaPanel.Children.Add(serviceSchedulesDataGrid);
-
-            //-----------------------------------------------------------------------------
-
-            Chart chart = new Chart
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Width = 1200,
-                Height = 240,
-                Background = Brushes.Beige,
-            };
-
-            LineSeries lineSeries1 = new LineSeries
-            {
-                IndependentValueBinding = new Binding("Key"),
-                DependentValueBinding = new Binding("Value"),
-                Title = "Temperature",
-            };
-
-            LineSeries lineSeries2 = new LineSeries
-            {
-                IndependentValueBinding = new Binding("Key"),
-                DependentValueBinding = new Binding("Value"),
-                Title = "Nutrient",
-            };
-
-            LineSeries lineSeries3 = new LineSeries
-            {
-                IndependentValueBinding = new Binding("Key"),
-                DependentValueBinding = new Binding("Value"),
-                Title = "Soil ph",
-            };
-
-            LineSeries lineSeries4 = new LineSeries
-            {
-                IndependentValueBinding = new Binding("Key"),
-                DependentValueBinding = new Binding("Value"),
-                Title = "Humidity",
-            };
-
-            chart.Series.Add(lineSeries1);
-            chart.Series.Add(lineSeries2);
-            chart.Series.Add(lineSeries3);
-            chart.Series.Add(lineSeries4);
+            plantAreaSensorsPanel.Children.Add(sensorViewsDataGrid);
+            plantAreaSensorsPanel.Children.Add(serviceStatesDataGrid);
+            plantAreaSensorsPanel.Children.Add(serviceSchedulesDataGrid);
             
-            //-----------------------------------------------------------------------------
-
-            DockPanel dockPanel = new DockPanel();
+            DockPanel plantAreaChartsPanel = new DockPanel();
             
-            Menu menu = new Menu
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
-            };
-            MenuItem menuItemCharts = new MenuItem
-            {
-                Header = "Charts"
-            };
-            menuItemCharts.Click += (sender, args) =>
-            {
-                plantAreaPanel.Visibility = Visibility.Collapsed;
-                chart.Visibility = Visibility.Visible;
-                
-                IEnumerable<KeyValuePair<DateTime, double>> statistics = GetStatisticsFor(area.Id,
-                    area.Plant.Temperature.MeasurableType, 30, false);
-
-                lineSeries1.ItemsSource = statistics;    
-               
-                statistics = GetStatisticsFor(area.Id,
-                    area.Plant.Nutrient.MeasurableType, 30, false);
-
-                lineSeries2.ItemsSource = statistics;
-
-                statistics = GetStatisticsFor(area.Id,
-                        area.Plant.SoilPh.MeasurableType, 30, false);
-
-                lineSeries3.ItemsSource = statistics;
-                
-                statistics = GetStatisticsFor(area.Id,
-                    area.Plant.Humidity.MeasurableType, 30, false);
-
-                lineSeries4.ItemsSource = statistics;
-            };
-            menu.Items.Add(menuItemCharts);
-
-            MenuItem menuItemSensors = new MenuItem
-            {
-                Header = "Sensors"
-            };
-            menuItemSensors.Click += (sender, args) =>
-            {
-                plantAreaPanel.Visibility = Visibility.Visible;
-                chart.Visibility = Visibility.Collapsed;
-            };
-            menu.Items.Add(menuItemSensors);
+            PlantAreaChartsPanelBuilder plantAreaChartsPanelBuilder = new PlantAreaChartsPanelBuilder(area.Plant.MeasurableParameters,
+                frameworkElementFactoriesBuilder, plantAreaChartsPanel);
+            plantAreaChartsPanelBuilder.RebuildChartsPanel();
             
-            dockPanel.Children.Add(menu);
-            dockPanel.Children.Add(plantAreaPanel);
-            dockPanel.Children.Add(chart);
-
-            //-----------------------------------------------------------------------------
+            Menu menu = new Menu();
+            PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(area, plantAreaSensorsPanel,
+                plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder);
+            plantAreaMenuBuilder.RebuildMenu();
             
+            DockPanel plantAreaFullPanel = new DockPanel();
+
+            Button removePlantsAreaButton = frameworkElementFactoriesBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
+
+            plantAreaFullPanel.Children.Add(menu);
+            plantAreaFullPanel.Children.Add(plantAreaSensorsPanel);
+            plantAreaFullPanel.Children.Add(plantAreaChartsPanel);
+            plantAreaFullPanel.Children.Add(removePlantsAreaButton);
+
             ScrollViewer scrollViewer = new ScrollViewer
             {
-                Height = plantAreaPanel.Height,
+                Height = plantAreaSensorsPanel.Height,
                 CanContentScroll = true,
-                Content = dockPanel,
+                Content = plantAreaFullPanel,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto
             };
 
@@ -416,8 +303,8 @@ namespace PlantsWpf
                 BorderBrush = Brushes.Black,
                 Background = Brushes.LightSteelBlue,
                 BorderThickness = new Thickness(2),
-                Width = plantAreaPanel.Width,
-                Height = plantAreaPanel.Height,
+                Width = plantAreaSensorsPanel.Width,
+                Height = plantAreaSensorsPanel.Height,
                 Margin = new Thickness(marginLeft, marginTop, 0, 0),
                 Child = scrollViewer
             };
@@ -426,17 +313,17 @@ namespace PlantsWpf
 
         private bool SaveServiceSchedule(PlantsArea area, ServiceSchedule serviceSchedule)
         {
-            return _dbModifier.SaveServiceSchedule(area, serviceSchedule);
+            return _dbDataModifier.SaveServiceSchedule(area, serviceSchedule);
         }
 
         private bool SaveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
-            return _dbModifier.SaveSensor(area, sensor, serviceSchedule);
+            return _dbDataModifier.SaveSensor(area, sensor, serviceSchedule);
         }
 
         private bool AddPlantsArea(PlantsArea plantsArea)
         {
-            if (_dbModifier.AddPlantsArea(plantsArea))
+            if (_dbDataModifier.AddPlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
                 MessageBox.Show(String.Format("{0}\narea added", plantsArea));
@@ -447,7 +334,7 @@ namespace PlantsWpf
 
         private bool RemoveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
-            if (_dbModifier.RemoveSensor(area, sensor, serviceSchedule))
+            if (_dbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
                 MessageBox.Show(String.Format("'{0}': sensor removed", sensor.MeasurableType));
                 return true;
@@ -457,7 +344,7 @@ namespace PlantsWpf
 
         private bool RemovePlantsArea(PlantsArea area)
         {
-            if (_dbModifier.RemovePlantsArea(area))
+            if (_dbDataModifier.RemovePlantsArea(area))
             {
                 SetPlantsGrid(1);
                 MessageBox.Show(String.Format("{0}\narea removed", area));

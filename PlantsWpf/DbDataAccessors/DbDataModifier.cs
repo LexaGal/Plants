@@ -11,9 +11,9 @@ using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 
-namespace PlantsWpf.SavingData
+namespace PlantsWpf.DbDataAccessors
 {
-    public class DbModifier
+    public class DbDataModifier
     {
         private readonly PlantsAreas _plantsAreas;
         private readonly SensorsCollection _sensorsCollection;
@@ -24,7 +24,7 @@ namespace PlantsWpf.SavingData
         private readonly IPlantsAreaMappingRepository _plantsAreaMappingRepository;
         private readonly IServiceScheduleMappingRepository _serviceScheduleMappingRepository;
 
-        public DbModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection,
+        public DbDataModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection,
             IMeasurableParameterMappingRepository measurableParameterMappingRepository,
             IPlantMappingRepository plantMappingRepository, ISensorMappingRepository sensorMappingRepository,
             IPlantsAreaMappingRepository plantsAreaMappingRepository,

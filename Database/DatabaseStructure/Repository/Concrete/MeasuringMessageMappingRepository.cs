@@ -44,8 +44,9 @@ namespace Database.DatabaseStructure.Repository.Concrete
                     {
                         return
                             await
-                                Context.MeasuringMessagesSet.Where(func)
-                                    .OrderBy(mapping => mapping.DateTime)
+                                Context.MeasuringMessagesSet
+                                    .OrderByDescending(mapping => mapping.DateTime)
+                                    .Where(func)
                                     .AsQueryable()
                                     .ToListAsync()
                                     .ConfigureAwait(false);
