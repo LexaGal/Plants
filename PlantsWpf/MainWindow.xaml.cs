@@ -171,7 +171,7 @@ namespace PlantsWpf
         private void SetPlantsGrid(int numberInRow)
         {
             const int sizeHorizontal = 1330;
-            const int sizeVertical = 260;
+            const int sizeVertical = 310;
             try
             {
                 PlantsGrid.Children.Clear();
@@ -211,7 +211,7 @@ namespace PlantsWpf
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 1330,
-                Height = 250,
+                Height = 300,
                 CanVerticallyScroll = true
             };
 
@@ -264,24 +264,31 @@ namespace PlantsWpf
             DataGrid serviceSchedulesDataGrid = dataGridsBuilder.CreateServicesSchedulesDataGrid(area,
                 dataGridServiceScheduleViews, serviceScheduleSaveButtonTemplate, onOffServiceScheduleButtonTemplate);
 
+            Button removePlantsAreaButton = frameworkElementFactoriesBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
+
             plantAreaSensorsPanel.Children.Add(sensorViewsDataGrid);
             plantAreaSensorsPanel.Children.Add(serviceStatesDataGrid);
             plantAreaSensorsPanel.Children.Add(serviceSchedulesDataGrid);
+
+            StackPanel plantAreaChartsPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                Visibility = Visibility.Collapsed
+            };
             
-            DockPanel plantAreaChartsPanel = new DockPanel();
+            ChartDescriptor chartDescriptor = new ChartDescriptor(area.Id, area.Plant.MeasurableParameters.First().MeasurableType, 30,
+                        DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now, false);
             
             PlantAreaChartsPanelBuilder plantAreaChartsPanelBuilder = new PlantAreaChartsPanelBuilder(area.Plant.MeasurableParameters,
-                frameworkElementFactoriesBuilder, plantAreaChartsPanel);
+                frameworkElementFactoriesBuilder, plantAreaChartsPanel, chartDescriptor);
             plantAreaChartsPanelBuilder.RebuildChartsPanel();
             
             Menu menu = new Menu();
             PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(area, plantAreaSensorsPanel,
-                plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder);
+                plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, chartDescriptor);
             plantAreaMenuBuilder.RebuildMenu();
             
             DockPanel plantAreaFullPanel = new DockPanel();
-
-            Button removePlantsAreaButton = frameworkElementFactoriesBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
 
             plantAreaFullPanel.Children.Add(menu);
             plantAreaFullPanel.Children.Add(plantAreaSensorsPanel);

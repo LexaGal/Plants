@@ -15,8 +15,9 @@ namespace PlantsWpf.ControlsBuilders
     {
         private readonly PlantsArea _area;
         private readonly StackPanel _plantAreaSensorsPanel;
-        private readonly DockPanel _plantAreaChartsPanel;
+        private readonly StackPanel _plantAreaChartsPanel;
         private readonly Menu _menu;
+        private readonly ChartDescriptor _chartDescriptor;
         private readonly DbMeasuringMessagesRetriever _dbMeasuringMessagesRetriever;
 
         private void RefreshControls(object sender, EventArgs eventArgs)
@@ -24,13 +25,15 @@ namespace PlantsWpf.ControlsBuilders
             RebuildMenu();
         }
 
-        public PlantAreaMenuBuilder(PlantsArea area, StackPanel plantAreaSensorsPanel, DockPanel plantAreaChartsPanel, Menu menu, IControlsRefresher controlsRefresher)
+        public PlantAreaMenuBuilder(PlantsArea area, StackPanel plantAreaSensorsPanel, StackPanel plantAreaChartsPanel,
+            Menu menu, IControlsRefresher controlsRefresher, ChartDescriptor chartDescriptor)
         {
             controlsRefresher.RefreshControl += RefreshControls;
             _area = area;
             _plantAreaSensorsPanel = plantAreaSensorsPanel;
             _plantAreaChartsPanel = plantAreaChartsPanel;
             _menu = menu;
+            _chartDescriptor = chartDescriptor;
             _dbMeasuringMessagesRetriever = new DbMeasuringMessagesRetriever(new MeasuringMessageMappingRepository());
         }
 
@@ -45,24 +48,6 @@ namespace PlantsWpf.ControlsBuilders
             MenuItem menuItemCharts = new MenuItem
             {
                 Header = "Charts"
-            };
-            menuItemCharts.Click += (sender, args) =>
-            {
-                _plantAreaSensorsPanel.Visibility = Visibility.Collapsed;
-                _plantAreaChartsPanel.Visibility = Visibility.Visible;
-
-                ChartDescriptor chartDescriptor = new ChartDescriptor(_area.Id,
-                    _area.Plant.Temperature.MeasurableType, 30, DateTime.Now.Subtract(new TimeSpan(0, 0, 30)),
-                    DateTime.Now, false);
-
-                IEnumerable<KeyValuePair<DateTime, double>> statistics =
-                    _dbMeasuringMessagesRetriever.RetrieveMessagesStatistics(chartDescriptor);
-
-                AreaSeries areaSeries = charts[0].Series[0] as AreaSeries;
-                if (areaSeries != null)
-                {
-                    areaSeries.ItemsSource = statistics;
-                }
             };
             _menu.Items.Add(menuItemCharts);
 
@@ -80,12 +65,10 @@ namespace PlantsWpf.ControlsBuilders
                     charts.ForEach(c => c.Visibility = Visibility.Collapsed);
                     chart.Visibility = Visibility.Visible;
 
-                    ChartDescriptor chartDescriptor = new ChartDescriptor(_area.Id,
-                        chart.Title.ToString(), 30, DateTime.Now.Subtract(new TimeSpan(0, 0, 30)),
-                        DateTime.Now, false);
+                    _chartDescriptor.MeasurableType = chart.Title.ToString();
 
                     IEnumerable<KeyValuePair<DateTime, double>> statistics =
-                        _dbMeasuringMessagesRetriever.RetrieveMessagesStatistics(chartDescriptor);
+                        _dbMeasuringMessagesRetriever.RetrieveMessagesStatistics(_chartDescriptor);
 
                     AreaSeries areaSeries = chart.Series[0] as AreaSeries;
                     if (areaSeries != null)
@@ -106,6 +89,29 @@ namespace PlantsWpf.ControlsBuilders
                 _plantAreaChartsPanel.Visibility = Visibility.Collapsed;
             };
             _menu.Items.Add(menuItemSensors);
+
+            Button refreshButton = new Button
+            {
+                Content = "Refresh",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Width = 50
+            };
+            refreshButton.Click += delegate
+            {
+                Chart chart = charts.Single(chart1 => chart1.Title.ToString() == _chartDescriptor.MeasurableType);
+                _chartDescriptor.MeasurableType = chart.Title.ToString();
+
+                IEnumerable<KeyValuePair<DateTime, double>> statistics =
+                    _dbMeasuringMessagesRetriever.RetrieveMessagesStatistics(_chartDescriptor);
+
+                AreaSeries areaSeries = chart.Series[0] as AreaSeries;
+                if (areaSeries != null)
+                {
+                    areaSeries.ItemsSource = statistics;
+                }
+            };
+            _plantAreaChartsPanel.Children.Add(refreshButton);
+
         }
     }
 }
