@@ -1,6 +1,5 @@
 ﻿using System;
 using PlantingLib.MeasurableParameters;
-using PlantingLib.Messenging;
 using PlantingLib.ParametersFunctions;
 using PlantingLib.Plants;
 
@@ -15,13 +14,7 @@ namespace PlantingLib.Sensors
         public MeasurableParameter MeasurableParameter { get; set; }
         public ParameterFunction Function { get; protected set; }
 
-        public string MeasurableType
-        {
-            get
-            {
-                return MeasurableParameter.MeasurableType;
-            }
-        }
+        public string MeasurableType => MeasurableParameter.MeasurableType;
 
         public int NumberOfTimes { get; set; }
     
@@ -35,10 +28,7 @@ namespace PlantingLib.Sensors
             Id = id;
 
             PlantsArea = plantsArea;
-            if (plantsArea != null)
-            {
-                plantsArea.AddSensor(this);
-            }
+            plantsArea?.AddSensor(this);
 
             MeasuringTimeout = measuringTimeout;
             MeasurableParameter = measurableParameter;
@@ -73,10 +63,7 @@ namespace PlantingLib.Sensors
         protected virtual void OnNewMeasuring()
         {
             EventHandler handler = NewMeasuring;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            handler?.Invoke(this, EventArgs.Empty);
         }
     }
 }

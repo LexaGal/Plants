@@ -52,7 +52,7 @@ namespace PlantsWpf.ObjectsViews
                 _optimal = value;
                 OnPropertyChanged();
                 _sensor.MeasurableParameter.Optimal = Convert.ToInt32(Optimal);
-                if (!_sensor.MeasurableParameter.IsValid())
+                if (!_sensor.MeasurableParameter.HasValidParameters())
                 {
                     throw new ArgumentException();
                 }
@@ -68,7 +68,7 @@ namespace PlantsWpf.ObjectsViews
                 _min = value;
                 OnPropertyChanged();
                _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
-               if (!_sensor.MeasurableParameter.IsValid())
+               if (!_sensor.MeasurableParameter.HasValidParameters())
                {
                    throw new ArgumentException();
                } 
@@ -84,7 +84,7 @@ namespace PlantsWpf.ObjectsViews
                 _max = value;
                 OnPropertyChanged();
                 _sensor.MeasurableParameter.Max = Convert.ToInt32(Max);
-                if (!_sensor.MeasurableParameter.IsValid())
+                if (!_sensor.MeasurableParameter.HasValidParameters())
                 {
                     throw new ArgumentException();
                 }
@@ -154,8 +154,9 @@ namespace PlantsWpf.ObjectsViews
 
                 // do not: _sensor.MeasurableParameter.MeasurableType = Measurable;
                 // oldMeasurable will overwrite
-                if (Regex.Match(Measurable, @"[^a-zA-Z0-9_@]+").Success)
+                if (Regex.Match(Measurable, PlantingLib.Properties.Resources.MeasurablePattern).Success)
                 {
+                    IsModified = false.ToString();
                     throw new FormatException();
                 }
                 IsModified = true.ToString();
@@ -216,10 +217,7 @@ namespace PlantsWpf.ObjectsViews
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
-            {
-                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

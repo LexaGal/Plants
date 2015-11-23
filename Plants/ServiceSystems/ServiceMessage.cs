@@ -4,10 +4,10 @@ namespace PlantingLib.ServiceSystems
 {
     public class ServiceMessage
     {
-        public Guid PlantsAreaId { get; private set; }
-        public string MeasurableType { get; private set; }
-        public double ParameterValue { get; private set; }
-        public TimeSpan TimeSpan { get; private set; }
+        public Guid PlantsAreaId { get; }
+        public string MeasurableType { get; }
+        public double ParameterValue { get; }
+        public TimeSpan TimeSpan { get; }
         
         public ServiceMessage(Guid plantsAreaId, string measurableType, double parameterValue, TimeSpan timeSpan)
         {
@@ -19,7 +19,7 @@ namespace PlantingLib.ServiceSystems
         
         public override string ToString()
         {
-            return String.Format("{0} at {1} plants area was set to {2} during {3}.", MeasurableType, PlantsAreaId, ParameterValue, TimeSpan);
+            return $"{MeasurableType} at {PlantsAreaId} plants area was set to {ParameterValue} during {TimeSpan}.";
         }
     }
 }

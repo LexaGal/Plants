@@ -10,10 +10,10 @@ namespace PlantingLib.Plants
         public Guid Id { get; private set; }
         public PlantNameEnum Name { get; private set; }
 
-        public Temperature Temperature { get; private set; }
-        public Humidity Humidity { get; private set; }
-        public SoilPh SoilPh { get; private set; }
-        public Nutrient Nutrient { get; private set; }
+        public Temperature Temperature { get; }
+        public Humidity Humidity { get; }
+        public SoilPh SoilPh { get; }
+        public Nutrient Nutrient { get; }
 
         public List<MeasurableParameter> MeasurableParameters { get; private set; }
 

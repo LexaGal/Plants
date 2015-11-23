@@ -11,12 +11,12 @@ namespace PlantingLib.Plants
     public class PlantsArea
     {
         public Guid Id { get; private set; }
-        public int Number { get; private set; }
+        public int Number { get; }
 
-        public Plant Plant { get; private set; }
+        public Plant Plant { get; }
         
         public List<Sensor> Sensors { get; private set; }
-        public PlantServicesStates PlantServicesStates { get; private set; }
+        public PlantServicesStates PlantServicesStates { get; }
         public ServicesSchedulesStates ServicesSchedulesStates { get; private set; }
 
         public PlantsArea(Guid id, Plant plant, int number)
@@ -72,7 +72,7 @@ namespace PlantingLib.Plants
 
         public override string ToString()
         {
-            return String.Format("Plant's name: {0}\nPlant's number: {1}", Plant.Name, Number);
+            return $"Plant's name: {Plant.Name}\nPlant's number: {Number}";
         }
     }
 }

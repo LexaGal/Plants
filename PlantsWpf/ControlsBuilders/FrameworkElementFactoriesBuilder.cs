@@ -23,10 +23,7 @@ namespace PlantsWpf.ControlsBuilders
         public virtual void OnRefreshControls()
         {
             EventHandler handler = RefreshControl;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            handler?.Invoke(this, EventArgs.Empty);
         }
 
         public FrameworkElementFactory CreateOnOffSensorButtonTemplate()
@@ -110,8 +107,8 @@ namespace PlantsWpf.ControlsBuilders
                     {
                         if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) == 0)
                         {
-                            MessageBox.Show(String.Format("'{0}': sensor with such measurable does not exist",
-                                dataGridSensorView.Measurable));
+                            MessageBox.Show(
+                                $"'{dataGridSensorView.Measurable}': sensor with such measurable does not exist");
                             return;
                         }
 
@@ -145,7 +142,7 @@ namespace PlantsWpf.ControlsBuilders
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Func<PlantsArea, Sensor, ServiceSchedule, bool> saveSensor)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
-            buttonTemplate.SetValue(ContentControl.ContentProperty, "Ok");
+            buttonTemplate.SetValue(ContentControl.ContentProperty, "Save");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
@@ -161,7 +158,7 @@ namespace PlantsWpf.ControlsBuilders
 
                             if (dataGridSensorView.Sensor != null)
                             {
-                                if (!dataGridSensorView.Sensor.MeasurableParameter.IsValid())
+                                if (!dataGridSensorView.Sensor.MeasurableParameter.HasValidParameters())
                                 {
                                     throw new Exception();
                                 }
@@ -195,8 +192,8 @@ namespace PlantsWpf.ControlsBuilders
                                         dataGridSensorView.MeasurableIsModified = false;
                                         dataGridSensorView.IsModified = false.ToString();
 
-                                        MessageBox.Show(String.Format("Sensor with measurable '{0}' updated",
-                                            dataGridSensorView.Measurable));
+                                        MessageBox.Show(
+                                            $"Sensor with measurable '{dataGridSensorView.Measurable}' updated");
 
                                         OnRefreshControls();
                                         
@@ -207,15 +204,15 @@ namespace PlantsWpf.ControlsBuilders
                                 
                                 dataGridSensorView.IsModified = false.ToString();
                                 
-                                MessageBox.Show(String.Format("'{0}': sensor data saved", dataGridSensorView.Measurable));
+                                MessageBox.Show($"'{dataGridSensorView.Measurable}': sensor data saved");
                                 
                                 return;
                             }
 
                             if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) != 1)
                             {
-                                MessageBox.Show(String.Format("Sensor with measurable '{0}' already exists",
-                                    dataGridSensorView.Measurable));
+                                MessageBox.Show(
+                                    $"Sensor with measurable '{dataGridSensorView.Measurable}' already exists");
                                 return;
                             }
 
@@ -247,13 +244,13 @@ namespace PlantsWpf.ControlsBuilders
 
                             dataGridSensorView.IsModified = false.ToString();
 
-                            MessageBox.Show(String.Format("'{0}': sensor data saved", dataGridSensorView.Measurable));
+                            MessageBox.Show($"'{dataGridSensorView.Measurable}': sensor data saved");
 
                             OnRefreshControls();
                         }
                         catch (Exception)
                         {
-                            MessageBox.Show(String.Format("'{0}': wrong sensor data", dataGridSensorView.Measurable));
+                            MessageBox.Show($"'{dataGridSensorView.Measurable}': wrong sensor data");
                         }
                      }
                 })
@@ -266,7 +263,7 @@ namespace PlantsWpf.ControlsBuilders
             ServiceSchedule, bool> saveServiceSchedule)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
-            buttonTemplate.SetValue(ContentControl.ContentProperty, "Ok");
+            buttonTemplate.SetValue(ContentControl.ContentProperty, "Save");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
@@ -289,8 +286,7 @@ namespace PlantsWpf.ControlsBuilders
                         }
                         catch (Exception)
                         {
-                            MessageBox.Show(String.Format("'{0}': wrong schedule data",
-                                    dataGridServiceScheduleView.ServiceName));
+                            MessageBox.Show($"'{dataGridServiceScheduleView.ServiceName}': wrong schedule data");
                             return;
                         }
 
@@ -310,7 +306,7 @@ namespace PlantsWpf.ControlsBuilders
                         }
                         saveServiceSchedule(area, serviceSchedule);
                         
-                        MessageBox.Show(String.Format("'{0}': schedule data saved", dataGridServiceScheduleView.ServiceName));
+                        MessageBox.Show($"'{dataGridServiceScheduleView.ServiceName}': schedule data saved");
                         dataGridServiceScheduleView.IsModified = false.ToString();
                     }
                 })

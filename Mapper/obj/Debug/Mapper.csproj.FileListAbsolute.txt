@@ -22,3 +22,9 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\Post
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\PostSharp.xml
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\Mapper.pssym
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\obj\Debug\Mapper.dll.postsharp
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\Database.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\EntityFramework.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\EntityFramework.SqlServer.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\Database.pdb
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\EntityFramework.xml
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Mapper\bin\Debug\EntityFramework.SqlServer.xml

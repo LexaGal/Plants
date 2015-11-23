@@ -26,3 +26,7 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Plan
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.dll.postsharp
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.pdb
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.pdb
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.Properties.Resources.resources
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.csproj.GenerateResource.Cache

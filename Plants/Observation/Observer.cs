@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
-using PlantingLib.MeasuringsProviding;
+using PlantingLib.MeasuringsProviders;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
@@ -14,7 +14,7 @@ namespace PlantingLib.Observation
 {
     public class Observer : IReciever, ISender<MeasuringMessage>
     {
-        public PlantsAreas PlantsAreas { get; private set; }
+        public PlantsAreas PlantsAreas { get; }
         public IDictionary<Guid, IList<MeasuringMessage>> MessagesDictionary;
         private const int MessagesLimit = 10;
         private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
@@ -67,14 +67,11 @@ namespace PlantingLib.Observation
 
                         PlantsArea area = PlantsAreas.Areas.SingleOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
 
-                        if (area != null)
+                        Sensor sensor =
+                            area?.Sensors.SingleOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
+                        if (sensor != null)
                         {
-                            Sensor sensor =
-                                area.Sensors.SingleOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
-                            if (sensor != null)
-                            {
-                                sensor.NumberOfTimes++;
-                            }
+                            sensor.NumberOfTimes++;
                         }
                     }
 
@@ -110,10 +107,7 @@ namespace PlantingLib.Observation
         public void OnMessageSending(MeasuringMessage message)
         {
             EventHandler handler = MessageSending;
-            if (handler != null)
-            {
-                handler(this, new MessengingEventArgs<MeasuringMessage>(message));
-            }
+            handler?.Invoke(this, new MessengingEventArgs<MeasuringMessage>(message));
         }
     }
 }

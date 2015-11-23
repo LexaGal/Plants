@@ -16,15 +16,13 @@ namespace Mapper.MapperContext
     public class DbMapper
     {
         private readonly IPlantMappingRepository _plantRepository;
-        private readonly IPlantsAreaMappingRepository _plantsAreaRepository;
         private readonly IMeasurableParameterMappingRepository _measurableParameterRepository;
         private readonly IServiceScheduleMappingRepository _serviceScheduleMappingRepository;
 
-        public DbMapper(IPlantMappingRepository plantRepository, IPlantsAreaMappingRepository plantsAreaRepository,
+        public DbMapper(IPlantMappingRepository plantRepository,
             IMeasurableParameterMappingRepository measurableParameterRepository, IServiceScheduleMappingRepository serviceScheduleMappingRepository)
         {
             _plantRepository = plantRepository;
-            _plantsAreaRepository = plantsAreaRepository;
             _measurableParameterRepository = measurableParameterRepository;
             _serviceScheduleMappingRepository = serviceScheduleMappingRepository;
         }
@@ -117,7 +115,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, string.Format("MeasurableParameter Id: {0}", measurableParameterMapping.Id));
+                MessageBox.Show(e.StackTrace, $"MeasurableParameter Id: {measurableParameterMapping.Id}");
                 return null;
             }
         }
@@ -144,7 +142,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, string.Format("ServiceSchedule Id: {0}", serviceScheduleMapping.Id));
+                MessageBox.Show(e.StackTrace, $"ServiceSchedule Id: {serviceScheduleMapping.Id}");
                 return null;
             }
         }
@@ -187,7 +185,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, string.Format("Plant Id: {0}", plantMapping.Id));
+                MessageBox.Show(e.StackTrace, $"Plant Id: {plantMapping.Id}");
                 return null;
             }
         }
@@ -214,7 +212,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, string.Format("PlantsArea Id: {0}", plantsAreaMapping.Id));
+                MessageBox.Show(e.StackTrace, $"PlantsArea Id: {plantsAreaMapping.Id}");
                 return null;
             }
         }
@@ -257,7 +255,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, string.Format("Sensor Id: {0}", sensorMapping.Id));
+                MessageBox.Show(e.StackTrace, $"Sensor Id: {sensorMapping.Id}");
                 return null;
             }
             return null;

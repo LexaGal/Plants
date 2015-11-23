@@ -52,7 +52,7 @@ namespace PlantsWpf
                 int maxT = Convert.ToInt32(MaxTemperature.Text);
                 Temperature temperature = new Temperature(Guid.NewGuid(), optimalT, minT, maxT);
 
-                if (!temperature.IsValid())
+                if (!temperature.HasValidParameters())
                 {
                     throw new ApplicationException("Fields for Temperature are not valid - numeric values >= 0 and <= 100!");
                 }
@@ -62,7 +62,7 @@ namespace PlantsWpf
                 int maxH = Convert.ToInt32(MaxHumidity.Text);
                 Humidity humidity = new Humidity(Guid.NewGuid(), optimalH, minH, maxH);
 
-                if (!humidity.IsValid())
+                if (!humidity.HasValidParameters())
                 {
                     throw new ApplicationException("Fields for Humidity are not valid - numeric values >= 0 and <= 100!");
                 }
@@ -72,7 +72,7 @@ namespace PlantsWpf
                 int maxS = Convert.ToInt32(MaxSoilPh.Text);
                 SoilPh soilPh = new SoilPh(Guid.NewGuid(), optimalS, minS, maxS);
 
-                if (!soilPh.IsValid())
+                if (!soilPh.HasValidParameters())
                 {
                     throw new ApplicationException("Fields for SoilPh are not valid - numeric values >= 0 and <= 100!");
                 }
@@ -82,7 +82,7 @@ namespace PlantsWpf
                 int maxN = Convert.ToInt32(MaxNutrient.Text);
                 Nutrient nutrient = new Nutrient(Guid.NewGuid(), optimalN, minN, maxN);
 
-                if (!nutrient.IsValid())
+                if (!nutrient.HasValidParameters())
                 {
                     throw new ApplicationException("Fields for Nutrient are not valid - numeric values >= 0 and <= 100!");
                 }
@@ -99,16 +99,16 @@ namespace PlantsWpf
                     TimeSpan nutrientTimeout = TimeSpan.Parse(NutrientTimeout.Text);
 
                     Sensor ts = new TemperatureSensor(Guid.NewGuid(), plantsArea, temperatureTimeout, temperature);
-                    if (TemperatureCheckBox.IsChecked != null && !(bool) TemperatureCheckBox.IsChecked){ts.IsOn = false;}
+                    if (TemperatureCheckBox.IsChecked != null && !(bool) TemperatureCheckBox.IsChecked){ts.IsOffByUser = true;}
 
                     Sensor hs = new HumiditySensor(Guid.NewGuid(), plantsArea, humidityTimeout, humidity);
-                    if (HumidityCheckBox.IsChecked != null && !(bool) HumidityCheckBox.IsChecked){hs.IsOn = false;}
+                    if (HumidityCheckBox.IsChecked != null && !(bool) HumidityCheckBox.IsChecked){hs.IsOffByUser = true;}
 
                     Sensor ss = new SoilPhSensor(Guid.NewGuid(), plantsArea, soilPhTimeout, soilPh);
-                    if (SoilPhCheckBox.IsChecked != null && !(bool) SoilPhCheckBox.IsChecked){ss.IsOn = false;}
+                    if (SoilPhCheckBox.IsChecked != null && !(bool) SoilPhCheckBox.IsChecked){ss.IsOffByUser = true;}
 
                     Sensor ns = new NutrientSensor(Guid.NewGuid(), plantsArea, nutrientTimeout, nutrient);
-                    if (NutrientCheckBox.IsChecked != null && !(bool) NutrientCheckBox.IsChecked){ns.IsOn = false;}
+                    if (NutrientCheckBox.IsChecked != null && !(bool) NutrientCheckBox.IsChecked){ns.IsOffByUser = true;}
 
                 }
                 catch (Exception)
@@ -143,9 +143,9 @@ namespace PlantsWpf
         private void Save_OnClick(object sender, RoutedEventArgs e)
         {
             PlantsArea plantsArea = GetPlantsArea();
-            if (plantsArea != null && PlantsAreaEvent != null)
+            if (plantsArea != null)
             {
-                PlantsAreaEvent(this, new PlantsAreaEventArgs(plantsArea));
+                PlantsAreaEvent?.Invoke(this, new PlantsAreaEventArgs(plantsArea));
             }
         }
 

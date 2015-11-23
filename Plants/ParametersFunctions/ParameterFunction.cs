@@ -10,7 +10,7 @@ namespace PlantingLib.ParametersFunctions
         [Key]
         public Guid Id { get; set; }
 
-        public MeasurableParameter MeasurableParameter { get; private set; }
+        public MeasurableParameter MeasurableParameter { get; }
         public double CurrentFunctionValue { get; set; }
         public WeatherTypesEnum WeatherType { get; private set; }
         protected readonly Random Random;

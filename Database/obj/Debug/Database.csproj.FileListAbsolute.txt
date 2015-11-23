@@ -11,14 +11,8 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\Au
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\AutoMapper.xml
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\Database.dll
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\Database.pdb
-E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\AutoMapper.dll
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\EntityFramework.dll
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\EntityFramework.SqlServer.dll
-E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\Mapper.dll
-E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\PlantingLib.dll
-E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\Mapper.pdb
-E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\PlantingLib.pdb
-E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\AutoMapper.xml
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\EntityFramework.xml
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\EntityFramework.SqlServer.xml
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Debug\Database.csprojResolveAssemblyReference.cache

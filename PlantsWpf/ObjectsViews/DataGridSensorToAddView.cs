@@ -30,7 +30,6 @@ namespace PlantsWpf.ObjectsViews
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotNull]
         public string Timeout
         {
             get { return _timeout; }
@@ -41,7 +40,6 @@ namespace PlantsWpf.ObjectsViews
             }
         }
 
-        [NotNull]
         public string Add
         {
             get { return _add; }

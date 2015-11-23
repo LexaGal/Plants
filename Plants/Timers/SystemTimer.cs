@@ -17,10 +17,7 @@ namespace PlantingLib.Timers
             _timer.Enabled = true;
         }
 
-        public static bool IsEnabled
-        {
-            get { return _timer != null && _timer.Enabled; }
-        }
+        public static bool IsEnabled => _timer != null && _timer.Enabled;
 
         public static void Restart()
         {

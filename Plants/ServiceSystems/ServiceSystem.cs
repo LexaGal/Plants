@@ -11,9 +11,9 @@ namespace PlantingLib.ServiceSystems
 {
     public abstract class ServiceSystem
     {
-        public PlantsArea PlantsArea { get; private set; }
-        public string MeasurableType { get; private set; }
-        public double ParameterValue { get; private set; }
+        public PlantsArea PlantsArea { get; }
+        public string MeasurableType { get; }
+        public double ParameterValue { get; }
         
         private Timer _timer;
         protected TimeSpan ServiceTimeSpan;

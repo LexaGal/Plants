@@ -1,7 +1,8 @@
 ﻿    using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using PlantsWpf.Annotations;
+    using PlantsWpf.Annotations;
+    using static System.String;
 
 namespace PlantingLib.Plants.ServiceStates
 {
@@ -14,7 +15,7 @@ namespace PlantingLib.Plants.ServiceStates
             IsRunning = false;
         }
 
-        public bool IsCustom { get; private set; }
+        public bool IsCustom { get; }
 
         public string ServiceName
         {
@@ -24,7 +25,7 @@ namespace PlantingLib.Plants.ServiceStates
             }
             set
             {
-                _serviceName = IsCustom ? String.Format("*{0}*", value) : value;
+                _serviceName = IsCustom ? $"*{value}*" : value;
                 OnPropertyChanged();
             }
         }
@@ -33,7 +34,7 @@ namespace PlantingLib.Plants.ServiceStates
 
         public string IsOn
         {
-            get { return IsRunning ? "✔" : String.Empty; }
+            get { return IsRunning ? Properties.Resources.IsScheduledSign : Empty; }
             set
             {
                 IsRunning = Convert.ToBoolean(value);
@@ -46,7 +47,7 @@ namespace PlantingLib.Plants.ServiceStates
 
         public string IsScheduled
         {
-            get { return _isScheduled ? "✔" : String.Empty; }
+            get { return _isScheduled ? Properties.Resources.IsScheduledSign : Empty; }
             set
             {
                 _isScheduled = Convert.ToBoolean(value);
@@ -56,7 +57,7 @@ namespace PlantingLib.Plants.ServiceStates
 
         public bool IsFor(string measurableType)
         {
-            return ServiceName == String.Format("*{0}*", measurableType);
+            return ServiceName == $"*{measurableType}*";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -65,10 +66,7 @@ namespace PlantingLib.Plants.ServiceStates
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         
         public object Clone()

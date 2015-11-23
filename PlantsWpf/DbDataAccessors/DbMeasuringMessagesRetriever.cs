@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Database.DatabaseStructure.Repository.Abstract;
-using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using PlantingLib.Messenging;
 using PlantsWpf.ObjectsViews;
@@ -41,11 +40,8 @@ namespace PlantsWpf.DbDataAccessors
                 _measuringMessageMappingRepository.GetAllAsync(expression);
             List<KeyValuePair<DateTime, double>> list = new List<KeyValuePair<DateTime, double>>();
 
-            if (measuringMessageMappingsTask.Result != null)
-            {
-                measuringMessageMappingsTask.Result.ForEach(
-                    mapping => list.Add(new KeyValuePair<DateTime, double>(mapping.DateTime, mapping.ParameterValue)));
-            }
+            measuringMessageMappingsTask.Result?.ForEach(
+                mapping => list.Add(new KeyValuePair<DateTime, double>(mapping.DateTime, mapping.ParameterValue)));
             return list.Take(Math.Min(list.Count, chartDescriptor.Number));
         }
     }

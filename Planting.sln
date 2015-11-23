@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantingLib", "Plants\PlantingLib.csproj", "{B3521B62-7B55-452D-9B22-99075E2E4116}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantingUI", "PlantingUI\PlantingUI.csproj", "{DFACB257-1191-4078-BAA6-370D4DEC2663}"

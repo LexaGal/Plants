@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.DataVisualization.Charting;
 using Database.DatabaseStructure.Repository.Concrete;
-using PlantingLib.Plants;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
 
@@ -13,7 +12,6 @@ namespace PlantsWpf.ControlsBuilders
 {
     public class PlantAreaMenuBuilder
     {
-        private readonly PlantsArea _area;
         private readonly StackPanel _plantAreaSensorsPanel;
         private readonly StackPanel _plantAreaChartsPanel;
         private readonly Menu _menu;
@@ -25,11 +23,10 @@ namespace PlantsWpf.ControlsBuilders
             RebuildMenu();
         }
 
-        public PlantAreaMenuBuilder(PlantsArea area, StackPanel plantAreaSensorsPanel, StackPanel plantAreaChartsPanel,
+        public PlantAreaMenuBuilder(StackPanel plantAreaSensorsPanel, StackPanel plantAreaChartsPanel,
             Menu menu, IControlsRefresher controlsRefresher, ChartDescriptor chartDescriptor)
         {
             controlsRefresher.RefreshControl += RefreshControls;
-            _area = area;
             _plantAreaSensorsPanel = plantAreaSensorsPanel;
             _plantAreaChartsPanel = plantAreaChartsPanel;
             _menu = menu;
@@ -66,6 +63,8 @@ namespace PlantsWpf.ControlsBuilders
                     chart.Visibility = Visibility.Visible;
 
                     _chartDescriptor.MeasurableType = chart.Title.ToString();
+                    _chartDescriptor.DateTimeFrom = DateTime.Now.Subtract(new TimeSpan(0, 1, 0));
+                    _chartDescriptor.DateTimeTo = DateTime.Now;
 
                     IEnumerable<KeyValuePair<DateTime, double>> statistics =
                         _dbMeasuringMessagesRetriever.RetrieveMessagesStatistics(_chartDescriptor);
@@ -112,6 +111,29 @@ namespace PlantsWpf.ControlsBuilders
             };
             _plantAreaChartsPanel.Children.Add(refreshButton);
 
+            Button lastButton = new Button
+            {
+                Content = "Last",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Width = 50
+            };
+            lastButton.Click += delegate
+            {
+                Chart chart = charts.Single(chart1 => chart1.Title.ToString() == _chartDescriptor.MeasurableType);
+                _chartDescriptor.MeasurableType = chart.Title.ToString();
+                _chartDescriptor.DateTimeFrom = DateTime.Now.Subtract(new TimeSpan(0, 1, 0));
+                _chartDescriptor.DateTimeTo = DateTime.Now;
+
+                IEnumerable<KeyValuePair<DateTime, double>> statistics =
+                    _dbMeasuringMessagesRetriever.RetrieveMessagesStatistics(_chartDescriptor);
+
+                AreaSeries areaSeries = chart.Series[0] as AreaSeries;
+                if (areaSeries != null)
+                {
+                    areaSeries.ItemsSource = statistics;
+                }
+            };
+            _plantAreaChartsPanel.Children.Add(lastButton);
         }
     }
 }

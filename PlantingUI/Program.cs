@@ -33,9 +33,9 @@ namespace PlantingUI
             IMeasurableParameterMappingRepository measurableParameterRepository = new MeasurableParameterMappingRepository();
             ISensorMappingRepository sensorRepository = new SensorMappingRepository();
             
-            DbMapper dbMapper = new DbMapper(plantRepository, plantsAreaRepository,
+            DbMapper dbMapper = new DbMapper(plantRepository,
                 measurableParameterRepository, null);
-
+            int a = 5;
             //List<PlantsAreaMapping> plantsAreasMappings = plantsAreaRepository.GetAll();
             
             List<SensorMapping> sensorMappings = sensorRepository.GetAll();
@@ -56,6 +56,7 @@ namespace PlantingUI
 
             _beginDateTime = DateTime.Now;
         }
+
 
         private static void Send(object sender, ElapsedEventArgs args)
         {

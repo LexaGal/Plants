@@ -9,3 +9,12 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Release\
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Release\Database.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Release\Database.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Release\Database.pdb
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Release\Database.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Release\Database.pdb
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Release\EntityFramework.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Release\EntityFramework.SqlServer.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Release\EntityFramework.xml
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Release\EntityFramework.SqlServer.xml
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Release\Database.csprojResolveAssemblyReference.cache
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Release\Database.dll
+E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Release\Database.pdb

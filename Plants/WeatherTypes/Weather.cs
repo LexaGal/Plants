@@ -10,10 +10,7 @@ namespace PlantingLib.WeatherTypes
         public static void OnWeatherTypeChanged()
         {
             Action<WeatherTypesEnum> handler = WeatherTypeChanged;
-            if (handler != null)
-            {
-                handler(WeatherType);
-            }
+            handler?.Invoke(WeatherType);
         }
 
         public static void SetWeather(WeatherTypesEnum type)
