@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mapper", "Mapper\Mapper.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantsWpf", "PlantsWpf\PlantsWpf.csproj", "{30732F0D-AE65-45C6-8AA0-024BD0894336}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "ClassLibrary1\Server.csproj", "{CC0BA390-D5EB-4AA7-ABBB-6DE71B0FE898}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{30732F0D-AE65-45C6-8AA0-024BD0894336}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30732F0D-AE65-45C6-8AA0-024BD0894336}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30732F0D-AE65-45C6-8AA0-024BD0894336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC0BA390-D5EB-4AA7-ABBB-6DE71B0FE898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC0BA390-D5EB-4AA7-ABBB-6DE71B0FE898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC0BA390-D5EB-4AA7-ABBB-6DE71B0FE898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC0BA390-D5EB-4AA7-ABBB-6DE71B0FE898}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

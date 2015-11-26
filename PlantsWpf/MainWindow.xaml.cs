@@ -22,8 +22,10 @@ using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
+using PlantsWpf.Converters;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
+using Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
@@ -47,9 +49,13 @@ namespace PlantsWpf
         {
             InitializeComponent();
 
+            PdfDocumentCreator creator = new PdfDocumentCreator();
+
+            creator.CreatePdfDocument();
+
             ResourceDictionary = Application.LoadComponent(
                 new Uri("/PlantsWpf;component/ResDictionary.xaml",
-                    UriKind.RelativeOrAbsolute)) as ResourceDictionary;
+                UriKind.RelativeOrAbsolute)) as ResourceDictionary;
 
             SetWeatherBox();
             WindowState = WindowState.Maximized;
@@ -65,6 +71,8 @@ namespace PlantsWpf
             SetPlantsGrid(1);
 
             SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
+
+            ServerScheduler.Start();
         }
 
         private void SetWeatherBox()
@@ -259,24 +267,29 @@ namespace PlantsWpf
             };
             
             ChartDescriptor chartDescriptor = new ChartDescriptor(area.Id, area.Plant.MeasurableParameters.First().MeasurableType, 30,
-                        DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now, false);
+                        DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now);
             
             PlantAreaChartsPanelBuilder plantAreaChartsPanelBuilder = new PlantAreaChartsPanelBuilder(area.Plant.MeasurableParameters,
                 frameworkElementFactoriesBuilder, plantAreaChartsPanel, chartDescriptor);
             plantAreaChartsPanelBuilder.RebuildChartsPanel();
             
             Menu menu = new Menu();
+
+            DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever = new DbMeasuringMessagesRetriever(new MeasuringMessageMappingRepository(), _observer.MessagesDictionary);
+
             PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
-                plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, chartDescriptor);
+                plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, dbMeasuringMessagesRetriever,
+                chartDescriptor);
+
             plantAreaMenuBuilder.RebuildMenu();
             
             DockPanel plantAreaFullPanel = new DockPanel();
 
+            plantAreaFullPanel.Children.Add(removePlantsAreaButton);
             plantAreaFullPanel.Children.Add(menu);
             plantAreaFullPanel.Children.Add(plantAreaSensorsPanel);
             plantAreaFullPanel.Children.Add(plantAreaChartsPanel);
-            plantAreaFullPanel.Children.Add(removePlantsAreaButton);
-
+            
             ScrollViewer scrollViewer = new ScrollViewer
             {
                 Height = plantAreaSensorsPanel.Height,

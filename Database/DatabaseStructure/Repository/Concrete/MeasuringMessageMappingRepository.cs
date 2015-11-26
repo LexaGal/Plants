@@ -17,49 +17,56 @@ namespace Database.DatabaseStructure.Repository.Concrete
             throw new NotImplementedException();
         }
 
-        public async Task SaveAsync(List<MeasuringMessageMapping> measuringMessageMappings)
+        public async Task<int> SaveAsync(List<MeasuringMessageMapping> measuringMessageMappings)
         {
             try
             {
                 using (Context = new PlantingDb())
                 {
                     Context.MeasuringMessagesSet.AddRange(measuringMessageMappings);
-                    await Context.SaveChangesAsync().ConfigureAwait(false);
+                    return await Context.SaveChangesAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.StackTrace);
+                return 0;
             }
         }
-
-        public async Task<List<MeasuringMessageMapping>> GetAllAsync(
-            Expression<Func<MeasuringMessageMapping, bool>> func = null)
-        {
+        
+        public int DeleteMany(int n = 1000, Func<MeasuringMessageMapping, bool> func = null)
+        { 
             try
             {
                 using (Context = new PlantingDb())
                 {
                     if (func != null)
                     {
-                        return
-                            await
-                                Context.MeasuringMessagesSet
-                                    .OrderByDescending(mapping => mapping.DateTime)
-                                    .Where(func)
-                                    .AsQueryable()
-                                    .ToListAsync()
-                                    .ConfigureAwait(false);
+                        foreach (MeasuringMessageMapping measuringMessageMapping in Context.MeasuringMessagesSet
+                            .OrderBy(mapping => mapping.DateTime)
+                            .Where(func)
+                            .Take(Math.Min(n, Context.MeasuringMessagesSet.Count()/3)))
+                        {
+                            Context.MeasuringMessagesSet.Remove(measuringMessageMapping);
+                        }
+                        return Context.SaveChanges(); 
                     }
-                    return await Context.MeasuringMessagesSet.ToListAsync().ConfigureAwait(false);
+
+                    foreach (MeasuringMessageMapping measuringMessageMapping in Context.MeasuringMessagesSet
+                        .OrderBy(mapping => mapping.DateTime)
+                        .Take(Math.Min(n, Context.MeasuringMessagesSet.Count()/3)))
+                    {
+
+                         Context.MeasuringMessagesSet.Remove(measuringMessageMapping);
+                    }
+                    return Context.SaveChanges(); 
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.StackTrace);
-                return null;
+                return 0;
             }
         }
-
     }
 }

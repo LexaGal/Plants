@@ -18,3 +18,12 @@ E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\bin\Debug\En
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Debug\Database.csprojResolveAssemblyReference.cache
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Debug\Database.dll
 E:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Database\obj\Debug\Database.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\bin\Debug\Database.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\bin\Debug\Database.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\bin\Debug\EntityFramework.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\bin\Debug\EntityFramework.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\obj\Debug\Database.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\obj\Debug\Database.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\obj\Debug\Database.csprojResolveAssemblyReference.cache

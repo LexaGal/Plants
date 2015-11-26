@@ -10,15 +10,18 @@ namespace PlantsWpf.ObjectsViews
         public DateTime DateTimeFrom { get; set; }
         public DateTime DateTimeTo { get; set; }
         public bool OnlyCritical { get; set; }
+        public bool RefreshAll { get; set; }
 
-        public ChartDescriptor(Guid plantsAreaId, string measurableType, int number, DateTime dateTimeFrom, DateTime dateTimeTo, bool onlyCritical)
+        public ChartDescriptor(Guid plantsAreaId, string measurableType, int number, DateTime dateTimeFrom,
+            DateTime dateTimeTo)
         {
             PlantsAreaId = plantsAreaId;
             MeasurableType = measurableType;
             Number = number;
             DateTimeFrom = dateTimeFrom;
             DateTimeTo = dateTimeTo;
-            OnlyCritical = onlyCritical;
+            RefreshAll = false;
+            OnlyCritical = false;
         }
     }
 }

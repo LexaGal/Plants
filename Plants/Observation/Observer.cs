@@ -15,7 +15,7 @@ namespace PlantingLib.Observation
     public class Observer : IReciever, ISender<MeasuringMessage>
     {
         public PlantsAreas PlantsAreas { get; }
-        public IDictionary<Guid, IList<MeasuringMessage>> MessagesDictionary;
+        public Dictionary<Guid, List<MeasuringMessage>> MessagesDictionary;
         private const int MessagesLimit = 10;
         private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
 
@@ -26,7 +26,8 @@ namespace PlantingLib.Observation
 
             PlantsAreas = plantsAreas;
 
-            MessagesDictionary = new Dictionary<Guid, IList<MeasuringMessage>>();
+            MessagesDictionary = new Dictionary<Guid, List<MeasuringMessage>>();
+
             PlantsAreas.Areas.ToList().ForEach(pa => MessagesDictionary.Add(pa.Id, new List<MeasuringMessage>()));
 
             _measuringMessageMappingRepository = new MeasuringMessageMappingRepository();
@@ -75,15 +76,14 @@ namespace PlantingLib.Observation
                         }
                     }
 
-                    if (MessagesDictionary[recievedMessage.PlantsAreaId].Count == MessagesLimit)
+                    if (MessagesDictionary[recievedMessage.PlantsAreaId].Count % MessagesLimit == 0)
                     {
                         List<MeasuringMessage> measuringMessages =
-                            MessagesDictionary[recievedMessage.PlantsAreaId].ToList();
+                            MessagesDictionary[recievedMessage.PlantsAreaId].Skip(
+                                MessagesDictionary[recievedMessage.PlantsAreaId].Count - MessagesLimit).ToList();
 
                         SaveMessages(measuringMessages);
-
-                        MessagesDictionary[recievedMessage.PlantsAreaId].Clear();
-                    }
+                     }
                 }
             }
             catch (Exception e)
