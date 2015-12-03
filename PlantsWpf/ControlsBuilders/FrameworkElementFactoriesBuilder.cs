@@ -56,13 +56,13 @@ namespace PlantsWpf.ControlsBuilders
                         dataGridSensorView.IsOffByUser = false.ToString();
                     }
                 }));
-            
+
             return buttonTemplate;
         }
 
         public FrameworkElementFactory CreateOnOffServiceScheduleButtonTemplate()
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(CheckBox));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (CheckBox));
             buttonTemplate.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsOn")
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
@@ -72,7 +72,8 @@ namespace PlantsWpf.ControlsBuilders
                 ToggleButton.CheckedEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridServiceScheduleView dataGridServiceScheduleView = ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
+                    DataGridServiceScheduleView dataGridServiceScheduleView =
+                        ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
                     if (dataGridServiceScheduleView != null)
                     {
                         dataGridServiceScheduleView.IsOn = true.ToString();
@@ -82,7 +83,8 @@ namespace PlantsWpf.ControlsBuilders
                 ToggleButton.UncheckedEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridServiceScheduleView dataGridServiceScheduleView = ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
+                    DataGridServiceScheduleView dataGridServiceScheduleView =
+                        ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
                     if (dataGridServiceScheduleView != null)
                     {
                         dataGridServiceScheduleView.IsOn = false.ToString();
@@ -92,7 +94,7 @@ namespace PlantsWpf.ControlsBuilders
         }
 
         public FrameworkElementFactory CreateRemoveSensorButtonTemplate(PlantsArea area,
-            BindingList<DataGridSensorView> dataGridSensorViews, 
+            BindingList<DataGridSensorView> dataGridSensorViews,
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews,
             Func<PlantsArea, Sensor, ServiceSchedule, bool> removeSensor)
         {
@@ -139,7 +141,8 @@ namespace PlantsWpf.ControlsBuilders
 
         public FrameworkElementFactory CreateSensorSaveButtonTemplate(PlantsArea area,
             BindingList<DataGridSensorView> dataGridSensorViews,
-            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Func<PlantsArea, Sensor, ServiceSchedule, bool> saveSensor)
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews,
+            Func<PlantsArea, Sensor, ServiceSchedule, bool> saveSensor)
         {
             FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "Save");
@@ -196,16 +199,16 @@ namespace PlantsWpf.ControlsBuilders
                                             $"Sensor with measurable '{dataGridSensorView.Measurable}' updated");
 
                                         OnRefreshControls();
-                                        
+
                                         return;
                                     }
                                 }
                                 saveSensor(area, dataGridSensorView.Sensor, null);
-                                
+
                                 dataGridSensorView.IsModified = false.ToString();
-                                
+
                                 MessageBox.Show($"'{dataGridSensorView.Measurable}': sensor data saved");
-                                
+
                                 return;
                             }
 
@@ -233,8 +236,8 @@ namespace PlantsWpf.ControlsBuilders
                             area.PlantServicesStates.AddServiceState(serviceState);
 
                             serviceSchedule = new ServiceSchedule(Guid.NewGuid(), area.Id,
-                                    serviceState.ServiceName, new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
-                                    new List<MeasurableParameter> {sensor.MeasurableParameter});
+                                serviceState.ServiceName, new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
+                                new List<MeasurableParameter> {sensor.MeasurableParameter});
 
                             area.ServicesSchedulesStates.AddServiceSchedule(serviceSchedule);
 
@@ -252,23 +255,24 @@ namespace PlantsWpf.ControlsBuilders
                         {
                             MessageBox.Show($"'{dataGridSensorView.Measurable}': wrong sensor data");
                         }
-                     }
+                    }
                 })
                 );
             return buttonTemplate;
         }
 
         public FrameworkElementFactory CreateServiceScheduleSaveButtonTemplate(PlantsArea area,
-            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Func<PlantsArea, 
-            ServiceSchedule, bool> saveServiceSchedule)
+            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Func<PlantsArea,
+                ServiceSchedule, bool> saveServiceSchedule)
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "Save");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridServiceScheduleView dataGridServiceScheduleView = ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
+                    DataGridServiceScheduleView dataGridServiceScheduleView =
+                        ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
 
                     if (dataGridServiceScheduleView != null)
                     {
@@ -301,11 +305,12 @@ namespace PlantsWpf.ControlsBuilders
                                 area.Plant.MeasurableParameters.SingleOrDefault(
                                     p => p.MeasurableType == dataGridServiceScheduleView.Parameters);
 
-                            serviceSchedule = new ServiceSchedule(Guid.NewGuid(), area.Id, dataGridServiceScheduleView.ServiceName,
+                            serviceSchedule = new ServiceSchedule(Guid.NewGuid(), area.Id,
+                                dataGridServiceScheduleView.ServiceName,
                                 servicingSpan, servicingPauseSpan, new List<MeasurableParameter> {measurableParameter});
                         }
                         saveServiceSchedule(area, serviceSchedule);
-                        
+
                         MessageBox.Show($"'{dataGridServiceScheduleView.ServiceName}': schedule data saved");
                         dataGridServiceScheduleView.IsModified = false.ToString();
                     }
@@ -313,17 +318,17 @@ namespace PlantsWpf.ControlsBuilders
                 );
             return buttonTemplate;
         }
-           
+
         public Button CreateRemovePlantsAreaButton(Func<PlantsArea, bool> removePlantsArea, PlantsArea area)
         {
             Button removePlantsAreaButton = new Button
             {
                 Margin = new Thickness(0, 0, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Right,
+                HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 Content = "X",
-                Width = 25,
-                Height = 30
+                Width = 20,
+                Height = 20
             };
 
             removePlantsAreaButton.Click += (sender, args) =>

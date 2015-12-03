@@ -25,6 +25,7 @@ using PlantsWpf.ControlsBuilders;
 using PlantsWpf.Converters;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
+using PlantsWpf.PdfDocuments;
 using Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -48,11 +49,7 @@ namespace PlantsWpf
         public MainWindow()
         {
             InitializeComponent();
-
-            PdfDocumentCreator creator = new PdfDocumentCreator();
-
-            creator.CreatePdfDocument();
-
+            
             ResourceDictionary = Application.LoadComponent(
                 new Uri("/PlantsWpf;component/ResDictionary.xaml",
                 UriKind.RelativeOrAbsolute)) as ResourceDictionary;
@@ -202,8 +199,9 @@ namespace PlantsWpf
                 Orientation = Orientation.Horizontal,
                 Width = 1330,
                 Height = 300,
-                CanVerticallyScroll = true
-            };
+                CanVerticallyScroll = true,
+                CanHorizontallyScroll = true,
+             };
 
             plantAreaSensorsPanel.Children.Add(new Label
             {
@@ -285,8 +283,8 @@ namespace PlantsWpf
             
             DockPanel plantAreaFullPanel = new DockPanel();
 
-            plantAreaFullPanel.Children.Add(removePlantsAreaButton);
             plantAreaFullPanel.Children.Add(menu);
+            plantAreaFullPanel.Children.Add(removePlantsAreaButton);
             plantAreaFullPanel.Children.Add(plantAreaSensorsPanel);
             plantAreaFullPanel.Children.Add(plantAreaChartsPanel);
             

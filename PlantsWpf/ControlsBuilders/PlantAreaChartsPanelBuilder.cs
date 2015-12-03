@@ -40,31 +40,32 @@ namespace PlantsWpf.ControlsBuilders
                 Chart chart = new Chart
                 {
                     HorizontalAlignment = HorizontalAlignment.Left,
-                    Width = 1200,
-                    Height = 240,
-                    Background = (SolidColorBrush)MainWindow.ResourceDictionary["ChartBackground"],
+                    Width = 1100,
+                    Height = 225,
+                    BorderBrush = Brushes.Black,
+                    Background = (LinearGradientBrush) MainWindow.ResourceDictionary["ChartBackground"],
                     Title = measurableParameter.MeasurableType,
                 };
 
-                AreaSeries lineSeries = new AreaSeries
+                AreaSeries areaSeries = new AreaSeries
                 {
                     IndependentValueBinding = new Binding("Key"),
                     DependentValueBinding = new Binding("Value"),
                     Title = measurableParameter.MeasurableType,
                 };
-                chart.Series.Add(lineSeries);
+                chart.Series.Add(areaSeries);
                 _plantAreaChartsPanel.Children.Add(chart);
 
             }
 
             DockPanel chartDescriptorPanel = CreateChartDescriptorPanel();
-            
+
             _plantAreaChartsPanel.Children.Add(chartDescriptorPanel);
         }
 
         public DockPanel CreateChartDescriptorPanel()
         {
-            Label dateTimeFromLabel = new Label { Content = "DateTime from:" };
+            Label dateTimeFromLabel = new Label {Content = "DateTime from:"};
             DateTimePicker dateTimePickerFrom = new DateTimePicker
             {
                 DataContext = _chartDescriptor.DateTimeFrom,
@@ -83,7 +84,7 @@ namespace PlantsWpf.ControlsBuilders
                 }
             };
 
-            Label dateTimeToLabel = new Label { Content = "DateTime to:" };
+            Label dateTimeToLabel = new Label {Content = "DateTime to:"};
             DateTimePicker dateTimePickerTo = new DateTimePicker
             {
                 DataContext = _chartDescriptor.DateTimeTo,
@@ -101,8 +102,8 @@ namespace PlantsWpf.ControlsBuilders
                     _chartDescriptor.DateTimeTo = (DateTime) dateTimePickerTo.Value;
                 }
             };
-            
-            Label numberTextBoxLabel = new Label { Content = "Number of points" };
+
+            Label numberTextBoxLabel = new Label {Content = "Number of points"};
             TextBox numberTextBox = new TextBox
             {
                 DataContext = _chartDescriptor.Number,
@@ -121,7 +122,7 @@ namespace PlantsWpf.ControlsBuilders
                 }
             };
 
-            Label onlyCriticalCheckBoxLabel = new Label { Content = "Show only critical" };
+            Label onlyCriticalCheckBoxLabel = new Label {Content = "Show only critical"};
             CheckBox onlyCriticalCheckBox = new CheckBox
             {
                 DataContext = _chartDescriptor.OnlyCritical,
@@ -155,7 +156,7 @@ namespace PlantsWpf.ControlsBuilders
             chartDescriptorPanel.Children.Add(numberTextBox);
             chartDescriptorPanel.Children.Add(onlyCriticalCheckBoxLabel);
             chartDescriptorPanel.Children.Add(onlyCriticalCheckBox);
-            
+
             return chartDescriptorPanel;
         }
     }

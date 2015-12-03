@@ -41,3 +41,16 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\bin\Debug\Enti
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\obj\Debug\Mapper.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\obj\Debug\Mapper.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\obj\Debug\Mapper.pdb
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\Mapper.dll
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\Mapper.pdb
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\Database.dll
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\PlantingLib.dll
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\EntityFramework.dll
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\Database.pdb
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\PlantingLib.pdb
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\EntityFramework.xml
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\obj\Debug\Mapper.csprojResolveAssemblyReference.cache
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\obj\Debug\Mapper.dll
+C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\obj\Debug\Mapper.pdb

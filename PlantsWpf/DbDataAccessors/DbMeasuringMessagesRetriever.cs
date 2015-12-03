@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -22,61 +25,87 @@ namespace PlantsWpf.DbDataAccessors
 
         public IEnumerable<KeyValuePair<DateTime, double>> RetrieveMessagesStatistics(ChartDescriptor chartDescriptor)
         {
-            List<MeasuringMessage> measuringMessages =
-                _messagesDictionary[chartDescriptor.PlantsAreaId].Where(
-                    message => message.MeasurableType == chartDescriptor.MeasurableType).ToList();
-
-            if (chartDescriptor.OnlyCritical)
+            lock (_messagesDictionary[chartDescriptor.PlantsAreaId])
             {
-                measuringMessages =
-                    measuringMessages.Where(message => message.MessageType == MessageTypeEnum.CriticalInfo).ToList();
-            }
+                List<MeasuringMessage> measuringMessages =
+                    _messagesDictionary[chartDescriptor.PlantsAreaId].ToList().Where(
+                        message => message.MeasurableType == chartDescriptor.MeasurableType).ToList();
 
-            List<KeyValuePair<DateTime, double>> list = new List<KeyValuePair<DateTime, double>>();
 
-            if (!chartDescriptor.RefreshAll && measuringMessages.Count >= chartDescriptor.Number)
-            {
-                measuringMessages.Skip(measuringMessages.Count -
-                                       Math.Min(measuringMessages.Count, chartDescriptor.Number)).ToList().ForEach(
-                                           message =>
-                                               list.Add(new KeyValuePair<DateTime, double>(message.DateTime,
-                                                   message.ParameterValue)));
+                if (chartDescriptor.OnlyCritical)
+                {
+                    measuringMessages =
+                        measuringMessages.Where(message => message.MessageType == MessageTypeEnum.CriticalInfo).ToList();
+                }
+
+                List<KeyValuePair<DateTime, double>> list = new List<KeyValuePair<DateTime, double>>();
+
+                if (!chartDescriptor.RefreshAll && measuringMessages.Count >= chartDescriptor.Number)
+                {
+                    measuringMessages.Skip(measuringMessages.Count -
+                                           Math.Min(measuringMessages.Count, chartDescriptor.Number)).ToList().ForEach(
+                                               message =>
+                                                   list.Add(new KeyValuePair<DateTime, double>(message.DateTime,
+                                                       message.ParameterValue)));
+
+                    return list;
+                }
+
+                Expression<Func<MeasuringMessageMapping, bool>> func;
+
+                if (!chartDescriptor.OnlyCritical)
+                {
+                    func = mapping =>
+                        mapping.MeasurableType.Equals(chartDescriptor.MeasurableType) &&
+                        mapping.PlantsAreaId.Equals(chartDescriptor.PlantsAreaId) &&
+                        mapping.DateTime > chartDescriptor.DateTimeFrom &&
+                        mapping.DateTime < chartDescriptor.DateTimeTo;
+                }
+                else
+                {
+                    func = mapping =>
+                        mapping.MeasurableType == chartDescriptor.MeasurableType &&
+                        mapping.PlantsAreaId == chartDescriptor.PlantsAreaId &&
+                        mapping.DateTime > chartDescriptor.DateTimeFrom &&
+                        mapping.DateTime < chartDescriptor.DateTimeTo &&
+                        mapping.MessageType == MessageTypeEnum.CriticalInfo.ToString();
+                }
+
+                //using (
+                //    var sc =
+                //        new SqlConnection(
+                //            ConfigurationManager.ConnectionStrings["PlantingDb"].ConnectionString))
+                //{
+                //    if (sc.State == ConnectionState.Closed)
+                //    {
+                //        sc.Open();
+                //    }
+
+                //    using (var tr = sc.BeginTransaction(IsolationLevel.ReadCommitted))
+                //    {
+                //        try
+                //        {
+                var measuringMessageMappings = _measuringMessageMappingRepository.GetAll(func);
+                //    tr.Commit();
+                //}
+                //catch (Exception e)
+                //{
+                //    tr.Rollback();
+                //}
+                //    }
+                //}
+
+                if (measuringMessageMappings != null)
+                {
+                    measuringMessageMappings.ForEach(
+                        mapping =>
+                            list.Add(new KeyValuePair<DateTime, double>(mapping.DateTime, mapping.ParameterValue)));
+
+                    return list.Take(Math.Min(list.Count, chartDescriptor.Number));
+                }
 
                 return list;
             }
-
-            Func<MeasuringMessageMapping, bool> func;
-
-            if (!chartDescriptor.OnlyCritical)
-            {
-                func = mapping =>
-                    mapping.MeasurableType.Equals(chartDescriptor.MeasurableType) &&
-                    mapping.PlantsAreaId.Equals(chartDescriptor.PlantsAreaId) &&
-                    mapping.DateTime > chartDescriptor.DateTimeFrom &&
-                    mapping.DateTime < chartDescriptor.DateTimeTo;
-            }
-            else
-            {
-                func = mapping =>
-                    mapping.MeasurableType == chartDescriptor.MeasurableType &&
-                    mapping.PlantsAreaId == chartDescriptor.PlantsAreaId &&
-                    mapping.DateTime > chartDescriptor.DateTimeFrom &&
-                    mapping.DateTime < chartDescriptor.DateTimeTo &&
-                    mapping.MessageType == MessageTypeEnum.CriticalInfo.ToString();
-            }
-
-            List<MeasuringMessageMapping> measuringMessageMappingsTask =
-                _measuringMessageMappingRepository.GetAll(func);
-
-            if (measuringMessageMappingsTask != null)
-            {
-                measuringMessageMappingsTask.ForEach(
-                    mapping => list.Add(new KeyValuePair<DateTime, double>(mapping.DateTime, mapping.ParameterValue)));
-
-                return list.Take(Math.Min(list.Count, chartDescriptor.Number));
-            }
-
-            return list;
         }
     }
 }

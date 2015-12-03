@@ -2,8 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PlantsWpf">
 
-    <SolidColorBrush x:Key="ChartBackground" Color="Gray" ></SolidColorBrush>
-    
+    <LinearGradientBrush x:Key="ChartBackground" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+        <GradientStop Color="CornflowerBlue" Offset="0"/>
+        <GradientStop Color="White" Offset="1"/>
+    </LinearGradientBrush>
+
     <SolidColorBrush x:Key="ServiceBackground" Color="LawnGreen"/>
     
     <SolidColorBrush x:Key="ScheduleBackground" Color="Yellow"/>

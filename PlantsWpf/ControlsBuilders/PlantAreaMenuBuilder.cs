@@ -5,9 +5,18 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.DataVisualization.Charting;
+using System.Windows.Forms;
 using System.Windows.Threading;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
+using PlantsWpf.PdfDocuments;
+using Button = System.Windows.Controls.Button;
+using CheckBox = System.Windows.Controls.CheckBox;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Label = System.Windows.Controls.Label;
+using Menu = System.Windows.Controls.Menu;
+using MenuItem = System.Windows.Controls.MenuItem;
+using MessageBox = System.Windows.MessageBox;
 
 namespace PlantsWpf.ControlsBuilders
 {
@@ -21,6 +30,7 @@ namespace PlantsWpf.ControlsBuilders
         private List<Chart> _charts;
         private bool _refreshLastMin;
         private bool _autorefresh;
+        private DispatcherTimer _dispatcherTimer;
 
         private Chart Chart => _charts?.Single(ch => ch.Title.ToString() == _chartDescriptor.MeasurableType);
 
@@ -102,6 +112,8 @@ namespace PlantsWpf.ControlsBuilders
             };
             _menu.Items.Add(menuItemSensors);
 
+            _menu.Items.Add(ExportChartToPdfMenuItem());
+
             Button refreshButton = new Button
             {
                 Content = "Refresh",
@@ -136,7 +148,7 @@ namespace PlantsWpf.ControlsBuilders
 
             refreshButton.Click += delegate
             {
-                if (_refreshLastMin == false)
+                if (_refreshLastMin == false && _autorefresh == false)
                 {
                     SetChartDescriptor(Chart.Title.ToString(), _chartDescriptor.DateTimeFrom,
                         _chartDescriptor.DateTimeTo,
@@ -146,55 +158,55 @@ namespace PlantsWpf.ControlsBuilders
                 Chart.Dispatcher.BeginInvoke(DispatcherPriority.Background, backgroundWork);
             };
 
-            Label refreshLastMinLabel = new Label { Content = "Refresh last min" };
+            SetDispatcherTimer(backgroundWork);
+
+            Label refreshLastMinLabel = new Label {Content = "Refresh last min"};
             CheckBox refreshLastMinCheckBox = new CheckBox
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
             };
+            
+            Label autorefreshLabel = new Label {Content = "Autorefresh"};
+            CheckBox autorefreshCheckBox = new CheckBox
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+            };
+
             refreshLastMinCheckBox.Checked += delegate
             {
                 SetChartDescriptor(Chart.Title.ToString(), DateTime.Now.Subtract(new TimeSpan(0, 1, 0)), DateTime.Now,
                     false);
 
                 _refreshLastMin = true;
+                
+                autorefreshCheckBox.IsEnabled = false;
             };
             refreshLastMinCheckBox.Unchecked += delegate
             {
                 _refreshLastMin = false;
+                
+                autorefreshCheckBox.IsEnabled = true;
             };
 
-            Label autorefreshLabel = new Label {Content = "Autorefresh" };
-            CheckBox autorefreshCheckBox = new CheckBox
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-            };
             autorefreshCheckBox.Checked += delegate
             {
-                _refreshLastMin = true;
                 _autorefresh = true;
 
-                DispatcherTimer dispatcherTimer = new DispatcherTimer();
-                dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-                dispatcherTimer.Tick += delegate
-                {
-                    SetChartDescriptor(Chart.Title.ToString(), DateTime.Now.Subtract(new TimeSpan(0, 1, 0)),
-                        DateTime.Now,
-                        false);
+                refreshLastMinCheckBox.IsEnabled = false;
+                refreshButton.IsEnabled = false;
 
-                    if (_autorefresh == false)
-                    {
-                        return;
-                    }
-                    Chart.Dispatcher.BeginInvoke(DispatcherPriority.Background, backgroundWork);
-                };
-                dispatcherTimer.Start();
-
+                _dispatcherTimer.Start();
             };
             autorefreshCheckBox.Unchecked += delegate
             {
                 _autorefresh = false;
+
+                refreshLastMinCheckBox.IsEnabled = true;
+                refreshButton.IsEnabled = true;
+
+                _dispatcherTimer.Stop();
             };
             DockPanel buttonsDockPanel = new DockPanel();
             buttonsDockPanel.Children.Add(refreshButton);
@@ -203,6 +215,48 @@ namespace PlantsWpf.ControlsBuilders
             buttonsDockPanel.Children.Add(autorefreshLabel);
             buttonsDockPanel.Children.Add(autorefreshCheckBox);
             _plantAreaChartsPanel.Children.Add(buttonsDockPanel);
+        }
+
+        public void SetDispatcherTimer(Delegate del)
+        {
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            _dispatcherTimer.Tick += delegate
+            {
+                SetChartDescriptor(Chart.Title.ToString(), DateTime.Now.Subtract(new TimeSpan(0, 1, 0)),
+                    DateTime.Now,
+                    false);
+
+                if (_autorefresh == false)
+                {
+                    return;
+                }
+                Chart.Dispatcher.BeginInvoke(DispatcherPriority.Background, del);
+            };
+        }
+
+        public MenuItem ExportChartToPdfMenuItem()
+        {
+            MenuItem exportChartToPdfMenuItem = new MenuItem
+            {
+                Margin = new Thickness(0, 0, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top,
+                Header = "To pdf",
+            };
+            exportChartToPdfMenuItem.Click += delegate 
+            {              
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+                saveFileDialog.FileOk += (sender, args) =>
+                {
+                    PdfDocumentCreator creator = new PdfDocumentCreator();
+                    creator.CreatePdfDocument(Chart, saveFileDialog.FileName);
+                    MessageBox.Show("Pdf document saved!");
+                };
+                saveFileDialog.ShowDialog();
+            };
+            return exportChartToPdfMenuItem;
         }
     }
 }

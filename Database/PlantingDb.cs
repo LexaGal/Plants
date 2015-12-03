@@ -1,5 +1,8 @@
-﻿using System.Data.Entity;
+﻿using System.Configuration;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using Database.MappingTypes;
+using DbContextConfiguration = Database.MappingTypes.DbContextConfiguration;
 using MeasurableParameterMapping = Database.MappingTypes.MeasurableParameterMapping;
 using MeasuringMessageMapping = Database.MappingTypes.MeasuringMessageMapping;
 using PlantMapping = Database.MappingTypes.PlantMapping;
@@ -11,6 +14,11 @@ namespace Database
     [DbConfigurationType(typeof (DbContextConfiguration))]
     public class PlantingDb : DbContext
     {
+        public PlantingDb() : base(ConfigurationManager.ConnectionStrings["PlantingDb"].ConnectionString)
+        {
+            ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = 300;
+        }
+
         public DbSet<MeasurableParameterMapping> MeasurableParametersSet { get; set; }
         public DbSet<PlantMapping> PlantsSet { get; set; }
         public DbSet<PlantsAreaMapping> PlantsAreasSet { get; set; }
@@ -26,6 +34,7 @@ namespace Database
             modelBuilder.Entity<SensorMapping>().ToTable("Sensor");
             modelBuilder.Entity<MeasuringMessageMapping>().ToTable("MeasuringMessage");
             modelBuilder.Entity<ServiceScheduleMapping>().ToTable("ServiceSchedule");
+
         }
     }
 } 

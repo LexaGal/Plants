@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Database.DatabaseStructure.Repository.Abstract;
 
 namespace Database.DatabaseStructure.Repository.Concrete
@@ -9,7 +10,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
     {
         protected PlantingDb Context = new PlantingDb();
         
-        public virtual List<T> GetAll(Func<T, bool> func = null)
+        public virtual List<T> GetAll(Expression<Func<T, bool>> func = null)
         {
             using (Context = new PlantingDb())
             {

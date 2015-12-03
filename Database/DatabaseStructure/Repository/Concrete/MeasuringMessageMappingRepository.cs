@@ -34,38 +34,41 @@ namespace Database.DatabaseStructure.Repository.Concrete
             }
         }
         
-        public int DeleteMany(int n = 1000, Func<MeasuringMessageMapping, bool> func = null)
-        { 
-            try
+        public int DeleteMany(int n = 1000, Expression<Func<MeasuringMessageMapping, bool>> func = null)
+        {
+            using (Context = new PlantingDb())
             {
-                using (Context = new PlantingDb())
+                IQueryable<MeasuringMessageMapping> measuringMessageMappings;
+                if (func != null)
                 {
-                    if (func != null)
-                    {
-                        foreach (MeasuringMessageMapping measuringMessageMapping in Context.MeasuringMessagesSet
-                            .OrderBy(mapping => mapping.DateTime)
-                            .Where(func)
-                            .Take(Math.Min(n, Context.MeasuringMessagesSet.Count()/3)))
-                        {
-                            Context.MeasuringMessagesSet.Remove(measuringMessageMapping);
-                        }
-                        return Context.SaveChanges(); 
-                    }
-
-                    foreach (MeasuringMessageMapping measuringMessageMapping in Context.MeasuringMessagesSet
+                    measuringMessageMappings = Context.MeasuringMessagesSet
                         .OrderBy(mapping => mapping.DateTime)
-                        .Take(Math.Min(n, Context.MeasuringMessagesSet.Count()/3)))
-                    {
-
-                         Context.MeasuringMessagesSet.Remove(measuringMessageMapping);
-                    }
+                        .Where(func)
+                        .Take(Math.Min(n, Context.MeasuringMessagesSet.Count()/3));
+                    
+                        Context.MeasuringMessagesSet.RemoveRange(measuringMessageMappings);
+                    
                     return Context.SaveChanges(); 
                 }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.StackTrace);
-                return 0;
+
+                measuringMessageMappings = Context.MeasuringMessagesSet
+                    .OrderBy(mapping => mapping.DateTime)
+                    .Take(Math.Min(n, Context.MeasuringMessagesSet.Count()/3));
+                 
+                Context.MeasuringMessagesSet.RemoveRange(measuringMessageMappings);
+
+                try
+                {
+                    //return
+                    Context.SaveChanges();
+                    MessageBox.Show("Good!");
+                    return 0;
+                }
+                catch(Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return 0;
+                }
             }
         }
     }
