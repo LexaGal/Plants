@@ -26,16 +26,3 @@ C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Plan
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\obj\Debug\PlantingLib.dll.postsharp
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.dll
 C:\Users\Alex\Documents\Visual Studio 2012\Projects\Plants\Plants\bin\Debug\Database.pdb
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\PlantingLib.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\PlantingLib.pdb
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\AutoMapper.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\Database.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\EntityFramework.SqlServer.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\EntityFramework.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\Database.pdb
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\AutoMapper.xml
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\EntityFramework.xml
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Debug\PlantingLib.csprojResolveAssemblyReference.cache
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Debug\PlantingLib.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Debug\PlantingLib.pdb
