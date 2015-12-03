@@ -37,7 +37,7 @@ namespace PlantsWpf.DbDataAccessors
             _sensorMappingRepository = sensorMappingRepository;
             _plantsAreaMappingRepository = plantsAreaMappingRepository;
             _serviceScheduleMappingRepository = serviceScheduleMappingRepository;
-            _dbMapper = new DbMapper(_plantMappingRepository, _plantsAreaMappingRepository,
+            _dbMapper = new DbMapper(_plantMappingRepository,
                 _measurableParameterMappingRepository, _serviceScheduleMappingRepository);
         }
 
@@ -260,11 +260,13 @@ namespace PlantsWpf.DbDataAccessors
                     }
                     plantsArea.ServicesSchedulesStates.ServicesSchedules.Clear();
 
-                    if (plantsArea.Sensors.Any(sensor => 
-                        !(_sensorMappingRepository
-                            .Delete(sensor.Id) &&
-                         _measurableParameterMappingRepository
-                            .Delete(sensor.MeasurableParameter.Id))))
+                    if (plantsArea.Sensors.Any(sensor =>
+
+                         //del. by cascade 
+                         //!(_sensorMappingRepository
+                         //    .Delete(sensor.Id)
+                         !_measurableParameterMappingRepository
+                            .Delete(sensor.MeasurableParameter.Id)))
                     {
                         return false;
                     }

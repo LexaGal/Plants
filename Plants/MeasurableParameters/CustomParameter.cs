@@ -12,7 +12,7 @@ namespace PlantingLib.MeasurableParameters
 
         public bool IsForService(string serviceName)
         {
-            return serviceName == String.Format("*{0}*", MeasurableType);
+            return serviceName == $"*{MeasurableType}*";
         }
     }
 }

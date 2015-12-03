@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using PlantingLib.MeasurableParameters;
-using PlantingLib.Plants.ServiceStates;
 
 namespace PlantingLib.Plants.ServicesScheduling
 {
@@ -72,10 +71,7 @@ namespace PlantingLib.Plants.ServicesScheduling
         protected virtual void OnNewServiceName()
         {
             EventHandler handler = NewServiceName;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            handler?.Invoke(this, EventArgs.Empty);
         }
     }
 }

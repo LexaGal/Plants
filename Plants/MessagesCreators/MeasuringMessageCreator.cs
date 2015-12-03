@@ -7,8 +7,8 @@ namespace PlantingLib.MessagesCreators
     public class MeasuringMessageCreator
     {
         public MeasurableParameter MeasurableParameter { get; set; }
-        public Guid PlantsAreaId { get; private set; }
-        public double ParameterValue { get; private set; }
+        public Guid PlantsAreaId { get; }
+        public double ParameterValue { get; }
 
         public MeasuringMessageCreator(MeasurableParameter measurableValue, Guid plantsAreaId, double measuringValue)
         {

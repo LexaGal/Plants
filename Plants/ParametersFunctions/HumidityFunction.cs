@@ -65,7 +65,7 @@ namespace PlantingLib.ParametersFunctions
                 }
                 return CurrentFunctionValue;
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (ArgumentOutOfRangeException)
             {
                 return CurrentFunctionValue + Random.NextDouble();
             }

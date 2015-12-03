@@ -19,17 +19,17 @@ namespace PlantingLib.Messenging
         [Key]
         public Guid Id { get; private set; }
 
-        public DateTime DateTime { get; private set; }
-        public MessageTypeEnum MessageType { get; private set; }
-        public string MeasurableType { get; private set; }
-        public Guid PlantsAreaId { get; private set; }
-        public double ParameterValue { get; private set; }
+        public DateTime DateTime { get; }
+        public MessageTypeEnum MessageType { get; }
+        public string MeasurableType { get; }
+        public Guid PlantsAreaId { get; }
+        public double ParameterValue { get; }
 
         public override string ToString()
         {
-            return string.Format("[{0}] Level: {1}, {2} at {3} PlantsArea: {4}.",
-                DateTime.ToLongTimeString(), MessageType, MeasurableType,
-                PlantsAreaId, ParameterValue.ToString("F2"));
+            return
+                $"[{DateTime.ToLongTimeString()}] Level: {MessageType}, {MeasurableType} at {PlantsAreaId} PlantsArea: {ParameterValue.ToString("F2")}.";
+
         }
 
       

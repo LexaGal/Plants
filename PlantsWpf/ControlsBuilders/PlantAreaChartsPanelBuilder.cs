@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.DataVisualization;
 using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Data;
 using System.Windows.Media;
 using PlantingLib.MeasurableParameters;
-using PlantingLib.Plants;
 using PlantsWpf.ObjectsViews;
 using Xceed.Wpf.Toolkit;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace PlantsWpf.ControlsBuilders
 {
@@ -44,7 +42,7 @@ namespace PlantsWpf.ControlsBuilders
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Width = 1200,
                     Height = 240,
-                    Background = Brushes.Beige,
+                    Background = (SolidColorBrush)MainWindow.ResourceDictionary["ChartBackground"],
                     Title = measurableParameter.MeasurableType,
                 };
 
@@ -60,7 +58,7 @@ namespace PlantsWpf.ControlsBuilders
             }
 
             DockPanel chartDescriptorPanel = CreateChartDescriptorPanel();
-
+            
             _plantAreaChartsPanel.Children.Add(chartDescriptorPanel);
         }
 
@@ -69,8 +67,14 @@ namespace PlantsWpf.ControlsBuilders
             Label dateTimeFromLabel = new Label { Content = "DateTime from:" };
             DateTimePicker dateTimePickerFrom = new DateTimePicker
             {
+                DataContext = _chartDescriptor.DateTimeFrom,
                 Value = _chartDescriptor.DateTimeFrom
             };
+            dateTimePickerFrom.SetBinding(InputBase.TextProperty, new Binding("DateTimeFrom")
+            {
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
             dateTimePickerFrom.ValueChanged += delegate
             {
                 if (dateTimePickerFrom.Value != null)
@@ -82,8 +86,14 @@ namespace PlantsWpf.ControlsBuilders
             Label dateTimeToLabel = new Label { Content = "DateTime to:" };
             DateTimePicker dateTimePickerTo = new DateTimePicker
             {
-                Value = _chartDescriptor.DateTimeTo
+                DataContext = _chartDescriptor.DateTimeTo,
+                Value = _chartDescriptor.DateTimeFrom
             };
+            dateTimePickerFrom.SetBinding(InputBase.TextProperty, new Binding("DateTimeTo")
+            {
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
             dateTimePickerTo.ValueChanged += delegate
             {
                 if (dateTimePickerTo.Value != null)
@@ -107,11 +117,11 @@ namespace PlantsWpf.ControlsBuilders
                 }
                 catch (Exception)
                 {
-                    return;
+                    // ignored
                 }
             };
 
-            Label onlyCriticalCheckBoxLabel = new Label { Content = "Only critical?" };
+            Label onlyCriticalCheckBoxLabel = new Label { Content = "Show only critical" };
             CheckBox onlyCriticalCheckBox = new CheckBox
             {
                 DataContext = _chartDescriptor.OnlyCritical,

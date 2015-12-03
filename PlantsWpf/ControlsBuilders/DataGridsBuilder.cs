@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 using PlantingLib.Plants;
-using PlantsWpf.Converters;
 using PlantsWpf.ObjectsViews;
 using Binding = System.Windows.Data.Binding;
-using Color = System.Drawing.Color;
 using DataGrid = System.Windows.Controls.DataGrid;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using VerticalAlignment = System.Windows.VerticalAlignment;
@@ -60,10 +57,10 @@ namespace PlantsWpf.ControlsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = "✔",
+                            Value = PlantingLib.Properties.Resources.IsScheduledSign,
                             Setters =
                             {
-                                new Setter(Control.BackgroundProperty, Brushes.LawnGreen)
+                                 new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["ServiceBackground"])
                             }
                         }
                     }
@@ -90,10 +87,10 @@ namespace PlantsWpf.ControlsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = "✔",
-                            Setters =
+                            Value = PlantingLib.Properties.Resources.IsScheduledSign,
+                            Setters = 
                             {
-                                new Setter(Control.BackgroundProperty, Brushes.Yellow)
+                                new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["ScheduleBackground"])
                             }
                         }
                     }
@@ -242,7 +239,7 @@ namespace PlantsWpf.ControlsBuilders
             };
             DataGridTemplateColumn save = new DataGridTemplateColumn
             {
-                Header = "Ok",
+                Header = "Save",
                 CellTemplate = new DataTemplate
                 {
                     VisualTree = sensorSaveButtonTemplate
@@ -296,14 +293,13 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.Columns.Add(max);
             dataGrid.Columns.Add(value);
             dataGrid.Columns.Add(numberOfTimes);
-            //dataGrid.Columns.Add(isCritical);
             dataGrid.Columns.Add(save);
             dataGrid.Columns.Add(onOff);
             dataGrid.Columns.Add(remove);
 
             dataGrid.RowStyle = new Style
             {
-                TargetType = typeof (DataGridRow),
+                TargetType = typeof(DataGridRow),
                 Triggers =
                 {
                     new DataTrigger
@@ -315,7 +311,7 @@ namespace PlantsWpf.ControlsBuilders
                         Value = true.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, Brushes.BurlyWood),
+                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["SensorOrScheduleIsOff"]),
                         }
                     },
                     new DataTrigger
@@ -327,7 +323,7 @@ namespace PlantsWpf.ControlsBuilders
                         Value = false.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, Brushes.White),
+                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["Main"]),
                         }
                     },
                     new DataTrigger
@@ -339,7 +335,7 @@ namespace PlantsWpf.ControlsBuilders
                         Value = true.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, Brushes.Red),
+                            new Setter(Control.BackgroundProperty,(SolidColorBrush)MainWindow.ResourceDictionary["CriticalBackground"])
                         }
                     },
                 }
@@ -411,6 +407,7 @@ namespace PlantsWpf.ControlsBuilders
 
             DataGridTemplateColumn save = new DataGridTemplateColumn
             {
+                Header = "Save",
                 CellTemplate = new DataTemplate
                 {
                     VisualTree = serviceScheduleSaveButtonTemplate
@@ -478,7 +475,7 @@ namespace PlantsWpf.ControlsBuilders
                         Value = false.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, Brushes.BurlyWood),
+                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["SensorOrScheduleIsOff"]),
                         }
                     },
                     new DataTrigger
@@ -490,7 +487,7 @@ namespace PlantsWpf.ControlsBuilders
                         Value = true.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, Brushes.White),
+                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["Main"]),
                         }
                     }
                 }

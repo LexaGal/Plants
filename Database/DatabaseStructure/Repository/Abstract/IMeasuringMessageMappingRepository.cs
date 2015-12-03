@@ -8,7 +8,8 @@ namespace Database.DatabaseStructure.Repository.Abstract
 {
     public interface IMeasuringMessageMappingRepository : IRepository<MeasuringMessageMapping>
     {
-        Task SaveAsync(List<MeasuringMessageMapping> measuringMessageMappings);
-        Task<List<MeasuringMessageMapping>> GetAllAsync(Expression<Func<MeasuringMessageMapping, bool>> func = null);
+        Task<int> SaveAsync(List<MeasuringMessageMapping> measuringMessageMappings);
+        int DeleteMany(int n = 1000, Func<MeasuringMessageMapping, bool> func = null);
     }
+
 }

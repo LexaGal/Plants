@@ -3,7 +3,7 @@ using System.Linq;
 using System.Timers;
 using System.Windows.Forms;
 using PlantingLib.MeasurableParameters;
-using PlantingLib.MeasuringsProviding;
+using PlantingLib.MeasuringsProviders;
 using PlantingLib.Messenging;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
@@ -17,7 +17,7 @@ namespace PlantingLib.ServiceSystems
     public class ServiceProvider : IReciever
     {
         public ISender<MeasuringMessage> Sender { get; private set; }
-        public PlantsAreas PlantsAreas { get; private set; }
+        public PlantsAreas PlantsAreas { get; }
         private readonly Timer _timer;
 
         public ServiceProvider(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)

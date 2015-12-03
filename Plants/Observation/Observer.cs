@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
-using PlantingLib.MeasuringsProviding;
+using PlantingLib.MeasuringsProviders;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
@@ -14,8 +14,8 @@ namespace PlantingLib.Observation
 {
     public class Observer : IReciever, ISender<MeasuringMessage>
     {
-        public PlantsAreas PlantsAreas { get; private set; }
-        public IDictionary<Guid, IList<MeasuringMessage>> MessagesDictionary;
+        public PlantsAreas PlantsAreas { get; }
+        public Dictionary<Guid, List<MeasuringMessage>> MessagesDictionary;
         private const int MessagesLimit = 10;
         private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
 
@@ -26,7 +26,8 @@ namespace PlantingLib.Observation
 
             PlantsAreas = plantsAreas;
 
-            MessagesDictionary = new Dictionary<Guid, IList<MeasuringMessage>>();
+            MessagesDictionary = new Dictionary<Guid, List<MeasuringMessage>>();
+
             PlantsAreas.Areas.ToList().ForEach(pa => MessagesDictionary.Add(pa.Id, new List<MeasuringMessage>()));
 
             _measuringMessageMappingRepository = new MeasuringMessageMappingRepository();
@@ -67,26 +68,22 @@ namespace PlantingLib.Observation
 
                         PlantsArea area = PlantsAreas.Areas.SingleOrDefault(p => p.Id == recievedMessage.PlantsAreaId);
 
-                        if (area != null)
+                        Sensor sensor =
+                            area?.Sensors.SingleOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
+                        if (sensor != null)
                         {
-                            Sensor sensor =
-                                area.Sensors.SingleOrDefault(s => s.MeasurableType == recievedMessage.MeasurableType);
-                            if (sensor != null)
-                            {
-                                sensor.NumberOfTimes++;
-                            }
+                            sensor.NumberOfTimes++;
                         }
                     }
 
-                    if (MessagesDictionary[recievedMessage.PlantsAreaId].Count == MessagesLimit)
+                    if (MessagesDictionary[recievedMessage.PlantsAreaId].Count % MessagesLimit == 0)
                     {
                         List<MeasuringMessage> measuringMessages =
-                            MessagesDictionary[recievedMessage.PlantsAreaId].ToList();
+                            MessagesDictionary[recievedMessage.PlantsAreaId].Skip(
+                                MessagesDictionary[recievedMessage.PlantsAreaId].Count - MessagesLimit).ToList();
 
                         SaveMessages(measuringMessages);
-
-                        MessagesDictionary[recievedMessage.PlantsAreaId].Clear();
-                    }
+                     }
                 }
             }
             catch (Exception e)
@@ -110,10 +107,7 @@ namespace PlantingLib.Observation
         public void OnMessageSending(MeasuringMessage message)
         {
             EventHandler handler = MessageSending;
-            if (handler != null)
-            {
-                handler(this, new MessengingEventArgs<MeasuringMessage>(message));
-            }
+            handler?.Invoke(this, new MessengingEventArgs<MeasuringMessage>(message));
         }
     }
 }

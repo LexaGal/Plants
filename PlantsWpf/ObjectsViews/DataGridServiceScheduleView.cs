@@ -121,7 +121,7 @@ namespace PlantsWpf.ObjectsViews
         {
             StringBuilder builder = new StringBuilder();
             _serviceSchedule.MeasurableParameters.ToList()
-                .ForEach(m => builder.Append(String.Format("{0}, ", m.MeasurableType)));
+                .ForEach(m => builder.Append($"{m.MeasurableType}, "));
             builder.Remove(builder.Length - 2, 2);
 
             return builder.ToString();   
@@ -133,10 +133,7 @@ namespace PlantsWpf.ObjectsViews
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

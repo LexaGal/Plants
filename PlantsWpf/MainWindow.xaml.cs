@@ -2,22 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.DataVisualization.Charting;
-using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviders;
-using PlantingLib.Messenging;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
@@ -28,8 +22,10 @@ using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
+using PlantsWpf.Converters;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
+using Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
@@ -47,11 +43,20 @@ namespace PlantsWpf
         private DbMapper _dbMapper;
         private DateTime _beginDateTime;
         private DbDataModifier _dbDataModifier;
+        public static ResourceDictionary ResourceDictionary;
 
         public MainWindow()
         {
             InitializeComponent();
-        
+
+            PdfDocumentCreator creator = new PdfDocumentCreator();
+
+            creator.CreatePdfDocument();
+
+            ResourceDictionary = Application.LoadComponent(
+                new Uri("/PlantsWpf;component/ResDictionary.xaml",
+                UriKind.RelativeOrAbsolute)) as ResourceDictionary;
+
             SetWeatherBox();
             WindowState = WindowState.Maximized;
             
@@ -66,6 +71,8 @@ namespace PlantsWpf
             SetPlantsGrid(1);
 
             SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
+
+            ServerScheduler.Start();
         }
 
         private void SetWeatherBox()
@@ -101,23 +108,6 @@ namespace PlantsWpf
             }
         }
 
-        //private void SetServicesSchedules(IServiceScheduleMappingRepository serviceScheduleMappingRepository)
-        //{   
-        //    foreach (PlantsArea area in _plantsAreas.Areas)
-        //    {
-        //        ServiceScheduleMapping serviceScheduleMapping1 = new ServiceScheduleMapping(Guid.NewGuid(), area.Id,
-        //            ServiceStateEnum.Nutrienting.ToString(), 3, 15,
-        //            String.Format("{0},{1}", area.Plant.Nutrient.Id, area.Plant.SoilPh.Id));
-
-        //        ServiceScheduleMapping serviceScheduleMapping2 = new ServiceScheduleMapping(Guid.NewGuid(), area.Id,
-        //            ServiceStateEnum.Watering.ToString(), 2, 10,
-        //            String.Format("{0},{1}", area.Plant.Humidity.Id, area.Plant.Temperature.Id));
-
-        //        serviceScheduleMappingRepository.Save(serviceScheduleMapping1, serviceScheduleMapping1.Id);
-        //        serviceScheduleMappingRepository.Save(serviceScheduleMapping2, serviceScheduleMapping2.Id);
-        //    }
-        //}
-
         public void Initialize()
         {
             IPlantMappingRepository plantRepository = new PlantMappingRepository();
@@ -127,7 +117,7 @@ namespace PlantsWpf
             ISensorMappingRepository sensorRepository = new SensorMappingRepository();
             IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
             
-            _dbMapper = new DbMapper(plantRepository, plantsAreaRepository,
+            _dbMapper = new DbMapper(plantRepository,
                 measurableParameterRepository, serviceScheduleMappingRepository);
 
             List<PlantsAreaMapping> plantsAreaMappings = plantsAreaRepository.GetAll();
@@ -277,24 +267,29 @@ namespace PlantsWpf
             };
             
             ChartDescriptor chartDescriptor = new ChartDescriptor(area.Id, area.Plant.MeasurableParameters.First().MeasurableType, 30,
-                        DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now, false);
+                        DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now);
             
             PlantAreaChartsPanelBuilder plantAreaChartsPanelBuilder = new PlantAreaChartsPanelBuilder(area.Plant.MeasurableParameters,
                 frameworkElementFactoriesBuilder, plantAreaChartsPanel, chartDescriptor);
             plantAreaChartsPanelBuilder.RebuildChartsPanel();
             
             Menu menu = new Menu();
-            PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(area, plantAreaSensorsPanel,
-                plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, chartDescriptor);
+
+            DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever = new DbMeasuringMessagesRetriever(new MeasuringMessageMappingRepository(), _observer.MessagesDictionary);
+
+            PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
+                plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, dbMeasuringMessagesRetriever,
+                chartDescriptor);
+
             plantAreaMenuBuilder.RebuildMenu();
             
             DockPanel plantAreaFullPanel = new DockPanel();
 
+            plantAreaFullPanel.Children.Add(removePlantsAreaButton);
             plantAreaFullPanel.Children.Add(menu);
             plantAreaFullPanel.Children.Add(plantAreaSensorsPanel);
             plantAreaFullPanel.Children.Add(plantAreaChartsPanel);
-            plantAreaFullPanel.Children.Add(removePlantsAreaButton);
-
+            
             ScrollViewer scrollViewer = new ScrollViewer
             {
                 Height = plantAreaSensorsPanel.Height,
@@ -308,7 +303,7 @@ namespace PlantsWpf
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 BorderBrush = Brushes.Black,
-                Background = Brushes.LightSteelBlue,
+                Background = (LinearGradientBrush)ResourceDictionary["PlantsAreaBackground"],
                 BorderThickness = new Thickness(2),
                 Width = plantAreaSensorsPanel.Width,
                 Height = plantAreaSensorsPanel.Height,
@@ -333,7 +328,7 @@ namespace PlantsWpf
             if (_dbDataModifier.AddPlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
-                MessageBox.Show(String.Format("{0}\narea added", plantsArea));
+                MessageBox.Show($"{plantsArea}\narea added");
                 return true;
             }
             return false;
@@ -343,7 +338,7 @@ namespace PlantsWpf
         {
             if (_dbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
-                MessageBox.Show(String.Format("'{0}': sensor removed", sensor.MeasurableType));
+                MessageBox.Show($"'{sensor.MeasurableType}': sensor removed");
                 return true;
             }
             return false;
@@ -354,7 +349,7 @@ namespace PlantsWpf
             if (_dbDataModifier.RemovePlantsArea(area))
             {
                 SetPlantsGrid(1);
-                MessageBox.Show(String.Format("{0}\narea removed", area));
+                MessageBox.Show($"{area}\narea removed");
                 return true;
             }
             return false;
