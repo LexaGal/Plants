@@ -220,7 +220,7 @@ namespace PlantsWpf.ControlsBuilders
         public void SetDispatcherTimer(Delegate del)
         {
             _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            _dispatcherTimer.Interval = new TimeSpan(100);//, 0, 1);
             _dispatcherTimer.Tick += delegate
             {
                 SetChartDescriptor(Chart.Title.ToString(), DateTime.Now.Subtract(new TimeSpan(0, 1, 0)),

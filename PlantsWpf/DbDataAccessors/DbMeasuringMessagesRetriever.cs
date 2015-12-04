@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.MappingTypes;
@@ -25,6 +26,8 @@ namespace PlantsWpf.DbDataAccessors
 
         public IEnumerable<KeyValuePair<DateTime, double>> RetrieveMessagesStatistics(ChartDescriptor chartDescriptor)
         {
+            return ReturnRowset(chartDescriptor);
+
             lock (_messagesDictionary[chartDescriptor.PlantsAreaId])
             {
                 List<MeasuringMessage> measuringMessages =
@@ -106,6 +109,46 @@ namespace PlantsWpf.DbDataAccessors
 
                 return list;
             }
+        }
+
+        // Call the stored procedure.
+        private List<KeyValuePair<DateTime, double>> ReturnRowset(ChartDescriptor chartDescriptor)
+        {
+            SqlConnection sqlConnection =
+                new SqlConnection(ConfigurationManager.ConnectionStrings["PlantingDb"].ConnectionString);
+            SqlCommand cmd = new SqlCommand
+            {
+                CommandText = "GetStatistics",
+                CommandType = CommandType.StoredProcedure,
+                Connection = sqlConnection
+            };
+            cmd.Parameters.Add("@dateTimeFrom", SqlDbType.DateTime).Value = chartDescriptor.DateTimeFrom;
+            cmd.Parameters.Add("@dateTimeTo", SqlDbType.DateTime).Value = chartDescriptor.DateTimeTo;
+            cmd.Parameters.Add("@measurableType", SqlDbType.NVarChar).Value = chartDescriptor.MeasurableType;
+            cmd.Parameters.Add("@plantsAreaId", SqlDbType.NVarChar).Value = chartDescriptor.PlantsAreaId.ToString().ToUpper();
+            cmd.Parameters.Add("@criticalInfo", SqlDbType.Bit).Value = chartDescriptor.OnlyCritical ? 1 : 0;
+            cmd.Parameters.Add("@number", SqlDbType.Int).Value = chartDescriptor.Number;
+
+            if (sqlConnection.State == ConnectionState.Closed)
+            {
+                sqlConnection.Open();
+            }
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            // Data is accessible through the DataReader object here.
+            List<KeyValuePair<DateTime, double>> list = new List<KeyValuePair<DateTime, double>>();
+            
+            while (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    list.Add(new KeyValuePair<DateTime, double>(reader.GetDateTime(0), reader.GetDouble(1)));
+                }
+                reader.NextResult();
+            }
+            sqlConnection.Close();
+
+            return list;
         }
     }
 }

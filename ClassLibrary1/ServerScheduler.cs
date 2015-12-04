@@ -19,7 +19,7 @@ namespace Server
                         .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(0, 0)))
                 .Build();
 
-            //scheduler.ScheduleJob(job, trigger);
+            scheduler.ScheduleJob(job, trigger);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Server
                 //{
                     try
                     {
-                        using (SqlCommand cmd = new SqlCommand("Procedure", sc))
+                        using (SqlCommand cmd = new SqlCommand("RemoveMessages", sc))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.Add("@param", SqlDbType.Int).Value = 1000;
