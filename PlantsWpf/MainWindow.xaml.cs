@@ -10,6 +10,7 @@ using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
+using MongoDbServer;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviders;
 using PlantingLib.Observation;
@@ -22,10 +23,8 @@ using PlantingLib.Timers;
 using PlantingLib.WeatherTypes;
 using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
-using PlantsWpf.Converters;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
-using PlantsWpf.PdfDocuments;
 using Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -38,6 +37,7 @@ namespace PlantsWpf
     {
         private SensorsCollection _sensorsCollection;
         private Observer _observer;
+        private MessagesListener _messagesListener;
         private PlantsAreas _plantsAreas;
         private SensorsMeasuringsProvider _sensorsMeasuringsProvider;
         private ServiceProvider _serviceProvider;
@@ -70,6 +70,9 @@ namespace PlantsWpf
             SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
 
             ServerScheduler.Start();
+
+            BsonClassMapsSetter.SetMongoSensorMap();
+            MongoServerScheduler.Start();
         }
 
         private void SetWeatherBox()
@@ -148,6 +151,8 @@ namespace PlantsWpf
             _sensorsMeasuringsProvider = new SensorsMeasuringsProvider(_sensorsCollection);
 
             _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
+
+            _messagesListener = new MessagesListener(_observer);
 
             _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
 

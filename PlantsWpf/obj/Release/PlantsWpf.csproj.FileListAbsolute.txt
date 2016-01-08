@@ -124,3 +124,16 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\obj\Release
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\obj\Release\PlantsWpf.csproj.GenerateResource.Cache
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\obj\Release\PlantsWpf.exe
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\obj\Release\PlantsWpf.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Common.Logging.Core.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Common.Logging.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\itextsharp.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Quartz.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Server.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Server.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Common.Logging.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Common.Logging.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Common.Logging.Core.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Common.Logging.Core.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\itextsharp.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Quartz.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Release\Quartz.xml

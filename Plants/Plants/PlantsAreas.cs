@@ -24,7 +24,9 @@ namespace PlantingLib.Plants
                 Areas = new List<PlantsArea>();
             }
             Areas.Add(area);
-            Areas = Areas.OrderBy(p => p.Plant.Name).ToList();
+            Areas = Areas
+                //.OrderBy(p => p.Plant.Name)
+                .ToList();
         }
 
         public bool RemovePlantsArea(PlantsArea area)

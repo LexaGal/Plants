@@ -1,0 +1,12 @@
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\MongoDbConnector.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\MongoDbConnector.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\MongoDB.Bson.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\MongoDB.Driver.Core.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\MongoDB.Driver.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\MongoDB.Bson.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\MongoDB.Driver.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\obj\Debug\MongoDbConnector.csprojResolveAssemblyReference.cache
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\obj\Debug\MongoDbConnector.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbConnector\obj\Debug\MongoDbConnector.pdb

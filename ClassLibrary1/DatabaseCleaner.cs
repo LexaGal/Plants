@@ -2,10 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Windows.Forms;
-using Database.DatabaseStructure.Repository.Abstract;
-using Database.DatabaseStructure.Repository.Concrete;
 using Quartz;
 
 namespace Server

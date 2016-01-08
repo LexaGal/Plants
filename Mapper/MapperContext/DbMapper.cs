@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using Database.DatabaseStructure.Repository.Abstract;
+using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Messenging;
@@ -18,6 +19,11 @@ namespace Mapper.MapperContext
         private readonly IPlantMappingRepository _plantRepository;
         private readonly IMeasurableParameterMappingRepository _measurableParameterRepository;
         private readonly IServiceScheduleMappingRepository _serviceScheduleMappingRepository;
+
+        public static DbMapper GetDbMapper()
+        {
+            return new DbMapper(new PlantMappingRepository(), new MeasurableParameterMappingRepository(), new ServiceScheduleMappingRepository());
+        }
 
         public DbMapper(IPlantMappingRepository plantRepository,
             IMeasurableParameterMappingRepository measurableParameterRepository, IServiceScheduleMappingRepository serviceScheduleMappingRepository)

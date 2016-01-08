@@ -72,7 +72,10 @@ namespace PlantingLib.Plants
 
         public override string ToString()
         {
-            return $"Plant's name: {Plant.Name}\nPlant's number: {Number}";
+            return $"Plant's name ({Plant.Name})\n" +
+                   $"Plant's number ({Number})\n" +
+                   $"Sensors ({Sensors.Count}): {string.Join(",", Sensors.Select(sensor => sensor.MeasurableType))}\n" +
+                   $"Messages ({Sensors.Sum(sensor => sensor.NumberOfTimes)})";
         }
     }
 }

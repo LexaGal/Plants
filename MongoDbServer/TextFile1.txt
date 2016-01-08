@@ -1,0 +1,94 @@
+﻿//IMongoCollection<BsonDocument> mongoCollection = database.GetCollection<BsonDocument>("lists");
+            //List<BsonDocument> docs = await mongoCollection.Find(new BsonDocument()).ToListAsync();
+            //docs.ForEach(Console.WriteLine);
+
+            //BsonClassMap<PlantsArea> bsonClassMap = BsonClassMap.RegisterClassMap<PlantsArea>(cm =>
+            //{
+            //    cm.AutoMap();
+            //});
+
+            //BsonDocument bsonDocument = new BsonDocument();
+            // MemoryStream ms = new MemoryStream();
+            // using (BsonWriter writer = new BsonDocumentWriter(bsonDocument))
+            // {
+            //     BsonDocumentSerializer serializer = new BsonDocumentSerializer();
+            //     var cont = BsonSerializationContext.CreateRoot(writer);
+            //     serializer.Serialize(cont, new BsonSerializationArgs(), bsonDocument);
+            //     byte[] bson = writer.ToBson();
+            //     //serializer.Serialize(writer, plantsAreas[0] as object);
+            // }
+
+            // string data = Convert.ToBase64String(ms.ToArray());
+
+            //Console.WriteLine(data);
+            //BsonClassMapSerializer<PlantsArea> PlantsAreaSer = new BsonClassMapSerializer<PlantsArea>(bsonClassMap);
+            //plantsAreas.ForEach(area => PlantsAreaSer.Serialize(newarea));
+
+
+			//sensorsCollection.InsertOneAsync(document);
+
+            //List<Guid> guids = new List<Guid>();
+            //foreach (BsonDocument bsonDocument in sensorsCollection.AsQueryable())
+            //{
+            //    Sensor s = BsonSerializer.Deserialize<Sensor>(bsonDocument);
+            //    Guid id = s.Id;
+            //    guids.Add(id);
+            //}
+
+            //sensorsCollection.InsertOneAsync(document);
+
+            //Sensor s = BsonSerializer.Deserialize<Sensor>(document);
+
+            //document["IsOn"] = false.ToString();
+
+            //IEnumerable<BsonDocument> result = sensorsCollection.FindAsync(Builders<BsonDocument>
+            //    .Filter
+            //    .Eq(bsonDocument => BsonSerializer.Deserialize<Sensor>(bsonDocument).Id,
+            //    sensor.Id)).Result.Current;
+
+            //Guid id = guids.SingleOrDefault(guid => guid == sensor.Id);
+
+            //if (id == Guid.Empty)
+            //{
+            //    sensorsCollection.InsertOneAsync(document);
+            //}
+            //else
+            //{
+            //    sensorsCollection.ReplaceOneAsync(Builders<BsonDocument>.Filter.Eq("Id", id),
+            //        document);
+            //}
+
+
+            //foreach (BsonDocument bsonDocument in result)
+            //{
+            //    Console.WriteLine(bsonDocument.ToJson());
+            //}
+
+            //sensorsCollection.ReplaceOneAsync(Builders<BsonDocument>.Filter.Eq("Id", sensor.Id.ToString()),
+            //    document, new UpdateOptions {IsUpsert = true});
+
+            //sensorsCollection.ReplaceOneAsync(Builders<BsonDocument>.Filter.Eq("_id", sensor.Id.ToString()), 
+            //    document, new UpdateOptions { IsUpsert = true });
+
+            //Builders<BsonDocument>.Filter.Eq("_id", sensor.Id.ToString()), Builders<BsonDocument>.Update.Set());
+            //AsQueryable<Sensor>().Ins(new d => d.Id == )
+
+            //var filter = new BsonDocument();
+            //var update = new BsonDocument("$set", new BsonDocument("x", 1));
+            //var options = new UpdateOptions { IsUpsert = true };
+            //sensorsCollection.UpdateManyAsync(filter, update, options);
+
+            //await sensorsCollection.InsertManyAsync(bsonDocuments);
+
+			public byte[] ConvertGuidToBson(Guid guid)
+        {
+            byte[] myBson;
+            using (var buffer = new MemoryStream())
+            using (var writer = new BsonWriter(buffer))
+            {
+                var serializer = new JsonSerializer();
+                serializer.Serialize(writer, guid);
+                myBson = buffer.ToArray();
+            }
+            return myBson;
+        }

@@ -18,7 +18,7 @@ namespace PlantingLib.Observation
         public Dictionary<Guid, List<MeasuringMessage>> MessagesDictionary;
         private const int MessagesLimit = 10;
         private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
-
+        
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)
         {
             //subscribing

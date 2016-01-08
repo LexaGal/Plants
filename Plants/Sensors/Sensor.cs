@@ -1,4 +1,6 @@
 ﻿using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.ParametersFunctions;
 using PlantingLib.Plants;
@@ -8,10 +10,15 @@ namespace PlantingLib.Sensors
     public abstract class Sensor
     {
         public Guid Id { get; private set; }
+
         public TimeSpan MeasuringTimeout { get; set; }
-        
+
         public PlantsArea PlantsArea { get; private set; }
+
+        public Guid PlantsAreaId => PlantsArea.Id;
+
         public MeasurableParameter MeasurableParameter { get; set; }
+
         public ParameterFunction Function { get; protected set; }
 
         public string MeasurableType => MeasurableParameter.MeasurableType;

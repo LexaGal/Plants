@@ -60,3 +60,5 @@ C:\Users\Alex\Documents\Plants-ResDictionary\Plants\obj\Debug\PlantingLib.Proper
 C:\Users\Alex\Documents\Plants-ResDictionary\Plants\obj\Debug\PlantingLib.csproj.GenerateResource.Cache
 C:\Users\Alex\Documents\Plants-ResDictionary\Plants\obj\Debug\PlantingLib.dll
 C:\Users\Alex\Documents\Plants-ResDictionary\Plants\obj\Debug\PlantingLib.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\MongoDB.Bson.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\MongoDB.Bson.xml

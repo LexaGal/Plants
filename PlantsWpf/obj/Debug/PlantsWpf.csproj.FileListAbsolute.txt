@@ -110,11 +110,6 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\P
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Toolkit.WPF.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\WPFToolkit.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Xceed.Wpf.AvalonDock.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Xceed.Wpf.DataGrid.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Xceed.Wpf.Toolkit.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\EntityFramework.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\EntityFramework.SqlServer.dll
@@ -126,16 +121,6 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\S
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\WPFToolkit.pdb
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\EntityFramework.xml
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\fr\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\hu\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\it\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\pt-BR\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\obj\Debug\PlantsWpf.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\obj\Debug\MainWindow.baml
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\obj\Debug\PlantsAreaWindow.baml
@@ -224,3 +209,12 @@ C:\Users\Alex\Documents\Plants-ResDictionary\PlantsWpf\obj\Debug\ResDictionary.b
 C:\Users\Alex\Documents\Plants-ResDictionary\PlantsWpf\obj\Debug\PlantsWpf.g.resources
 C:\Users\Alex\Documents\Plants-ResDictionary\PlantsWpf\obj\Debug\PlantsWpf.Properties.Resources.resources
 C:\Users\Alex\Documents\Plants-ResDictionary\PlantsWpf\obj\Debug\PlantsWpf.csproj.GenerateResource.Cache
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDB.Bson.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDB.Bson.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDB.Driver.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDB.Driver.Core.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDbServer.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDB.Driver.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDbServer.exe
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Newtonsoft.Json.xml
