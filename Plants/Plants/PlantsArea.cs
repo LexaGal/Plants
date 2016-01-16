@@ -11,6 +11,9 @@ namespace PlantingLib.Plants
     public class PlantsArea
     {
         public Guid Id { get; private set; }
+
+        public Guid UserId { get; set; }
+
         public int Number { get; }
 
         public Plant Plant { get; }
@@ -19,9 +22,10 @@ namespace PlantingLib.Plants
         public PlantServicesStates PlantServicesStates { get; }
         public ServicesSchedulesStates ServicesSchedulesStates { get; private set; }
 
-        public PlantsArea(Guid id, Plant plant, int number)
+        public PlantsArea(Guid id, Guid userId, Plant plant, int number)
         {
             Id = id;
+            UserId = userId;
             Plant = plant;
             Number = number;
 
@@ -74,8 +78,9 @@ namespace PlantingLib.Plants
         {
             return $"Plant's name ({Plant.Name})\n" +
                    $"Plant's number ({Number})\n" +
-                   $"Sensors ({Sensors.Count}): {string.Join(",", Sensors.Select(sensor => sensor.MeasurableType))}\n" +
-                   $"Messages ({Sensors.Sum(sensor => sensor.NumberOfTimes)})";
+                   $"Sensors ({Sensors.Count})";
+            //: { string.Join(",", Sensors.Select(sensor => sensor.MeasurableType))}\n" +
+            //$"Messages ({Sensors.Sum(sensor => sensor.NumberOfTimes)})";
         }
     }
 }

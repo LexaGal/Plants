@@ -204,7 +204,7 @@ namespace Mapper.MapperContext
                 PlantMapping plantMapping = _plantRepository.Get(plantsAreaMapping.PlantId);
                 Plant plant = RestorePlant(plantMapping);
                 
-                PlantsArea area = new PlantsArea(plantsAreaMapping.Id, plant, plantsAreaMapping.Number);
+                PlantsArea area = new PlantsArea(plantsAreaMapping.Id, plantsAreaMapping.UserId, plant, plantsAreaMapping.Number);
 
                 List<ServiceScheduleMapping> serviceScheduleMappings =
                     _serviceScheduleMappingRepository.GetAll(s => s.PlantsAreaId == area.Id);

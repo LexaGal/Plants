@@ -8,12 +8,16 @@ using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
+using DatabaseCleanerServer;
 using Mapper.MapperContext;
 using MongoDbServer;
+using MongoDbServer.BsonClassMaps;
+using MongoDbServer.MongoDocs;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviders;
 using PlantingLib.Observation;
@@ -28,7 +32,6 @@ using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
-using Server;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
@@ -40,7 +43,7 @@ namespace PlantsWpf
     {
         private SensorsCollection _sensorsCollection;
         private Observer _observer;
-        private MessagesListener _messagesListener;
+        private MongoMessagesListener _mongoMessagesListener;
         private PlantsAreas _plantsAreas;
         private SensorsMeasuringsProvider _sensorsMeasuringsProvider;
         private ServiceProvider _serviceProvider;
@@ -49,14 +52,20 @@ namespace PlantsWpf
         private DbDataModifier _dbDataModifier;
         public static ResourceDictionary ResourceDictionary;
 
-        public User _user;
+        private User _user;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            Logginglabel.SetBinding(Label.ContentProperty, new Binding()
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
             ResourceDictionary = Application.LoadComponent(
-                    new Uri("/PlantsWpf;component/ResDictionary.xaml",
-                        UriKind.RelativeOrAbsolute)) as ResourceDictionary;
+                new Uri("/PlantsWpf;component/ResDictionary.xaml",
+                    UriKind.RelativeOrAbsolute)) as ResourceDictionary;
 
             SetWeatherBox();
 
@@ -65,6 +74,16 @@ namespace PlantsWpf
             _beginDateTime = DateTime.Now;
 
             Weather.SetWeather(WeatherTypesEnum.Warm);
+
+            SetBsonClassMaps();
+        }
+
+        private void SetBsonClassMaps()
+        {
+            BsonClassMapsSetter.SetMongoSensorMap();
+            BsonClassMapsSetter.SetMongoPlantsArea();
+            BsonClassMapsSetter.SetMongoUserMap();
+            BsonClassMapsSetter.SetMongoMessageMap();
         }
 
         public void StartMainProcess()
@@ -75,13 +94,16 @@ namespace PlantsWpf
 
             SetPlantsGrid(1);
 
+            Logginglabel.Content = String.Empty;
+            LoginButton.IsEnabled = true;
+            AddArea.IsEnabled = true;
+            WeatherBox.IsEnabled = true;
+
             SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
 
-            //ServerScheduler.Start();
-
-            //BsonClassMapsSetter.SetMongoSensorMap();
-            //BsonClassMapsSetter.SetMongoPlantsArea();
-            //MongoServerScheduler.Start();
+            DatabaseCleanerScheduler.Start();
+            
+            MongoServerScheduler.Start();
         }
 
         private void SetWeatherBox()
@@ -129,7 +151,12 @@ namespace PlantsWpf
             _dbMapper = new DbMapper(plantRepository,
                 measurableParameterRepository, serviceScheduleMappingRepository);
 
-            List<PlantsAreaMapping> plantsAreaMappings = plantsAreaRepository.GetAll(mapping => mapping.UserId == _user.Id);
+            List<PlantsAreaMapping> plantsAreaMappings = new List<PlantsAreaMapping>();
+
+            if (_user != null)
+            {
+                plantsAreaMappings = plantsAreaRepository.GetAll(mapping => mapping.UserId == _user.Id);
+            }
 
             _plantsAreas = new PlantsAreas();
 
@@ -161,7 +188,7 @@ namespace PlantsWpf
 
             _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
 
-            _messagesListener = new MessagesListener(_observer);
+            _mongoMessagesListener = new MongoMessagesListener(_observer);
 
             _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
 
@@ -403,6 +430,7 @@ namespace PlantsWpf
         public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
         {
             PlantsArea plantsArea = e.PlantsArea;
+            plantsArea.UserId = _user.Id;
             AddPlantsArea(plantsArea);
         }
 
@@ -415,6 +443,11 @@ namespace PlantsWpf
         private void CreateUserAccount()
         {
             IUserRepository userRepository = new UserRepository();
+            if (userRepository.GetUser(_user.FirstName, _user.LastName, _user.PasswordHash) != null)
+            {
+                MessageBox.Show(@"User with such FirstName and LastName already exists");
+                return;
+            }
             userRepository.Save(_user, _user.Id);
         }
 
@@ -430,6 +463,8 @@ namespace PlantsWpf
         
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            Logginglabel.Content = @"You are being logged in. Please, wait...";
+            LoginButton.IsEnabled = false;
             string fn = FirstName.Text;
             string ln = LastName.Text;
             string pass = Password.Password;
@@ -455,9 +490,13 @@ namespace PlantsWpf
                 }
                 _user = new User(fn, ln, em, Encrypt(pass));
                 CreateUserAccount();
+                MongoDbAccessor mongoDbAccessor = new MongoDbAccessor();
+                mongoDbAccessor.ConnectToMongoDatabase();
+                mongoDbAccessor.AddMongoUser(new MongoUser(_user));
             }
             StartMainProcess();
-            LoginLabel.Content = $"You are logged in as {fn} {ln}";
+            LoginNameLabel.Content = $"You are logged in as {fn} {ln}";
+            LoginNameLabel.Background = Brushes.Wheat;
         }
 
         private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)

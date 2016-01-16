@@ -9,6 +9,8 @@ using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
+using MongoDbServer.BsonClassMaps;
+using MongoDbServer.MongoDocs;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -28,7 +30,23 @@ namespace MongoDbServer
         public IMongoDatabase Database { get; private set; }
         private readonly string _database;
         private readonly string _connectionString;
-
+        
+        public IMongoCollection<BsonDocument> GetMongoCollection(string collectionName)
+        {
+            switch (collectionName)
+            {
+                case "sensors":
+                    return Database.GetCollection<BsonDocument>("sensors");
+                case "plantsareas":
+                    return Database.GetCollection<BsonDocument>("plantsareas");
+                case "users":
+                    return Database.GetCollection<BsonDocument>("users");
+                case "messages":
+                    return Database.GetCollection<BsonDocument>("messages");
+                default:
+                    return null;
+            }
+        }
 
         public MongoDbAccessor(string database = "meteor", string connectionString = "mongodb://localhost:3001")
         {
@@ -55,10 +73,10 @@ namespace MongoDbServer
             }
         }
 
-        public void UpdateSensorsCollection()
+        public void UpdateCollections()
         {
-            IMongoCollection<BsonDocument> sensorsCollection = Database.GetCollection<BsonDocument>("sensors");
-            IMongoCollection<BsonDocument> plantsAreasCollection = Database.GetCollection<BsonDocument>("plantsareas");
+            IMongoCollection<BsonDocument> sensorsCollection = GetMongoCollection("sensors");
+            IMongoCollection<BsonDocument> plantsAreasCollection = GetMongoCollection("plantsareas");
 
             DbMapper dbMapper = DbMapper.GetDbMapper();
             IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
@@ -80,8 +98,7 @@ namespace MongoDbServer
 
             foreach (PlantsArea area in pas.Areas)
             {
-                MongoPlantsArea mongoPlantsArea = new MongoPlantsArea(area.ToString(),
-                    $"{area.Plant.Name} area: {area.Id}", area.Sensors.Count);
+                MongoPlantsArea mongoPlantsArea = new MongoPlantsArea(area);
 
                 mongoPlantsAreas.Add(mongoPlantsArea);
                 
@@ -96,6 +113,18 @@ namespace MongoDbServer
 
             sensorsCollection.InsertManyAsync(docsSensor);
             plantsAreasCollection.InsertManyAsync(docsPlantsArea);
+        }
+
+        public void AddMongoUser(MongoUser mongoUser)
+        {
+            IMongoCollection<BsonDocument> usersCollection = GetMongoCollection("users");
+            usersCollection.InsertOneAsync(mongoUser.ToBsonDocument());
+        }
+
+        public void AddMongoMessage(MongoMessage mongoMessage)
+        {
+            IMongoCollection<BsonDocument> messagesCollection = GetMongoCollection("messages");
+            messagesCollection.InsertOneAsync(mongoMessage.ToBsonDocument());
         }
     }
 }

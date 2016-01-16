@@ -56,7 +56,7 @@ namespace PlantingLib.Observation
 
                     if (recievedMessage == null)
                     {
-                        throw new ArgumentNullException("recievedMessage");
+                        throw new ArgumentNullException(nameof(sender));
                     }
 
                     AddMeasuringMessage(recievedMessage);
@@ -78,10 +78,12 @@ namespace PlantingLib.Observation
 
                     if (MessagesDictionary[recievedMessage.PlantsAreaId].Count % MessagesLimit == 0)
                     {
-                        List<MeasuringMessage> measuringMessages =
-                            MessagesDictionary[recievedMessage.PlantsAreaId].Skip(
-                                MessagesDictionary[recievedMessage.PlantsAreaId].Count - MessagesLimit).ToList();
-
+                        List<MeasuringMessage> measuringMessages;
+                        lock (MessagesDictionary)
+                        {
+                             measuringMessages = MessagesDictionary[recievedMessage.PlantsAreaId].Skip(
+                                    MessagesDictionary[recievedMessage.PlantsAreaId].Count - MessagesLimit).ToList();
+                        }
                         SaveMessages(measuringMessages);
                      }
                 }
@@ -94,12 +96,15 @@ namespace PlantingLib.Observation
 
         private async void SaveMessages(List<MeasuringMessage> measuringMessages)
         {
-            List<MeasuringMessageMapping> measuringMessageMappings = measuringMessages
-                .ConvertAll(message => new MeasuringMessageMapping(message.Id, message.DateTime,
-                    message.MessageType.ToString(), message.MeasurableType,
-                    message.PlantsAreaId, message.ParameterValue));
+            if (measuringMessages != null)
+            {
+                List<MeasuringMessageMapping> measuringMessageMappings = measuringMessages
+                    .ConvertAll(message => new MeasuringMessageMapping(message.Id, message.DateTime,
+                        message.MessageType.ToString(), message.MeasurableType,
+                        message.PlantsAreaId, message.ParameterValue));
 
-            await _measuringMessageMappingRepository.SaveAsync(measuringMessageMappings);
+                await _measuringMessageMappingRepository.SaveAsync(measuringMessageMappings);
+            }
         }
 
         public event EventHandler MessageSending;

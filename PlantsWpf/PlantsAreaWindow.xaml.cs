@@ -89,7 +89,7 @@ namespace PlantsWpf
 
                 Plant plant = new Plant(Guid.NewGuid(), temperature, humidity, soilPh, nutrient, plantName);
 
-                PlantsArea plantsArea = new PlantsArea(Guid.NewGuid(), plant, number);
+                PlantsArea plantsArea = new PlantsArea(Guid.NewGuid(), default(Guid), plant, number);
 
                 try
                 {

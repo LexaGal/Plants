@@ -6,12 +6,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Forms;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 using PlantsWpf.ObjectsViews;
+using Binding = System.Windows.Data.Binding;
+using Button = System.Windows.Controls.Button;
+using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
+using CheckBox = System.Windows.Controls.CheckBox;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf.ControlsBuilders
@@ -323,17 +329,24 @@ namespace PlantsWpf.ControlsBuilders
         {
             Button removePlantsAreaButton = new Button
             {
-                Margin = new Thickness(0, 0, 0, 0),
+                Margin = new Thickness(0, -2, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 Content = "X",
-                Width = 20,
-                Height = 20
+                Width = 21,
+                Height = 21
             };
 
             removePlantsAreaButton.Click += (sender, args) =>
             {
-                removePlantsArea(area);
+                MessageBoxResult result =
+                    System.Windows.MessageBox.Show("All plant's area data will be lost. Delete?",
+                        "Confirmation", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    removePlantsArea(area);
+                }
             };
             return removePlantsAreaButton;
         }

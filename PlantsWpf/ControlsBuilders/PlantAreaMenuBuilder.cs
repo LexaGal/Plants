@@ -112,7 +112,7 @@ namespace PlantsWpf.ControlsBuilders
             };
             _menu.Items.Add(menuItemSensors);
 
-            _menu.Items.Add(ExportChartToPdfMenuItem());
+            //_menu.Items.Add(ExportChartToPdfMenuItem());
 
             Button refreshButton = new Button
             {

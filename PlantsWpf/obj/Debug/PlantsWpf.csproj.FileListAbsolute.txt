@@ -143,8 +143,6 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\C
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Common.Logging.Core.xml
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Quartz.pdb
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Quartz.xml
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Server.dll
-C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Server.pdb
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\itextsharp.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\itextsharp.xml
 C:\Users\Alex\Documents\Plants-ResDictionary\PlantsWpf\bin\Debug\PlantsWpf.exe.config
@@ -218,3 +216,5 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\M
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\MongoDbServer.exe
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\DatabaseCleanerServer.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\PlantsWpf\bin\Debug\DatabaseCleanerServer.pdb

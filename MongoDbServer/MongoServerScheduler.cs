@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDbServer.BsonClassMaps;
 using Quartz;
 using Quartz.Impl;
 
@@ -10,8 +11,6 @@ namespace MongoDbServer
         public static void Main()
         {
             Start();
-            BsonClassMapsSetter.SetMongoSensorMap();
-            BsonClassMapsSetter.SetMongoPlantsArea();
         }
 
         public static void Start()
@@ -19,14 +18,13 @@ namespace MongoDbServer
             IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler();
             scheduler.Start();
 
-            IJobDetail job = JobBuilder.Create<SensorsCollectionUpdator>().Build();
+            IJobDetail job = JobBuilder.Create<CollectionsUpdator>().Build();
 
-            ITrigger trigger = TriggerBuilder.Create()
-                .WithDailyTimeIntervalSchedule(s =>
-                    s.WithIntervalInSeconds(20)
-                        .OnEveryDay()
-                        .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(0, 0)))
-                .Build();
+            ITrigger trigger = TriggerBuilder.Create().Build();
+            //.WithDailyTimeIntervalSchedule(s =>
+            //    s.WithIntervalInSeconds(1)
+            //        .OnEveryDay()
+            //        .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(0, 0)))
 
             scheduler.ScheduleJob(job, trigger);
         }

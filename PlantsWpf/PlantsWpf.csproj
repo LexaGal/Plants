@@ -35,6 +35,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="itextsharp">
       <HintPath>..\..\..\..\iTextSharp\itextsharp.dll</HintPath>
@@ -150,9 +154,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\Server.csproj">
-      <Project>{cc0ba390-d5eb-4aa7-abbb-6de71b0fe898}</Project>
-      <Name>Server</Name>
+    <ProjectReference Include="..\DatabaseCleanerServer\DatabaseCleanerServer.csproj">
+      <Project>{CC0BA390-D5EB-4AA7-ABBB-6DE71B0FE898}</Project>
+      <Name>DatabaseCleanerServer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Database\Database.csproj">
       <Project>{3a18d4ac-4b79-4fed-b466-87d8e29101d3}</Project>

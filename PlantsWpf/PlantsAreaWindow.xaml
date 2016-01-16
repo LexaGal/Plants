@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         Title="Add plants area" Height="277.404" Width="332">
-    <Window.Background>
+    <!--<Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="Yellow" Offset="0"/>
             <GradientStop Color="#FF79F066" Offset="1"/>
         </LinearGradientBrush>
-    </Window.Background>
+    </Window.Background>-->
+    
     <Grid x:Name="RootGrid" Margin="0,0,62,-2">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="27*"/>

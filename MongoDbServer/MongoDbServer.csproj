@@ -83,11 +83,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BsonClassMapsSetter.cs" />
-    <Compile Include="MongoPlantsArea.cs" />
-    <Compile Include="MongoSensor.cs" />
-    <Compile Include="SensorsCollectionUpdator.cs" />
-    <Compile Include="MessagesListener.cs" />
+    <Compile Include="BsonClassMaps\BsonClassMapsSetter.cs" />
+    <Compile Include="MongoDocs\MongoMessage.cs" />
+    <Compile Include="MongoDocs\MongoPlantsArea.cs" />
+    <Compile Include="MongoDocs\MongoSensor.cs" />
+    <Compile Include="MongoDocs\MongoUser.cs" />
+    <Compile Include="CollectionsUpdator.cs" />
+    <Compile Include="MongoMessagesListener.cs" />
     <Compile Include="MongoDbAccessor.cs" />
     <Compile Include="MongoServerScheduler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,6 +118,7 @@
   <ItemGroup>
     <Content Include="TextFile1.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
