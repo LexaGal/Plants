@@ -94,7 +94,7 @@ namespace PlantingLib.Observation
             }
         }
 
-        private async void SaveMessages(List<MeasuringMessage> measuringMessages)
+        private  void SaveMessages(List<MeasuringMessage> measuringMessages)
         {
             if (measuringMessages != null)
             {
@@ -103,7 +103,7 @@ namespace PlantingLib.Observation
                         message.MessageType.ToString(), message.MeasurableType,
                         message.PlantsAreaId, message.ParameterValue));
 
-                await _measuringMessageMappingRepository.SaveAsync(measuringMessageMappings);
+             _measuringMessageMappingRepository.SaveMany(measuringMessageMappings);
             }
         }
 

@@ -99,11 +99,12 @@ namespace PlantsWpf
             AddArea.IsEnabled = true;
             WeatherBox.IsEnabled = true;
 
-            SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
-
-            DatabaseCleanerScheduler.Start();
-            
-            MongoServerScheduler.Start();
+            if (!SystemTimer.IsEnabled)
+            {
+                SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
+                DatabaseCleanerScheduler.Start();
+                MongoServerScheduler.Start();
+            }
         }
 
         private void SetWeatherBox()
@@ -440,15 +441,17 @@ namespace PlantsWpf
             return userRepository.GetUser(fn, ln, Encrypt(pass));
         }
 
-        private void CreateUserAccount()
+        private bool CreateUserAccount()
         {
             IUserRepository userRepository = new UserRepository();
             if (userRepository.GetUser(_user.FirstName, _user.LastName, _user.PasswordHash) != null)
             {
-                MessageBox.Show(@"User with such FirstName and LastName already exists");
-                return;
+                Logginglabel.Content = @"User with such credentials already exists";
+                LoginButton.IsEnabled = true;
+                return false;
             }
             userRepository.Save(_user, _user.Id);
+            return true;
         }
 
         private string Encrypt(string text)
@@ -472,6 +475,12 @@ namespace PlantsWpf
             if (CreateAccount.IsChecked != null && !(bool) CreateAccount.IsChecked)
             {
                 _user = GetUser(fn, ln, pass);
+                if (_user == null)
+                {
+                    Logginglabel.Content = @"User with such credentials does not exist";
+                    LoginButton.IsEnabled = true;
+                    return;
+                }
             }
             else
             {
@@ -479,20 +488,28 @@ namespace PlantsWpf
                 EmailAddressAttribute addressAttribute = new EmailAddressAttribute();
                 if (!addressAttribute.IsValid(Email.Text))
                 {
-                    MessageBox.Show(@"Email is wrong");
+                    Logginglabel.Content = @"Email is wrong";
+                    LoginButton.IsEnabled = true;
                     return;
                 }
                 string cpass = ConfirmPassword.Password;
                 if (pass != cpass)
                 {
-                    MessageBox.Show(@"Passwords do not match");
+                    Logginglabel.Content = @"Passwords do not match";
+                    LoginButton.IsEnabled = true;
                     return;
                 }
                 _user = new User(fn, ln, em, Encrypt(pass));
-                CreateUserAccount();
-                MongoDbAccessor mongoDbAccessor = new MongoDbAccessor();
-                mongoDbAccessor.ConnectToMongoDatabase();
-                mongoDbAccessor.AddMongoUser(new MongoUser(_user));
+                if (CreateUserAccount())
+                {
+                    MongoDbAccessor mongoDbAccessor = new MongoDbAccessor();
+                    mongoDbAccessor.ConnectToMongoDatabase();
+                    mongoDbAccessor.AddMongoUser(new MongoUser(_user));
+                }
+                else
+                {
+                    return;
+                }
             }
             StartMainProcess();
             LoginNameLabel.Content = $"You are logged in as {fn} {ln}";

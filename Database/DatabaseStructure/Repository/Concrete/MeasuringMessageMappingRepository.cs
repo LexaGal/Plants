@@ -16,14 +16,14 @@ namespace Database.DatabaseStructure.Repository.Concrete
             throw new NotImplementedException();
         }
 
-        public async Task<int> SaveAsync(List<MeasuringMessageMapping> measuringMessageMappings)
+        public int SaveMany(List<MeasuringMessageMapping> measuringMessageMappings)
         {
             try
             {
                 using (Context = new PlantingDb())
                 {
                     Context.MeasuringMessagesSet.AddRange(measuringMessageMappings);
-                    return await Context.SaveChangesAsync().ConfigureAwait(false);
+                    return Context.SaveChanges(); //Async().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
