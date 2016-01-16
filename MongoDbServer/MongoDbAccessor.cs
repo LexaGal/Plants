@@ -81,11 +81,11 @@ namespace MongoDbServer
             foreach (PlantsArea area in pas.Areas)
             {
                 MongoPlantsArea mongoPlantsArea = new MongoPlantsArea(area.ToString(),
-                    $"{area.Plant.Name}{area.Id.ToString().Substring(0, 8)}", area.Sensors.Count);
+                    $"{area.Plant.Name} area: {area.Id}", area.Sensors.Count);
 
                 mongoPlantsAreas.Add(mongoPlantsArea);
                 
-                mongoSensors.AddRange(area.Sensors.Select(sensor => new MongoSensor(sensor, mongoPlantsArea.ObjId)));
+                mongoSensors.AddRange(area.Sensors.Select(sensor => new MongoSensor(sensor, mongoPlantsArea.objId)));
              }
 
             sensorsCollection.DeleteMany(new BsonDocument());

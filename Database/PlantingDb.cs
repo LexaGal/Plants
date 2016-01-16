@@ -25,6 +25,7 @@ namespace Database
         public DbSet<SensorMapping> SensorsSet { get; set; }
         public DbSet<MeasuringMessageMapping> MeasuringMessagesSet { get; set; }
         public DbSet<ServiceScheduleMapping> ServiceSchedulesSet { get; set; }
+        public DbSet<User> UsersSet { get; set; } 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -34,6 +35,7 @@ namespace Database
             modelBuilder.Entity<SensorMapping>().ToTable("Sensor");
             modelBuilder.Entity<MeasuringMessageMapping>().ToTable("MeasuringMessage");
             modelBuilder.Entity<ServiceScheduleMapping>().ToTable("ServiceSchedule");
+            modelBuilder.Entity<User>().ToTable("User");
 
         }
     }

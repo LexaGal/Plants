@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,33 +49,39 @@ namespace PlantsWpf
         private DbDataModifier _dbDataModifier;
         public static ResourceDictionary ResourceDictionary;
 
+        public User _user;
+
         public MainWindow()
         {
             InitializeComponent();
-            
             ResourceDictionary = Application.LoadComponent(
-                new Uri("/PlantsWpf;component/ResDictionary.xaml",
-                UriKind.RelativeOrAbsolute)) as ResourceDictionary;
+                    new Uri("/PlantsWpf;component/ResDictionary.xaml",
+                        UriKind.RelativeOrAbsolute)) as ResourceDictionary;
 
             SetWeatherBox();
-            WindowState = WindowState.Maximized;
-            
-            ParameterServicesInfo.SetBaseParameters();
 
-            Initialize();
+            ParameterServicesInfo.SetBaseParameters();
 
             _beginDateTime = DateTime.Now;
 
             Weather.SetWeather(WeatherTypesEnum.Warm);
+        }
+
+        public void StartMainProcess()
+        {
+            Initialize();
+
+            WindowState = WindowState.Maximized;
 
             SetPlantsGrid(1);
 
             SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
 
-            ServerScheduler.Start();
+            //ServerScheduler.Start();
 
-            BsonClassMapsSetter.SetMongoSensorMap();
-            MongoServerScheduler.Start();
+            //BsonClassMapsSetter.SetMongoSensorMap();
+            //BsonClassMapsSetter.SetMongoPlantsArea();
+            //MongoServerScheduler.Start();
         }
 
         private void SetWeatherBox()
@@ -116,11 +125,11 @@ namespace PlantsWpf
                 new MeasurableParameterMappingRepository();
             ISensorMappingRepository sensorRepository = new SensorMappingRepository();
             IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
-            
+
             _dbMapper = new DbMapper(plantRepository,
                 measurableParameterRepository, serviceScheduleMappingRepository);
 
-            List<PlantsAreaMapping> plantsAreaMappings = plantsAreaRepository.GetAll();
+            List<PlantsAreaMapping> plantsAreaMappings = plantsAreaRepository.GetAll(mapping => mapping.UserId == _user.Id);
 
             _plantsAreas = new PlantsAreas();
 
@@ -395,6 +404,76 @@ namespace PlantsWpf
         {
             PlantsArea plantsArea = e.PlantsArea;
             AddPlantsArea(plantsArea);
+        }
+
+        private User GetUser(string fn, string ln, string pass)
+        {
+            IUserRepository userRepository = new UserRepository();
+            return userRepository.GetUser(fn, ln, Encrypt(pass));
+        }
+
+        private void CreateUserAccount()
+        {
+            IUserRepository userRepository = new UserRepository();
+            userRepository.Save(_user, _user.Id);
+        }
+
+        private string Encrypt(string text)
+        {
+            using (HashAlgorithm md5 = new SHA1CryptoServiceProvider())
+            {
+                var data = Encoding.ASCII.GetBytes(text);
+                var result = md5.ComputeHash(data, 0, data.Count());
+                return Convert.ToBase64String(result);
+            }
+        }
+        
+        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            string fn = FirstName.Text;
+            string ln = LastName.Text;
+            string pass = Password.Password;
+
+            if (CreateAccount.IsChecked != null && !(bool) CreateAccount.IsChecked)
+            {
+                _user = GetUser(fn, ln, pass);
+            }
+            else
+            {
+                string em = Email.Text;
+                EmailAddressAttribute addressAttribute = new EmailAddressAttribute();
+                if (!addressAttribute.IsValid(Email.Text))
+                {
+                    MessageBox.Show(@"Email is wrong");
+                    return;
+                }
+                string cpass = ConfirmPassword.Password;
+                if (pass != cpass)
+                {
+                    MessageBox.Show(@"Passwords do not match");
+                    return;
+                }
+                _user = new User(fn, ln, em, Encrypt(pass));
+                CreateUserAccount();
+            }
+            StartMainProcess();
+            LoginLabel.Content = $"You are logged in as {fn} {ln}";
+        }
+
+        private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)
+        {
+            EmailLabel.Visibility = Visibility.Visible;
+            ConfirmPasswordLabel.Visibility = Visibility.Visible;
+            Email.Visibility = Visibility.Visible;
+            ConfirmPassword.Visibility = Visibility.Visible;
+        }
+
+        private void CreateAccount_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            EmailLabel.Visibility = Visibility.Collapsed;
+            ConfirmPasswordLabel.Visibility = Visibility.Collapsed;
+            Email.Visibility = Visibility.Collapsed;
+            ConfirmPassword.Visibility = Visibility.Collapsed;
         }
     }
 }

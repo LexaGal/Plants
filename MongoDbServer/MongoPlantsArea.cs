@@ -5,20 +5,23 @@ namespace MongoDbServer
 {
     public class MongoPlantsArea
     {
-        public ObjectId ObjId { get; set; }
+        public string objId { get; set; }
 
-        public string Info { get; set; }
+        public string info { get; set; }
 
-        public string Name { get; set; }
+        public string name { get; set; }
 
-        public int NumberOfSensors { get; set; }
+        public int numberOfSensors { get; set; }
 
-        public MongoPlantsArea(string info, string name, int numberOfSensors)
+        public DateTime dateTime { get; set; }
+
+        public MongoPlantsArea(string newInfo, string newName, int newNumberOfSensors)
         {
-            ObjId = ObjectId.GenerateNewId();
-            Info = info;
-            Name = name;
-            NumberOfSensors = numberOfSensors;
+            objId = ObjectId.GenerateNewId().ToString();
+            info = newInfo;
+            name = newName;
+            numberOfSensors = newNumberOfSensors;
+            dateTime = DateTime.Now;
         }
     }
 }

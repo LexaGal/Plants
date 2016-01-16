@@ -51,7 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseStructure\Repository\Abstract\IServiceScheduleMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Abstract\IUserRepository.cs" />
     <Compile Include="DatabaseStructure\Repository\Concrete\ServiceScheduleMappingRepository.cs" />
+    <Compile Include="DatabaseStructure\Repository\Concrete\UserRepository.cs" />
     <Compile Include="MappingTypes\DbContextConfiguration.cs" />
     <Compile Include="MappingTypes\MeasurableParameterMapping.cs" />
     <Compile Include="MappingTypes\MeasuringMessageMapping.cs" />
@@ -59,6 +61,7 @@
     <Compile Include="MappingTypes\PlantsAreaMapping.cs" />
     <Compile Include="MappingTypes\SensorMapping.cs" />
     <Compile Include="MappingTypes\ServiceScheduleMapping.cs" />
+    <Compile Include="MappingTypes\User.cs" />
     <Compile Include="PlantingDb.cs" />
     <Compile Include="DatabaseStructure\Repository\Abstract\IMeasurableParameterMappingRepository.cs" />
     <Compile Include="DatabaseStructure\Repository\Abstract\IMeasuringMessageMappingRepository.cs" />

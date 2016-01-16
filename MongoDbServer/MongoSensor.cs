@@ -6,29 +6,32 @@ namespace MongoDbServer
 {
     public class MongoSensor
     {
-        public ObjectId ObjId { get; set; }
+        public string objId { get; set; }
 
-        public ObjectId PlantsAreaObjId { get; set; }
+        public string plantsareaId { get; set; }
 
-        public TimeSpan MeasuringTimeout { get; set; }
+        public TimeSpan measuringTimeout { get; set; }
         
-        public string MeasurableType { get; set; }
+        public string measurableType { get; set; }
 
-        public int NumberOfMessages { get; set; }
+        public int numberOfMessages { get; set; }
 
-        public bool IsOn { get; set; }
+        public bool isOn { get; set; }
 
-        public bool IsCustom { get; set; }
+        public bool isCustom { get; set; }
 
-        public MongoSensor(Sensor sensor, ObjectId objectId)
+        public DateTime dateTime { get; set; }
+
+        public MongoSensor(Sensor sensor, string areaId)
         {
-            ObjId = ObjectId.GenerateNewId();
-            PlantsAreaObjId = objectId;
-            MeasurableType = sensor.MeasurableType;
-            MeasuringTimeout = sensor.MeasuringTimeout;
-            NumberOfMessages = sensor.NumberOfTimes;
-            IsOn = sensor.IsOn;
-            IsCustom = sensor.IsCustom;
+            objId = ObjectId.GenerateNewId().ToString();
+            plantsareaId = areaId;
+            measurableType = sensor.MeasurableType;
+            measuringTimeout = sensor.MeasuringTimeout;
+            numberOfMessages = sensor.NumberOfTimes;
+            isOn = sensor.IsOn;
+            dateTime = DateTime.Now;
+            isCustom = sensor.IsCustom;
         }
     }
 }
