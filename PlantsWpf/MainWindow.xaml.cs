@@ -51,6 +51,7 @@ namespace PlantsWpf
         private DateTime _beginDateTime;
         private DbDataModifier _dbDataModifier;
         public static ResourceDictionary ResourceDictionary;
+        private MongoDbAccessor _mongoDbAccessor;
 
         private User _user;
 
@@ -151,6 +152,8 @@ namespace PlantsWpf
 
             _dbMapper = new DbMapper(plantRepository,
                 measurableParameterRepository, serviceScheduleMappingRepository);
+
+            _mongoDbAccessor = new MongoDbAccessor();
 
             List<PlantsAreaMapping> plantsAreaMappings = new List<PlantsAreaMapping>();
 
@@ -360,7 +363,12 @@ namespace PlantsWpf
 
         private bool SaveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
-            return _dbDataModifier.SaveSensor(area, sensor, serviceSchedule);
+            if (_dbDataModifier.SaveSensor(area, sensor, serviceSchedule))
+            {
+                _mongoDbAccessor.AddMongoSensor(new MongoSensor(sensor));
+                return true;
+            }
+            return false;
         }
 
         private bool AddPlantsArea(PlantsArea plantsArea)
@@ -369,6 +377,8 @@ namespace PlantsWpf
             {
                 SetPlantsGrid(1);
                 MessageBox.Show($"{plantsArea}\narea added");
+
+                _mongoDbAccessor.AddMongoPlantsArea(new MongoPlantsArea(plantsArea));
                 return true;
             }
             return false;
@@ -379,17 +389,21 @@ namespace PlantsWpf
             if (_dbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
                 MessageBox.Show($"'{sensor.MeasurableType}': sensor removed");
+
+                _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor));
                 return true;
             }
             return false;
         }
 
-        private bool RemovePlantsArea(PlantsArea area)
+        private bool RemovePlantsArea(PlantsArea plantsArea)
         {
-            if (_dbDataModifier.RemovePlantsArea(area))
+            if (_dbDataModifier.RemovePlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
-                MessageBox.Show($"{area}\narea removed");
+                MessageBox.Show($"{plantsArea}\narea removed");
+
+                _mongoDbAccessor.DeleteMongoPlantsArea(new MongoPlantsArea(plantsArea));
                 return true;
             }
             return false;
@@ -454,18 +468,25 @@ namespace PlantsWpf
             return true;
         }
 
-        private string Encrypt(string text)
+        private string Encrypt(string password)
         {
-            using (HashAlgorithm md5 = new SHA1CryptoServiceProvider())
-            {
-                var data = Encoding.ASCII.GetBytes(text);
-                var result = md5.ComputeHash(data, 0, data.Count());
-                return Convert.ToBase64String(result);
-            }
+            SHA256 sha256 = SHA256.Create();
+            var data = Encoding.UTF8.GetBytes(password);
+            var result = sha256.ComputeHash(data);
+
+            string hashString = result.Aggregate(string.Empty, (current, x) => current + $"{x:x2}");
+            return hashString;
         }
-        
+
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            IUserRepository userRepository = new UserRepository();
+            foreach (var user in userRepository.GetAll())
+            {
+                _mongoDbAccessor = new MongoDbAccessor();
+                _mongoDbAccessor.AddMongoUser(new MongoUser(user));
+            }
+
             Logginglabel.Content = @"You are being logged in. Please, wait...";
             LoginButton.IsEnabled = false;
             string fn = FirstName.Text;
@@ -502,9 +523,7 @@ namespace PlantsWpf
                 _user = new User(fn, ln, em, Encrypt(pass));
                 if (CreateUserAccount())
                 {
-                    MongoDbAccessor mongoDbAccessor = new MongoDbAccessor();
-                    mongoDbAccessor.ConnectToMongoDatabase();
-                    mongoDbAccessor.AddMongoUser(new MongoUser(_user));
+                    _mongoDbAccessor.AddMongoUser(new MongoUser(_user));
                 }
                 else
                 {

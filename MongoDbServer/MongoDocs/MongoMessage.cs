@@ -18,7 +18,7 @@ namespace MongoDbServer.MongoDocs
             plantsareaId = measuringMessage.PlantsAreaId.ToString();
             dateTime = measuringMessage.DateTime;
             measurableType = measuringMessage.MeasurableType;
-            messageType = measuringMessage.MeasurableType;
+            messageType = measuringMessage.MessageType.ToString();
             parameterValue = measuringMessage.ParameterValue;
         }
     }

@@ -21,10 +21,10 @@ namespace MongoDbServer.MongoDocs
 
         public DateTime dateTime { get; set; }
 
-        public MongoSensor(Sensor sensor, string areaId)
+        public MongoSensor(Sensor sensor)
         {
             objId = sensor.Id.ToString();
-            plantsareaId = areaId;
+            plantsareaId = sensor.PlantsAreaId.ToString();
             measurableType = sensor.MeasurableType;
             measuringTimeout = sensor.MeasuringTimeout;
             numberOfMessages = sensor.NumberOfTimes;

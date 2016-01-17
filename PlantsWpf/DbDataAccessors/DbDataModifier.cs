@@ -5,6 +5,8 @@ using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
+using MongoDbServer;
+using MongoDbServer.MongoDocs;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
@@ -43,7 +45,6 @@ namespace PlantsWpf.DbDataAccessors
 
         public bool SaveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
-
             try
             {
                 MeasurableParameterMapping measurableParameterMapping =
@@ -62,12 +63,12 @@ namespace PlantsWpf.DbDataAccessors
                 }
 
                 SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
-                if (!(_sensorMappingRepository.Save(sensorMapping, sensorMapping.Id) &
+                if (!(_sensorMappingRepository.Save(sensorMapping, sensorMapping.Id) &&
                       _sensorsCollection.AddSensor(sensor)))
                 {
                     return false;
                 }
-
+                
                 if (serviceSchedule != null)
                 {
                     if (!SaveServiceSchedule(area, serviceSchedule))
@@ -85,6 +86,7 @@ namespace PlantsWpf.DbDataAccessors
                         return false;
                     }
                 }
+
                 return true;
             }
             catch (Exception e)
@@ -164,6 +166,7 @@ namespace PlantsWpf.DbDataAccessors
                 }
 
                 _plantsAreas.AddPlantsArea(plantsArea);
+
                 return true;
             }
             catch (Exception e)

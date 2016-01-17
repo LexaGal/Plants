@@ -21,12 +21,11 @@ namespace MongoDbServer
             IJobDetail job = JobBuilder.Create<CollectionsUpdator>().Build();
 
             ITrigger trigger = TriggerBuilder.Create().Build();
-            //.WithDailyTimeIntervalSchedule(s =>
-            //    s.WithIntervalInSeconds(1)
-            //        .OnEveryDay()
-            //        .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(0, 0)))
-
+            
             scheduler.ScheduleJob(job, trigger);
+
+            MongoDbAccessor mongoDbAccessor = new MongoDbAccessor();
+            mongoDbAccessor.DeleteCollectionData("messages");
         }
     }
 }
