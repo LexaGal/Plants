@@ -131,7 +131,9 @@ namespace MongoDbServer
         public void AddMongoSensor(MongoSensor mongoSensor)
         {
             IMongoCollection<BsonDocument> sensorsCollection = GetMongoCollection("sensors");
-            sensorsCollection.InsertOneAsync(mongoSensor.ToBsonDocument());
+
+            sensorsCollection.ReplaceOneAsync(bsonDocument => bsonDocument["_id"] == mongoSensor.objId,
+                    mongoSensor.ToBsonDocument(), new UpdateOptions {IsUpsert = true});
         }
 
         public void AddMongoUser(MongoUser mongoUser)
@@ -149,13 +151,15 @@ namespace MongoDbServer
         public void DeleteMongoPlantsArea(MongoPlantsArea mongoPlantsArea)
         {
             IMongoCollection<BsonDocument> plantsAreasCollection = GetMongoCollection("plantsareas");
-            plantsAreasCollection.DeleteOneAsync(mongoPlantsArea.ToBsonDocument());
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", mongoPlantsArea.objId);
+            plantsAreasCollection.DeleteOneAsync(filter);
         }
 
         public void DeleteMongoSensor(MongoSensor mongoSensor)
         {
             IMongoCollection<BsonDocument> sensorsCollection = GetMongoCollection("sensors");
-            sensorsCollection.DeleteOneAsync(mongoSensor.ToBsonDocument());
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", mongoSensor.objId);
+            sensorsCollection.DeleteOneAsync(filter);
         }
     }
 }

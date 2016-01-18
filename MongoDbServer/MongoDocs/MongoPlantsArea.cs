@@ -19,7 +19,7 @@ namespace MongoDbServer.MongoDocs
         {
             objId = area.Id.ToString();
             userId = area.UserId.ToString();
-            name = $"{area.Plant.Name} area: {area.Id}";
+            name = $"{area.Plant.Name} area";
             numberOfSensors = area.Sensors.Count;
             dateTime = DateTime.Now;
         }

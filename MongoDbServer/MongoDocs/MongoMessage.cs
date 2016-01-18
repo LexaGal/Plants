@@ -11,6 +11,7 @@ namespace MongoDbServer.MongoDocs
         public string messageType { get; set; }
         public string measurableType { get; set; }
         public double parameterValue { get; set; }
+        public string read { get; set; }
 
         public MongoMessage(MeasuringMessage measuringMessage)
         {
@@ -20,6 +21,7 @@ namespace MongoDbServer.MongoDocs
             measurableType = measuringMessage.MeasurableType;
             messageType = measuringMessage.MessageType.ToString();
             parameterValue = measuringMessage.ParameterValue;
+            read = false.ToString();
         }
     }
 }

@@ -480,12 +480,12 @@ namespace PlantsWpf
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
-            IUserRepository userRepository = new UserRepository();
-            foreach (var user in userRepository.GetAll())
-            {
-                _mongoDbAccessor = new MongoDbAccessor();
-                _mongoDbAccessor.AddMongoUser(new MongoUser(user));
-            }
+            //IUserRepository userRepository = new UserRepository();
+            //foreach (var user in userRepository.GetAll())
+            //{
+            //    _mongoDbAccessor = new MongoDbAccessor();
+            //    _mongoDbAccessor.AddMongoUser(new MongoUser(user));
+            //}
 
             Logginglabel.Content = @"You are being logged in. Please, wait...";
             LoginButton.IsEnabled = false;

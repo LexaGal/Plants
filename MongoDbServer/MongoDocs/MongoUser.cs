@@ -10,7 +10,7 @@ namespace MongoDbServer.MongoDocs
         public string last_name { get; set; }
         public string email { get; set; }
         public string passwordToken { get; set; }
-        public DateTime createdAt { get; set; }
+        public DateTime dateTime { get; set; }
         public string name { get; set; }
 
         public MongoUser(User user)
@@ -20,7 +20,7 @@ namespace MongoDbServer.MongoDocs
             last_name = user.LastName;
             email = user.Email;
             passwordToken = user.PasswordHash;
-            createdAt = DateTime.Now;
+            dateTime = DateTime.Now;
             name = $"{first_name} {last_name}";
         }
     }

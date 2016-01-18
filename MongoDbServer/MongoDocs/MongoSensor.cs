@@ -15,9 +15,9 @@ namespace MongoDbServer.MongoDocs
 
         public int numberOfMessages { get; set; }
 
-        public bool isOn { get; set; }
+        public string isOn { get; set; }
 
-        public bool isCustom { get; set; }
+        public string isCustom { get; set; }
 
         public DateTime dateTime { get; set; }
 
@@ -28,9 +28,9 @@ namespace MongoDbServer.MongoDocs
             measurableType = sensor.MeasurableType;
             measuringTimeout = sensor.MeasuringTimeout;
             numberOfMessages = sensor.NumberOfTimes;
-            isOn = sensor.IsOn;
+            isOn = sensor.IsOn.ToString();
             dateTime = DateTime.Now;
-            isCustom = sensor.IsCustom;
+            isCustom = sensor.IsCustom.ToString();
         }
     }
 }
