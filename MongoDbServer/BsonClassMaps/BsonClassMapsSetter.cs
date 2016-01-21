@@ -40,5 +40,14 @@ namespace MongoDbServer.BsonClassMaps
                 s.MapIdMember(m => m.objId);
             });
         }
+
+        public static BsonClassMap<MongoNotification> SetMongoNotificationMap()
+        {
+            return BsonClassMap.RegisterClassMap<MongoNotification>(s =>
+            {
+                s.AutoMap();
+                s.MapIdMember(m => m.objId);
+            });
+        }
     }
     }

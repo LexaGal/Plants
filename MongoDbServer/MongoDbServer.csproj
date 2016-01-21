@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="BsonClassMaps\BsonClassMapsSetter.cs" />
     <Compile Include="MongoDocs\MongoMessage.cs" />
+    <Compile Include="MongoDocs\MongoNotification.cs" />
     <Compile Include="MongoDocs\MongoPlantsArea.cs" />
     <Compile Include="MongoDocs\MongoSensor.cs" />
     <Compile Include="MongoDocs\MongoUser.cs" />

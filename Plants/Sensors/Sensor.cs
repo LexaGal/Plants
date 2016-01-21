@@ -15,7 +15,7 @@ namespace PlantingLib.Sensors
 
         public PlantsArea PlantsArea { get; private set; }
 
-        public Guid PlantsAreaId => PlantsArea.Id;
+        public Guid PlantsAreaId => PlantsArea?.Id ?? default(Guid);
 
         public MeasurableParameter MeasurableParameter { get; set; }
 

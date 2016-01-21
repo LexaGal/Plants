@@ -39,16 +39,19 @@ namespace MongoDbServer
                     return Database.GetCollection<BsonDocument>("sensors");
                 case "plantsareas":
                     return Database.GetCollection<BsonDocument>("plantsareas");
-                case "users":
-                    return Database.GetCollection<BsonDocument>("users");
+                case "usersNET":
+                    return Database.GetCollection<BsonDocument>("usersNET");
                 case "messages":
                     return Database.GetCollection<BsonDocument>("messages");
+                case "notifications":
+                    return Database.GetCollection<BsonDocument>("notifications");
                 default:
                     return null;
             }
         }
 
         public MongoDbAccessor(string database = "meteor", string connectionString = "mongodb://localhost:3001")
+        //public MongoDbAccessor(string database = "alexmongodb", string connectionString = "mongodb://Alex:qYYfO8Di@ds056998.mongolab.com:56998/alexmongodb")
         {
             _database = database;
             _connectionString = connectionString;
@@ -77,14 +80,11 @@ namespace MongoDbServer
 
         public void DeleteCollectionData(string collectionName)
         {
-            GetMongoCollection(collectionName).DeleteManyAsync(new BsonDocument());
+            GetMongoCollection(collectionName).DeleteMany(new BsonDocument());
         }
 
         public void UpdateCollections()
         {
-            IMongoCollection<BsonDocument> sensorsCollection = GetMongoCollection("sensors");
-            IMongoCollection<BsonDocument> plantsAreasCollection = GetMongoCollection("plantsareas");
-
             DbMapper dbMapper = DbMapper.GetDbMapper();
             IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
             ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
@@ -102,7 +102,7 @@ namespace MongoDbServer
                 sensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id)
                     .ForEach(sensorMapping => dbMapper.RestoreSensor(sensorMapping, area));
             }
-
+   
             foreach (PlantsArea area in pas.Areas)
             {
                 MongoPlantsArea mongoPlantsArea = new MongoPlantsArea(area);
@@ -112,33 +112,39 @@ namespace MongoDbServer
                 mongoSensors.AddRange(area.Sensors.Select(sensor => new MongoSensor(sensor)));
              }
 
-            sensorsCollection.DeleteManyAsync(new BsonDocument());
-            plantsAreasCollection.DeleteManyAsync(new BsonDocument());
+            DeleteCollectionData("messages");
+            DeleteCollectionData("notifications");
 
+            IMongoCollection<BsonDocument> sensorsCollection = GetMongoCollection("sensors");
+            IMongoCollection<BsonDocument> plantsAreasCollection = GetMongoCollection("plantsareas");
+
+            sensorsCollection.DeleteMany(new BsonDocument());
+            plantsAreasCollection.DeleteMany(new BsonDocument());
+            
             IEnumerable<BsonDocument> docsSensor = mongoSensors.ConvertAll(input => input.ToBsonDocument());
             IEnumerable<BsonDocument> docsPlantsArea = mongoPlantsAreas.ConvertAll(input => input.ToBsonDocument());
 
-            sensorsCollection.InsertManyAsync(docsSensor);
-            plantsAreasCollection.InsertManyAsync(docsPlantsArea);
+            sensorsCollection.InsertMany(docsSensor);
+            plantsAreasCollection.InsertMany(docsPlantsArea);
         }
 
-        public void AddMongoPlantsArea(MongoPlantsArea mongoPlantsArea)
+        public void SaveMongoPlantsArea(MongoPlantsArea mongoPlantsArea)
         {
             IMongoCollection<BsonDocument> plantsAreasCollection = GetMongoCollection("plantsareas");
-            plantsAreasCollection.InsertOneAsync(mongoPlantsArea.ToBsonDocument());
+            plantsAreasCollection.ReplaceOneAsync(bsonDocument => bsonDocument["_id"] == mongoPlantsArea.objId,
+                mongoPlantsArea.ToBsonDocument(), new UpdateOptions {IsUpsert = true});
         }
 
-        public void AddMongoSensor(MongoSensor mongoSensor)
+        public void SaveMongoSensor(MongoSensor mongoSensor)
         {
             IMongoCollection<BsonDocument> sensorsCollection = GetMongoCollection("sensors");
-
             sensorsCollection.ReplaceOneAsync(bsonDocument => bsonDocument["_id"] == mongoSensor.objId,
                     mongoSensor.ToBsonDocument(), new UpdateOptions {IsUpsert = true});
         }
 
         public void AddMongoUser(MongoUser mongoUser)
         {
-            IMongoCollection<BsonDocument> usersCollection = GetMongoCollection("users");
+            IMongoCollection<BsonDocument> usersCollection = GetMongoCollection("usersNET");
             usersCollection.InsertOneAsync(mongoUser.ToBsonDocument());
         }
 
@@ -146,6 +152,12 @@ namespace MongoDbServer
         {
             IMongoCollection<BsonDocument> messagesCollection = GetMongoCollection("messages");
             messagesCollection.InsertOneAsync(mongoMessage.ToBsonDocument());
+        }
+
+        public void AddMongoNotification(MongoNotification mongoNotification)
+        {
+            IMongoCollection<BsonDocument> messagesCollection = GetMongoCollection("notifications");
+            messagesCollection.InsertOneAsync(mongoNotification.ToBsonDocument());
         }
 
         public void DeleteMongoPlantsArea(MongoPlantsArea mongoPlantsArea)

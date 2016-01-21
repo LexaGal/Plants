@@ -21,11 +21,8 @@ namespace MongoDbServer
             IJobDetail job = JobBuilder.Create<CollectionsUpdator>().Build();
 
             ITrigger trigger = TriggerBuilder.Create().Build();
-            
-            scheduler.ScheduleJob(job, trigger);
 
-            MongoDbAccessor mongoDbAccessor = new MongoDbAccessor();
-            mongoDbAccessor.DeleteCollectionData("messages");
+            scheduler.ScheduleJob(job, trigger);
         }
     }
 }

@@ -41,3 +41,5 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Release\Pl
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Release\PlantingLib.csproj.GenerateResource.Cache
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Release\PlantingLib.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Release\PlantingLib.pdb
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Release\MongoDB.Bson.dll
+C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Release\MongoDB.Bson.xml

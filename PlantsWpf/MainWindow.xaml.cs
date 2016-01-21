@@ -85,6 +85,7 @@ namespace PlantsWpf
             BsonClassMapsSetter.SetMongoPlantsArea();
             BsonClassMapsSetter.SetMongoUserMap();
             BsonClassMapsSetter.SetMongoMessageMap();
+            BsonClassMapsSetter.SetMongoNotificationMap();
         }
 
         public void StartMainProcess()
@@ -365,7 +366,11 @@ namespace PlantsWpf
         {
             if (_dbDataModifier.SaveSensor(area, sensor, serviceSchedule))
             {
-                _mongoDbAccessor.AddMongoSensor(new MongoSensor(sensor));
+                _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor));
+                _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(sensor.PlantsArea));
+                _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
+                    $"{sensor.MeasurableType} sensor added/updated", _user.Id.ToString()));
+
                 return true;
             }
             return false;
@@ -378,7 +383,11 @@ namespace PlantsWpf
                 SetPlantsGrid(1);
                 MessageBox.Show($"{plantsArea}\narea added");
 
-                _mongoDbAccessor.AddMongoPlantsArea(new MongoPlantsArea(plantsArea));
+                _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(plantsArea));
+                plantsArea.Sensors.ForEach(sensor => _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor)));
+                _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
+                    $"{plantsArea} added", _user.Id.ToString()));
+
                 return true;
             }
             return false;
@@ -386,11 +395,16 @@ namespace PlantsWpf
 
         private bool RemoveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
+            _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor));
+            _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
+                $"{sensor.MeasurableType} sensor removed", _user.Id.ToString()));
+            
             if (_dbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
                 MessageBox.Show($"'{sensor.MeasurableType}': sensor removed");
 
-                _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor));
+                _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(area));
+
                 return true;
             }
             return false;
@@ -398,12 +412,16 @@ namespace PlantsWpf
 
         private bool RemovePlantsArea(PlantsArea plantsArea)
         {
+            plantsArea.Sensors.ForEach(sensor => _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor)));
+            _mongoDbAccessor.DeleteMongoPlantsArea(new MongoPlantsArea(plantsArea));
+            _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
+                $"{plantsArea} removed", _user.Id.ToString()));
+            
             if (_dbDataModifier.RemovePlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
                 MessageBox.Show($"{plantsArea}\narea removed");
 
-                _mongoDbAccessor.DeleteMongoPlantsArea(new MongoPlantsArea(plantsArea));
                 return true;
             }
             return false;

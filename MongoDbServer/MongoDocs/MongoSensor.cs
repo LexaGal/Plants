@@ -13,8 +13,6 @@ namespace MongoDbServer.MongoDocs
         
         public string measurableType { get; set; }
 
-        public int numberOfMessages { get; set; }
-
         public string isOn { get; set; }
 
         public string isCustom { get; set; }
@@ -27,7 +25,6 @@ namespace MongoDbServer.MongoDocs
             plantsareaId = sensor.PlantsAreaId.ToString();
             measurableType = sensor.MeasurableType;
             measuringTimeout = sensor.MeasuringTimeout;
-            numberOfMessages = sensor.NumberOfTimes;
             isOn = sensor.IsOn.ToString();
             dateTime = DateTime.Now;
             isCustom = sensor.IsCustom.ToString();
