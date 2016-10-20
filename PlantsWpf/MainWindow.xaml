@@ -4,7 +4,7 @@
         Title="Sensors system" Height="365" Width="525">
 
 
-    <Grid x:Name="RootGrid" Margin="-1,0,1,0">
+    <Grid x:Name="RootGrid" Margin="-1,0,1,0" Background="Wheat">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="425*"/>
             <ColumnDefinition Width="92*"/>
@@ -17,7 +17,7 @@
             <Button Content="Pause" Name="Pause" Visibility="Collapsed" HorizontalAlignment="Left" Height="27" Margin="10,9,0,0"
                     VerticalAlignment="Top" Width="56" Click="Pause_OnClick"/>
 
-            <ComboBox Name="WeatherBox" IsEnabled="False"  Margin="10,8,0,0" HorizontalAlignment="Left"
+            <ComboBox Name="WeatherBox" IsEnabled="False"  Margin="10,9,0,0" HorizontalAlignment="Left"
                 Width="61" Height="27" VerticalAlignment="Top"/>
             <Button Name="AddArea" Content="Add area" IsEnabled="False" Click="AddArea_OnClick" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="66" Height="28"/>
         </DockPanel>
@@ -34,22 +34,22 @@
 
         <Canvas Grid.Column="0" Panel.ZIndex="99" Margin="0,0,114,283">
             <Expander Header="Log in before you start" Height="26" Canvas.Left="152" Canvas.Top="15" Width="156">
-                <Canvas Panel.ZIndex="99" Background="Wheat" Height="234" Margin="0,0,-151,0">
+                <Canvas Panel.ZIndex="99" Background="LimeGreen" Height="234" Margin="0,0,-151,0">
                     <Canvas.Effect>
                         <DropShadowEffect/>
                     </Canvas.Effect>
-                    <Label Height="30" Canvas.Top="19" Content="FirstName" Canvas.Left="12"/>
-                    <Label Height="30" Canvas.Top="52" Canvas.Left="11" Content="LastName" RenderTransformOrigin="0.8,0.433"/>
+                    <Label Height="30" Canvas.Top="19" Content="First name" Canvas.Left="12"/>
+                    <Label Height="30" Canvas.Top="52" Canvas.Left="11" Content="Last name" RenderTransformOrigin="0.8,0.433"/>
                     <Label Name="EmailLabel" Height="30" Canvas.Top="82" Canvas.Left="11" Visibility="Collapsed" Content="Email"/>
                     <Label Height="30" Canvas.Top="112" Content="Password" RenderTransformOrigin="0.45,1.867" Canvas.Left="11"/>
                     <Label Name="ConfirmPasswordLabel"  Height="30" Canvas.Top="145" Visibility="Collapsed" Content="Confirm Password" Canvas.Left="8"/>
-                    <TextBox Name="FirstName" Text="Alex" Background="White" Height="29" Canvas.Left="114" Width="165" Canvas.Top="20"/>
-                    <TextBox Name="LastName" Text="Gal" Background="White" Height="29" Canvas.Left="114" Canvas.Top="51" Width="165"/>
+                    <TextBox Name="FirstName" Text="Alexey" Background="White" Height="29" Canvas.Left="114" Width="165" Canvas.Top="20"/>
+                    <TextBox Name="LastName" Text="Galushkin" Background="White" Height="29" Canvas.Left="114" Canvas.Top="51" Width="165"/>
                     <TextBox Name="Email" Visibility="Collapsed" Background="White" Height="29" Canvas.Left="114" Canvas.Top="82" Width="165"/>
                     <PasswordBox Name="Password" Password="qYYfO8Di" Background="White" Height="29" Canvas.Left="114" Canvas.Top="113" Width="165"/>
                     <PasswordBox Name="ConfirmPassword" Visibility="Collapsed" Background="White" Height="29" Canvas.Left="114" Canvas.Top="145" Width="165"/>
-                    <Button Name="LoginButton" Content="Ok" Click="LoginButton_OnClick" Canvas.Left="16" Canvas.Top="208" Width="75" Height="23"/>
-                    <CheckBox Name="CreateAccount" Content="Create account" Checked="CreateAccount_OnChecked" Unchecked="CreateAccount_OnUnchecked" Canvas.Left="15" Canvas.Top="4"/>
+                    <Button Name="LoginButton" Content="Submit" Click="LoginButton_OnClick" Canvas.Left="12" Canvas.Top="205" Width="75" Height="23"/>
+                    <CheckBox Name="CreateAccount" Content="Create account" Checked="CreateAccount_OnChecked" Unchecked="CreateAccount_OnUnchecked" Canvas.Left="206" Canvas.Top="3"/>
                     <Label Name="Logginglabel" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Content="" Canvas.Left="11" Canvas.Top="179" Width="291"/>
                 </Canvas>
             </Expander>

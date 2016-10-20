@@ -3,14 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-        Title="Add plants area" Height="258.532" Width="320.936">
-    <!--<Window.Background>
-        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-            <GradientStop Color="Yellow" Offset="0"/>
-            <GradientStop Color="#FF79F066" Offset="1"/>
-        </LinearGradientBrush>
-    </Window.Background>-->
-
+        Title="Add plants area" Height="258.532" Width="334.936">
+  
     <Grid x:Name="RootGrid" Margin="0,-1" HorizontalAlignment="Left" Width="313">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>

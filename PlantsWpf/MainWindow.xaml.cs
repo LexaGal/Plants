@@ -381,7 +381,7 @@ namespace PlantsWpf
             if (_dbDataModifier.AddPlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
-                MessageBox.Show($"{plantsArea}\narea added");
+                MessageBox.Show($"{plantsArea} area added");
 
                 _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(plantsArea));
                 plantsArea.Sensors.ForEach(sensor => _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor)));
@@ -420,7 +420,7 @@ namespace PlantsWpf
             if (_dbDataModifier.RemovePlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
-                MessageBox.Show($"{plantsArea}\narea removed");
+                MessageBox.Show($"{plantsArea} area removed");
 
                 return true;
             }
