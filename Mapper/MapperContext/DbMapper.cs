@@ -51,7 +51,7 @@ namespace Mapper.MapperContext
 
         public PlantsAreaMapping GetPlantsAreaMapping(PlantsArea plantsArea)
         {
-            return new PlantsAreaMapping(plantsArea.Id, plantsArea.Plant.Id, plantsArea.Number);
+            return new PlantsAreaMapping(plantsArea.Id, plantsArea.Plant.Id, plantsArea.Number, plantsArea.UserId);
         }
 
         public MeasuringMessageMapping GetMeasuringMessageMapping(MeasuringMessage measuringMessage)

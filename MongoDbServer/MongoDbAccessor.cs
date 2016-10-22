@@ -50,8 +50,8 @@ namespace MongoDbServer
             }
         }
 
-        public MongoDbAccessor(string database = "meteor", string connectionString = "mongodb://localhost:3001")
-        //public MongoDbAccessor(string database = "alexmongodb", string connectionString = "mongodb://Alex:qYYfO8Di@ds056998.mongolab.com:56998/alexmongodb")
+        //public MongoDbAccessor(string database = "meteor", string connectionString = "mongodb://localhost:3001")
+        public MongoDbAccessor(string database = "alexmongodb", string connectionString = "mongodb://Alex:qYYfO8Di@ds056998.mongolab.com:56998/alexmongodb")
         {
             _database = database;
             _connectionString = connectionString;

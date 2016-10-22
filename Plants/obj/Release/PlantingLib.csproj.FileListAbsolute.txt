@@ -43,3 +43,20 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Release\Pl
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\obj\Release\PlantingLib.pdb
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Release\MongoDB.Bson.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Release\MongoDB.Bson.xml
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\PlantingLib.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\PlantingLib.pdb
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\AutoMapper.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\Database.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\EntityFramework.SqlServer.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\MongoDB.Bson.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\EntityFramework.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\Database.pdb
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\AutoMapper.xml
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\EntityFramework.SqlServer.xml
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\MongoDB.Bson.xml
+D:\Projects\PlantingWork\Plants\Plants\bin\Release\EntityFramework.xml
+D:\Projects\PlantingWork\Plants\Plants\obj\Release\PlantingLib.csprojResolveAssemblyReference.cache
+D:\Projects\PlantingWork\Plants\Plants\obj\Release\PlantingLib.Properties.Resources.resources
+D:\Projects\PlantingWork\Plants\Plants\obj\Release\PlantingLib.csproj.GenerateResource.Cache
+D:\Projects\PlantingWork\Plants\Plants\obj\Release\PlantingLib.dll
+D:\Projects\PlantingWork\Plants\Plants\obj\Release\PlantingLib.pdb

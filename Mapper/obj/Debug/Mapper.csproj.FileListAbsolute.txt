@@ -54,3 +54,16 @@ C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\bin\Debug\EntityFramework.Sq
 C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\obj\Debug\Mapper.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\obj\Debug\Mapper.dll
 C:\Users\Alex\Documents\Plants-ResDictionary\Mapper\obj\Debug\Mapper.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Mapper.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Mapper.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Database.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\PlantingLib.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\EntityFramework.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\EntityFramework.SqlServer.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Database.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\PlantingLib.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\EntityFramework.xml
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\EntityFramework.SqlServer.xml
+D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.csprojResolveAssemblyReference.cache
+D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.dll
+D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.pdb

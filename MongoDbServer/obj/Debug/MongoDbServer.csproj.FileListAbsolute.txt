@@ -30,3 +30,35 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbServer\bin\Deb
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbServer\bin\Debug\MongoDbServer.exe.config
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbServer\bin\Debug\MongoDbServer.exe
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\MongoDbServer\obj\Debug\MongoDbServer.exe
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDbServer.exe.config
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDbServer.exe
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDbServer.pdb
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Common.Logging.Core.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Common.Logging.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Database.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\EntityFramework.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\EntityFramework.SqlServer.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Mapper.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Bson.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Driver.Core.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Driver.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Newtonsoft.Json.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\PlantingLib.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Quartz.dll
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Database.pdb
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Mapper.pdb
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\PlantingLib.pdb
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Common.Logging.pdb
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Common.Logging.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Common.Logging.Core.pdb
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Common.Logging.Core.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\EntityFramework.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\EntityFramework.SqlServer.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Bson.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Driver.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Newtonsoft.Json.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Quartz.pdb
+D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Quartz.xml
+D:\Projects\PlantingWork\Plants\MongoDbServer\obj\Debug\MongoDbServer.csprojResolveAssemblyReference.cache
+D:\Projects\PlantingWork\Plants\MongoDbServer\obj\Debug\MongoDbServer.exe
+D:\Projects\PlantingWork\Plants\MongoDbServer\obj\Debug\MongoDbServer.pdb

@@ -541,6 +541,7 @@ namespace PlantsWpf
                 _user = new User(fn, ln, em, Encrypt(pass));
                 if (CreateUserAccount())
                 {
+                    _mongoDbAccessor = new MongoDbAccessor();
                     _mongoDbAccessor.AddMongoUser(new MongoUser(_user));
                 }
                 else

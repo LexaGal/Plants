@@ -27,3 +27,12 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\bin\Release\
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\obj\Release\Database.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\obj\Release\Database.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Database\obj\Release\Database.pdb
+D:\Projects\PlantingWork\Plants\Database\bin\Release\Database.dll
+D:\Projects\PlantingWork\Plants\Database\bin\Release\Database.pdb
+D:\Projects\PlantingWork\Plants\Database\bin\Release\EntityFramework.dll
+D:\Projects\PlantingWork\Plants\Database\bin\Release\EntityFramework.SqlServer.dll
+D:\Projects\PlantingWork\Plants\Database\bin\Release\EntityFramework.xml
+D:\Projects\PlantingWork\Plants\Database\bin\Release\EntityFramework.SqlServer.xml
+D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.csprojResolveAssemblyReference.cache
+D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.dll
+D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.pdb

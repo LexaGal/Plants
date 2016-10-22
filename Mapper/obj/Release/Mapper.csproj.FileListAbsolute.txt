@@ -41,3 +41,16 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\bin\Release\En
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\obj\Release\Mapper.csprojResolveAssemblyReference.cache
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\obj\Release\Mapper.dll
 C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Mapper\obj\Release\Mapper.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\Mapper.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\Mapper.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\Database.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\PlantingLib.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\EntityFramework.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\EntityFramework.SqlServer.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\Database.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\PlantingLib.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\EntityFramework.xml
+D:\Projects\PlantingWork\Plants\Mapper\bin\Release\EntityFramework.SqlServer.xml
+D:\Projects\PlantingWork\Plants\Mapper\obj\Release\Mapper.csprojResolveAssemblyReference.cache
+D:\Projects\PlantingWork\Plants\Mapper\obj\Release\Mapper.dll
+D:\Projects\PlantingWork\Plants\Mapper\obj\Release\Mapper.pdb

@@ -10,6 +10,7 @@ namespace Database.MappingTypes
             Id = id;
             PlantId = plantId;
             Number = number;
+            UserId = userId;
         }
 
         public PlantsAreaMapping()

@@ -1,7 +1,8 @@
 ﻿<Window x:Class="PlantsWpf.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Sensors system" Height="365" Width="525">
+        Title="Sensors system" Height="365" Width="525"
+        Icon="TreeIcon.ico">
 
 
     <Grid x:Name="RootGrid" Margin="-1,0,1,0" Background="Wheat">
