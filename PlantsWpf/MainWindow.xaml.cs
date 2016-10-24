@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using AspNet.Identity.MySQL.Models;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
@@ -52,6 +56,7 @@ namespace PlantsWpf
         private DbDataModifier _dbDataModifier;
         public static ResourceDictionary ResourceDictionary;
         private MongoDbAccessor _mongoDbAccessor;
+        private MySqlDbAccessor _mySqlDbAccessor;
 
         private User _user;
 
@@ -166,7 +171,7 @@ namespace PlantsWpf
             _plantsAreas = new PlantsAreas();
 
             plantsAreaMappings.ForEach(p => _plantsAreas.AddPlantsArea(_dbMapper.RestorePlantArea(p)));
-            
+
             _sensorsCollection = new SensorsCollection();
 
             foreach (PlantsArea area in _plantsAreas.Areas)
@@ -178,7 +183,7 @@ namespace PlantsWpf
                     sensor.IsOn = true;
                 }
             }
-            
+
             foreach (PlantsArea area in _plantsAreas.Areas)
             {
                 //if custom sensor
@@ -218,9 +223,9 @@ namespace PlantsWpf
                     Border borderedPlantAreaPanel = CreateFullPlantAreaPanel(area, marginLeft, marginTop);
                     PlantsGrid.Children.Add(borderedPlantAreaPanel);
 
-                    marginLeft += sizeHorizontal/numberInRow;
-                    
-                    if ((index + 1)%numberInRow == 0)
+                    marginLeft += sizeHorizontal / numberInRow;
+
+                    if ((index + 1) % numberInRow == 0)
                     {
                         marginLeft = 10;
                         marginTop += sizeVertical;
@@ -237,7 +242,7 @@ namespace PlantsWpf
         {
             DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
             FrameworkElementFactoriesBuilder frameworkElementFactoriesBuilder = new FrameworkElementFactoriesBuilder();
-            
+
             StackPanel plantAreaSensorsPanel = new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
@@ -247,7 +252,7 @@ namespace PlantsWpf
                 Height = 300,
                 CanVerticallyScroll = true,
                 CanHorizontallyScroll = true,
-             };
+            };
 
             plantAreaSensorsPanel.Children.Add(new Label
             {
@@ -258,31 +263,34 @@ namespace PlantsWpf
 
             BindingList<DataGridSensorView> dataGridSensorViews = new BindingList<DataGridSensorView>(
                 area.Sensors.OrderBy(s => s.IsCustom).ToList().ConvertAll(s => new DataGridSensorView(s)))
-                    {
-                        AllowNew = true,
-                        AllowEdit = true,
-                        AllowRemove = true
-                    };
+            {
+                AllowNew = true,
+                AllowEdit = true,
+                AllowRemove = true
+            };
 
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews =
                 new BindingList<DataGridServiceScheduleView>(
                     area.ServicesSchedulesStates.ServicesSchedules.ToList()
                         .ConvertAll(s => new DataGridServiceScheduleView(s)))
-                        {
-                            RaiseListChangedEvents = true,
-                            AllowNew = true,
-                            AllowRemove = true,
-                            AllowEdit = true
-                        };
+                {
+                    RaiseListChangedEvents = true,
+                    AllowNew = true,
+                    AllowRemove = true,
+                    AllowEdit = true
+                };
 
-            FrameworkElementFactory removeSensorButtonTemplate = frameworkElementFactoriesBuilder.CreateRemoveSensorButtonTemplate(area,
-                dataGridSensorViews, dataGridServiceScheduleViews, RemoveSensor);
+            FrameworkElementFactory removeSensorButtonTemplate =
+                frameworkElementFactoriesBuilder.CreateRemoveSensorButtonTemplate(area,
+                    dataGridSensorViews, dataGridServiceScheduleViews, RemoveSensor);
 
-            FrameworkElementFactory sensorSaveButtonTemplate = frameworkElementFactoriesBuilder.CreateSensorSaveButtonTemplate(area,
-                dataGridSensorViews, dataGridServiceScheduleViews, SaveSensor);
+            FrameworkElementFactory sensorSaveButtonTemplate =
+                frameworkElementFactoriesBuilder.CreateSensorSaveButtonTemplate(area,
+                    dataGridSensorViews, dataGridServiceScheduleViews, SaveSensor);
 
-            FrameworkElementFactory onOffSensorButtonTemplate = frameworkElementFactoriesBuilder.CreateOnOffSensorButtonTemplate();
-            
+            FrameworkElementFactory onOffSensorButtonTemplate =
+                frameworkElementFactoriesBuilder.CreateOnOffSensorButtonTemplate();
+
             DataGrid sensorViewsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews,
                 removeSensorButtonTemplate, sensorSaveButtonTemplate, onOffSensorButtonTemplate);
 
@@ -291,14 +299,15 @@ namespace PlantsWpf
             FrameworkElementFactory serviceScheduleSaveButtonTemplate =
                 frameworkElementFactoriesBuilder.CreateServiceScheduleSaveButtonTemplate(area,
                     dataGridServiceScheduleViews, SaveServiceSchedule);
-            
+
             FrameworkElementFactory onOffServiceScheduleButtonTemplate =
                 frameworkElementFactoriesBuilder.CreateOnOffServiceScheduleButtonTemplate();
 
             DataGrid serviceSchedulesDataGrid = dataGridsBuilder.CreateServicesSchedulesDataGrid(area,
                 dataGridServiceScheduleViews, serviceScheduleSaveButtonTemplate, onOffServiceScheduleButtonTemplate);
 
-            Button removePlantsAreaButton = frameworkElementFactoriesBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
+            Button removePlantsAreaButton =
+                frameworkElementFactoriesBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
 
             plantAreaSensorsPanel.Children.Add(sensorViewsDataGrid);
             plantAreaSensorsPanel.Children.Add(serviceStatesDataGrid);
@@ -309,31 +318,34 @@ namespace PlantsWpf
                 Orientation = Orientation.Vertical,
                 Visibility = Visibility.Collapsed
             };
-            
-            ChartDescriptor chartDescriptor = new ChartDescriptor(area.Id, area.Plant.MeasurableParameters.First().MeasurableType, 30,
-                        DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now);
-            
-            PlantAreaChartsPanelBuilder plantAreaChartsPanelBuilder = new PlantAreaChartsPanelBuilder(area.Plant.MeasurableParameters,
-                frameworkElementFactoriesBuilder, plantAreaChartsPanel, chartDescriptor);
+
+            ChartDescriptor chartDescriptor = new ChartDescriptor(area.Id,
+                area.Plant.MeasurableParameters.First().MeasurableType, 30,
+                DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now);
+
+            PlantAreaChartsPanelBuilder plantAreaChartsPanelBuilder =
+                new PlantAreaChartsPanelBuilder(area.Plant.MeasurableParameters,
+                    frameworkElementFactoriesBuilder, plantAreaChartsPanel, chartDescriptor);
             plantAreaChartsPanelBuilder.RebuildChartsPanel();
-            
+
             Menu menu = new Menu();
 
-            DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever = new DbMeasuringMessagesRetriever(new MeasuringMessageMappingRepository(), _observer.MessagesDictionary);
+            DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever =
+                new DbMeasuringMessagesRetriever(new MeasuringMessageMappingRepository(), _observer.MessagesDictionary);
 
             PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
                 plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, dbMeasuringMessagesRetriever,
                 chartDescriptor);
 
             plantAreaMenuBuilder.RebuildMenu();
-            
+
             DockPanel plantAreaFullPanel = new DockPanel();
 
             plantAreaFullPanel.Children.Add(menu);
             plantAreaFullPanel.Children.Add(removePlantsAreaButton);
             plantAreaFullPanel.Children.Add(plantAreaSensorsPanel);
             plantAreaFullPanel.Children.Add(plantAreaChartsPanel);
-            
+
             ScrollViewer scrollViewer = new ScrollViewer
             {
                 Height = plantAreaSensorsPanel.Height,
@@ -398,7 +410,7 @@ namespace PlantsWpf
             _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor));
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
                 $"{sensor.MeasurableType} sensor removed", _user.Id.ToString()));
-            
+
             if (_dbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
                 MessageBox.Show($"'{sensor.MeasurableType}': sensor removed");
@@ -416,7 +428,7 @@ namespace PlantsWpf
             _mongoDbAccessor.DeleteMongoPlantsArea(new MongoPlantsArea(plantsArea));
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
                 $"{plantsArea} removed", _user.Id.ToString()));
-            
+
             if (_dbDataModifier.RemovePlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
@@ -440,7 +452,7 @@ namespace PlantsWpf
         {
             WeatherTypesEnum weatherTypesEnum =
                 (WeatherTypesEnum)
-                    Enum.Parse(typeof(WeatherTypesEnum), selectionChangedEventArgs.AddedItems[0].ToString());
+                Enum.Parse(typeof(WeatherTypesEnum), selectionChangedEventArgs.AddedItems[0].ToString());
             Weather.SetWeather(weatherTypesEnum);
         }
 
@@ -453,7 +465,7 @@ namespace PlantsWpf
             Pause.IsEnabled = false;
         }
 
-       private void AddArea_OnClick(object sender, RoutedEventArgs e)
+        private void AddArea_OnClick(object sender, RoutedEventArgs e)
         {
             PlantsAreaWindow secondWindow = new PlantsAreaWindow();
             secondWindow.PlantsAreaEvent += PlantsAreaWindow_GetPlantsArea;
@@ -478,8 +490,6 @@ namespace PlantsWpf
             IUserRepository userRepository = new UserRepository();
             if (userRepository.GetUser(_user.FirstName, _user.LastName, _user.PasswordHash) != null)
             {
-                Logginglabel.Content = @"User with such credentials already exists";
-                LoginButton.IsEnabled = true;
                 return false;
             }
             userRepository.Save(_user, _user.Id);
@@ -498,6 +508,8 @@ namespace PlantsWpf
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            _mySqlDbAccessor = new MySqlDbAccessor();
+
             //IUserRepository userRepository = new UserRepository();
             //foreach (var user in userRepository.GetAll())
             //{
@@ -507,67 +519,103 @@ namespace PlantsWpf
 
             Logginglabel.Content = @"You are being logged in. Please, wait...";
             LoginButton.IsEnabled = false;
-            string fn = FirstName.Text;
-            string ln = LastName.Text;
-            string pass = Password.Password;
 
-            if (CreateAccount.IsChecked != null && !(bool) CreateAccount.IsChecked)
+            string firstName = FirstName.Text;
+            string lastName = LastName.Text;
+            string username;
+            string email = Email.Text;
+            string password = Password.Password;
+
+            if (CreateAccount.IsChecked != null && !(bool)CreateAccount.IsChecked)
             {
-                _user = GetUser(fn, ln, pass);
-                if (_user == null)
+                //_user = GetUser(firstName, lastName, password);
+                //if (_user == null)
+                //{
+                //    Logginglabel.Content = @"User with such credentials does not exist";
+                //    LoginButton.IsEnabled = true;
+                //    return;
+                //}
+                LoginViewModel loginViewModel = new LoginViewModel
                 {
-                    Logginglabel.Content = @"User with such credentials does not exist";
+                    Email = email,
+                    Password = password,
+                    RememberMe = true
+                };
+
+                var response = _mySqlDbAccessor.LoginUser(loginViewModel);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logginglabel.Content = response.ReasonPhrase;
                     LoginButton.IsEnabled = true;
                     return;
                 }
+                username = response.Content.ReadAsStringAsync().Result;                
             }
             else
             {
-                string em = Email.Text;
-                EmailAddressAttribute addressAttribute = new EmailAddressAttribute();
-                if (!addressAttribute.IsValid(Email.Text))
+                string confirmPassword = ConfirmPassword.Password;
+                //EmailAddressAttribute addressAttribute = new EmailAddressAttribute();
+                //if (!addressAttribute.IsValid(Email.Text))
+                //{
+                //    Logginglabel.Content = @"Email is wrong";
+                //    LoginButton.IsEnabled = true;
+                //    return;
+                //}
+                //if (password != confirmPassword)
+                //{
+                //    Logginglabel.Content = @"Passwords do not match";
+                //    LoginButton.IsEnabled = true;
+                //    return;
+                //}
+
+                username = $"{firstName} {lastName}";
+           
+                RegisterViewModel registerViewModel = new RegisterViewModel
                 {
-                    Logginglabel.Content = @"Email is wrong";
+                    Name = username,
+                    Email = email,
+                    Password = password,
+                    ConfirmPassword = confirmPassword
+                };
+
+                var response = _mySqlDbAccessor.RegisterUser(registerViewModel);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logginglabel.Content = response.ReasonPhrase;
                     LoginButton.IsEnabled = true;
                     return;
                 }
-                string cpass = ConfirmPassword.Password;
-                if (pass != cpass)
-                {
-                    Logginglabel.Content = @"Passwords do not match";
-                    LoginButton.IsEnabled = true;
-                    return;
-                }
-                _user = new User(fn, ln, em, Encrypt(pass));
-                if (CreateUserAccount())
-                {
-                    _mongoDbAccessor = new MongoDbAccessor();
-                    _mongoDbAccessor.AddMongoUser(new MongoUser(_user));
-                }
-                else
-                {
-                    return;
-                }
-            }
+ }
+
+            //for MS Sql and Mongo DBs
+            //_user = new User(firstName, lastName, email, Encrypt(password));
+            //if (CreateUserAccount())
+            //{
+            //    _mongoDbAccessor = new MongoDbAccessor();
+            //    _mongoDbAccessor.AddMongoUser(new MongoUser(_user));
+            //}
+            //else
+            //{
+            //    Logginglabel.Content = @"User with such credentials already exists";
+            //    LoginButton.IsEnabled = true;
+            //    return;
+            //}
+
             StartMainProcess();
-            LoginNameLabel.Content = $"You are logged in as {fn} {ln}";
+            LoginNameLabel.Content = $"You are logged in as {username}";
             LoginNameLabel.Background = Brushes.Wheat;
         }
 
         private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)
         {
-            EmailLabel.Visibility = Visibility.Visible;
-            ConfirmPasswordLabel.Visibility = Visibility.Visible;
-            Email.Visibility = Visibility.Visible;
-            ConfirmPassword.Visibility = Visibility.Visible;
+            RegisterGrid.Visibility = Visibility.Visible;
         }
 
         private void CreateAccount_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            EmailLabel.Visibility = Visibility.Collapsed;
-            ConfirmPasswordLabel.Visibility = Visibility.Collapsed;
-            Email.Visibility = Visibility.Collapsed;
-            ConfirmPassword.Visibility = Visibility.Collapsed;
+            RegisterGrid.Visibility = Visibility.Collapsed;
         }
     }
 }

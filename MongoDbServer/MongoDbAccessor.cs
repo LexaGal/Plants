@@ -36,7 +36,7 @@ namespace MongoDbServer
             switch (collectionName)
             {
                 case "sensors":
-                    return Database.GetCollection<BsonDocument>("sensors");
+                    return Database.GetCollection<BsonDocument>("sensors");                   
                 case "plantsareas":
                     return Database.GetCollection<BsonDocument>("plantsareas");
                 case "usersNET":

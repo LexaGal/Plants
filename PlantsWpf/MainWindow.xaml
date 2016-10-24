@@ -5,7 +5,7 @@
         Icon="TreeIcon.ico">
 
 
-    <Grid x:Name="RootGrid" Margin="-1,0,1,0" Background="Wheat">
+    <Grid x:Name="RootGrid" Margin="-1,0,1,0" Background="LightGoldenrodYellow">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="425*"/>
             <ColumnDefinition Width="92*"/>
@@ -34,24 +34,30 @@
         </ScrollViewer>
 
         <Canvas Grid.Column="0" Panel.ZIndex="99" Margin="0,0,114,283">
-            <Expander Header="Log in before you start" Height="26" Canvas.Left="152" Canvas.Top="15" Width="156">
-                <Canvas Panel.ZIndex="99" Background="LimeGreen" Height="234" Margin="0,0,-151,0">
+            <Expander Header="Log in / Register" Height="26" Canvas.Left="152" Canvas.Top="15" Width="156">
+                <Canvas Panel.ZIndex="99" Background="LightGreen" Height="252" Margin="0,0,-198,0">
                     <Canvas.Effect>
                         <DropShadowEffect/>
                     </Canvas.Effect>
-                    <Label Height="30" Canvas.Top="19" Content="First name" Canvas.Left="12"/>
-                    <Label Height="30" Canvas.Top="52" Canvas.Left="11" Content="Last name" RenderTransformOrigin="0.8,0.433"/>
-                    <Label Name="EmailLabel" Height="30" Canvas.Top="82" Canvas.Left="11" Visibility="Collapsed" Content="Email"/>
-                    <Label Height="30" Canvas.Top="112" Content="Password" RenderTransformOrigin="0.45,1.867" Canvas.Left="11"/>
-                    <Label Name="ConfirmPasswordLabel"  Height="30" Canvas.Top="145" Visibility="Collapsed" Content="Confirm Password" Canvas.Left="8"/>
-                    <TextBox Name="FirstName" Text="Alexey" Background="White" Height="29" Canvas.Left="114" Width="165" Canvas.Top="20"/>
-                    <TextBox Name="LastName" Text="Galushkin" Background="White" Height="29" Canvas.Left="114" Canvas.Top="51" Width="165"/>
-                    <TextBox Name="Email" Visibility="Collapsed" Background="White" Height="29" Canvas.Left="114" Canvas.Top="82" Width="165"/>
-                    <PasswordBox Name="Password" Password="qYYfO8Di" Background="White" Height="29" Canvas.Left="114" Canvas.Top="113" Width="165"/>
-                    <PasswordBox Name="ConfirmPassword" Visibility="Collapsed" Background="White" Height="29" Canvas.Left="114" Canvas.Top="145" Width="165"/>
-                    <Button Name="LoginButton" Content="Submit" Click="LoginButton_OnClick" Canvas.Left="12" Canvas.Top="205" Width="75" Height="23"/>
-                    <CheckBox Name="CreateAccount" Content="Create account" Checked="CreateAccount_OnChecked" Unchecked="CreateAccount_OnUnchecked" Canvas.Left="206" Canvas.Top="3"/>
-                    <Label Name="Logginglabel" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Content="" Canvas.Left="11" Canvas.Top="179" Width="291"/>
+
+                    <Label x:Name="EmailLabel" Height="30" Canvas.Top="22" Canvas.Left="11" Content="Email"/>
+                    <Label Height="30" Canvas.Top="52" Content="Password" RenderTransformOrigin="0.45,1.867" Canvas.Left="9"/>
+                    <TextBox x:Name="Email" Text="abc@abc.ru" Background="White" Height="29" Canvas.Left="114" Canvas.Top="22" Width="234"/>
+                    <PasswordBox x:Name="Password" Password="qYYfO8Di" Background="White" Height="29" Canvas.Left="114" Canvas.Top="53" Width="234"/>
+
+                    <UniformGrid x:Name="RegisterGrid" Height="95" Canvas.Left="8" Canvas.Top="85" Width="340" Visibility="Collapsed">
+                        <Label Content="First name" Margin="3,30,45,-28"/>
+                        <Label Content="Last name" RenderTransformOrigin="0.8,0.433" Margin="-110,64,159,-62"/>
+                        <Label x:Name="ConfirmPasswordLabel" Content="Confirm Password" Margin="-225,0,232,2"/>
+                        <TextBox x:Name="FirstName" Text="Alexey" Background="White" Margin="106,0,-227,3"/>
+                        <TextBox x:Name="LastName" Text="Galushkin" Background="White" Margin="-7,34,-114,-31"/>
+                        <PasswordBox x:Name="ConfirmPassword" Password="qYYfO8Di" Background="White" Margin="-121,-32,0,35"/>
+                    </UniformGrid>
+
+                    <Button x:Name="LoginButton" Content="Submit" Click="LoginButton_OnClick" Canvas.Left="8" Canvas.Top="222" Width="75" Height="23"/>
+                    <CheckBox x:Name="CreateAccount" Content="Create account" Checked="CreateAccount_OnChecked" Unchecked="CreateAccount_OnUnchecked" Canvas.Left="252" Canvas.Top="4"/>
+                    <Label x:Name="Logginglabel" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Content="" Foreground="Red" Canvas.Left="9" Canvas.Top="189" Width="337" Height="32"/>
+
                 </Canvas>
             </Expander>
         </Canvas>
