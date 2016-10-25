@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNet.Identity;
-using System;
+﻿using System;
+using Microsoft.AspNet.Identity;
 
-namespace AspNet.Identity.MySQL
+namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
     /// Class that implements the ASP.NET Identity

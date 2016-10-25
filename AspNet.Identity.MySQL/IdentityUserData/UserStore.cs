@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNet.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNet.Identity.MySQL.Database;
+using Microsoft.AspNet.Identity;
 
-namespace AspNet.Identity.MySQL
+namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
     /// Class that implements the key ASP.NET Identity user store iterfaces

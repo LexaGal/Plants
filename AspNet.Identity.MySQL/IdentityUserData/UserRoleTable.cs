@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using AspNet.Identity.MySQL.Database;
 
-namespace AspNet.Identity.MySQL
+namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
     /// Class that represents the UserRoles table in the MySQL Database

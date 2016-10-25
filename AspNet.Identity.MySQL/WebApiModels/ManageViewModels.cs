@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
-namespace AspNet.Identity.MySQL.Models
+namespace AspNet.Identity.MySQL.WebApiModels
 {
     public class IndexViewModel
     {

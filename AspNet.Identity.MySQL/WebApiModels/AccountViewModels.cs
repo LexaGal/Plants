@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace AspNet.Identity.MySQL.Models
+namespace AspNet.Identity.MySQL.WebApiModels
 {
     public class ExternalLoginConfirmationViewModel
     {

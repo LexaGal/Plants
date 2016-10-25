@@ -1,12 +1,12 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Threading;
+using MySql.Data.MySqlClient;
 
-namespace AspNet.Identity.MySQL
+namespace AspNet.Identity.MySQL.Database
 {
      /// <summary>
      /// Class that encapsulates a MySQL database connections 
@@ -16,10 +16,10 @@ namespace AspNet.Identity.MySQL
     {
         private MySqlConnection _connection;
 
-        /// Default constructor which uses the "DefaultConnection" connectionString
+        /// Default constructor which uses the "MySqlDefaultConnection" connectionString
         /// </summary>
         public MySQLDatabase()
-            : this("DefaultConnection")
+            : this("MySqlDefaultConnection")
         {
         }
 

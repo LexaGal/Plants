@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using AspNet.Identity.MySQL.Database;
+using Microsoft.AspNet.Identity;
 
-namespace AspNet.Identity.MySQL
+namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
     /// Class that represents the UserLogins table in the MySQL Database

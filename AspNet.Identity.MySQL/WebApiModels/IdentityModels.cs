@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNet.Identity.MySQL.Database;
+using AspNet.Identity.MySQL.IdentityUserData;
 using Microsoft.AspNet.Identity;
 
-namespace AspNet.Identity.MySQL.Models
+namespace AspNet.Identity.MySQL.WebApiModels
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
@@ -24,7 +26,7 @@ namespace AspNet.Identity.MySQL.Models
         }
 
         public ApplicationDbContext()
-            : base("DefaultConnection")
+            : base("MySqlDefaultConnection")
         {
         }
 

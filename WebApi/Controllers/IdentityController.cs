@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Web;
 using System.Web.Http;
-using AspNet.Identity.MySQL.Models;
+using AspNet.Identity.MySQL.WebApiModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 

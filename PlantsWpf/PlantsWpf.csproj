@@ -149,7 +149,7 @@
     <Compile Include="ControlsBuilders\PlantAreaChartsPanelBuilder.cs" />
     <Compile Include="ControlsBuilders\IControlsRefresher.cs" />
     <Compile Include="ControlsBuilders\PlantAreaMenuBuilder.cs" />
-    <Compile Include="DbDataAccessors\MySqlDbAccessor.cs" />
+    <Compile Include="DbDataAccessors\MySqlDbDataModifier.cs" />
     <Compile Include="PdfDocuments\PdfDocumentCreator.cs" />
     <Compile Include="ObjectsViews\ChartDescriptor.cs" />
     <Compile Include="ObjectsViews\DataGridServiceScheduleView.cs" />

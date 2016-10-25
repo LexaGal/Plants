@@ -13,7 +13,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using AspNet.Identity.MySQL.Models;
+using AspNet.Identity.MySQL.Repository.Concrete;
+using AspNet.Identity.MySQL.WebApiModels;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
@@ -56,7 +57,7 @@ namespace PlantsWpf
         private DbDataModifier _dbDataModifier;
         public static ResourceDictionary ResourceDictionary;
         private MongoDbAccessor _mongoDbAccessor;
-        private MySqlDbAccessor _mySqlDbAccessor;
+        private MySqlDbDataModifier _mySqlDbDataModifier;
 
         private User _user;
 
@@ -507,8 +508,9 @@ namespace PlantsWpf
         }
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            _mySqlDbAccessor = new MySqlDbAccessor();
+        {        
+            _mySqlDbDataModifier = new MySqlDbDataModifier(new MySqlMeasurableParameterMappingRepository());
+            _mySqlDbDataModifier.GetMeasurableParameterMappings();
 
             //IUserRepository userRepository = new UserRepository();
             //foreach (var user in userRepository.GetAll())
@@ -542,7 +544,7 @@ namespace PlantsWpf
                     RememberMe = true
                 };
 
-                var response = _mySqlDbAccessor.LoginUser(loginViewModel);
+                var response = _mySqlDbDataModifier.LoginUser(loginViewModel);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -579,7 +581,7 @@ namespace PlantsWpf
                     ConfirmPassword = confirmPassword
                 };
 
-                var response = _mySqlDbAccessor.RegisterUser(registerViewModel);
+                var response = _mySqlDbDataModifier.RegisterUser(registerViewModel);
 
                 if (!response.IsSuccessStatusCode)
                 {

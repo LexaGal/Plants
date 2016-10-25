@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
+using AspNet.Identity.MySQL.Database;
 
-namespace AspNet.Identity.MySQL
+namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
     /// Class that represents the UserClaims table in the MySQL Database

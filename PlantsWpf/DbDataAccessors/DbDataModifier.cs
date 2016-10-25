@@ -29,7 +29,7 @@ namespace PlantsWpf.DbDataAccessors
         public DbDataModifier(PlantsAreas plantsAreas, SensorsCollection sensorsCollection,
             IMeasurableParameterMappingRepository measurableParameterMappingRepository,
             IPlantMappingRepository plantMappingRepository, ISensorMappingRepository sensorMappingRepository,
-            IPlantsAreaMappingRepository plantsAreaMappingRepository,
+            IPlantsAreaMappingRepository plantsAreaMappingRepository, 
             IServiceScheduleMappingRepository serviceScheduleMappingRepository)
         {
             _plantsAreas = plantsAreas;

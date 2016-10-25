@@ -2,7 +2,8 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AspNet.Identity.MySQL;
-using AspNet.Identity.MySQL.Models;
+using AspNet.Identity.MySQL.IdentityUserData;
+using AspNet.Identity.MySQL.WebApiModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;

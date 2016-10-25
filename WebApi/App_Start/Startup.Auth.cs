@@ -1,5 +1,5 @@
 ﻿using System;
-using AspNet.Identity.MySQL.Models;
+using AspNet.Identity.MySQL.WebApiModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
