@@ -13,18 +13,21 @@ namespace PlantsWpf.DbDataAccessors
 {
     class MySqlDbDataModifier
     {
-        private readonly MySqlMeasurableParameterMappingRepository _mySqlMeasurableParameterMappingRepository;
+        public MySqlMeasurableParameterMappingRepository SqlMeasurableParameterMappingRepository =>
+            _mySqlMeasurableParameterMappingRepository ?? new MySqlMeasurableParameterMappingRepository();
         
+        public MySqlPlantMappingRepository SqlPlantMappingRepository =>
+                    _sqlPlantMappingRepository ?? new MySqlPlantMappingRepository();
+
+        private readonly MySqlMeasurableParameterMappingRepository _mySqlMeasurableParameterMappingRepository;
+        private readonly MySqlPlantMappingRepository _sqlPlantMappingRepository;
+
         private string _baseServerUr = "http://localhost:63958/";
 
-        public MySqlDbDataModifier(MySqlMeasurableParameterMappingRepository mySqlMeasurableParameterMappingRepository)
+        public MySqlDbDataModifier(MySqlMeasurableParameterMappingRepository mySqlMeasurableParameterMappingRepository, MySqlPlantMappingRepository sqlPlantMappingRepository)
         {
             _mySqlMeasurableParameterMappingRepository = mySqlMeasurableParameterMappingRepository;
-        }
-
-        public List<MeasurableParameterMapping> GetMeasurableParameterMappings()
-        {
-            return _mySqlMeasurableParameterMappingRepository.GetAll();
+            _sqlPlantMappingRepository = sqlPlantMappingRepository;
         }
 
         public HttpResponseMessage RegisterUser(RegisterViewModel registerViewModel)

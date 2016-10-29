@@ -508,9 +508,27 @@ namespace PlantsWpf
         }
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
-        {        
-            _mySqlDbDataModifier = new MySqlDbDataModifier(new MySqlMeasurableParameterMappingRepository());
-            _mySqlDbDataModifier.GetMeasurableParameterMappings();
+        {                   
+            _mySqlDbDataModifier = new MySqlDbDataModifier(new MySqlMeasurableParameterMappingRepository(), new MySqlPlantMappingRepository());
+            //MeasurableParameterMapping mpm = new MeasurableParameterMapping(Guid.NewGuid(), 10, 9, 11,
+            //    ParameterEnum.Temperature.ToString());
+            //_mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Save(mpm, Guid.Empty);
+            //var mpm1 = _mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Get(mpm.Id);
+            //mpm1.Optimal = 23;
+            //_mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Save(mpm1, Guid.Empty);
+            //_mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Delete(mpm1.Id);
+
+            PlantMapping plantMapping = new PlantMapping(Guid.NewGuid(), new Guid("a2948b2a-921f-4c7c-806d-a5724e7302cb"),
+                new Guid("3555C74B-E887-4685-A627-005017305139"), new Guid("FDCF0612-1077-45D6-B294-272504C4E51E"),
+                new Guid("F8867AAB-1B2C-4629-BB51-04E61B714222"),
+                "Apple", null);
+
+            _mySqlDbDataModifier.SqlPlantMappingRepository.Save(plantMapping, Guid.Empty);
+            var mpm1 = _mySqlDbDataModifier.SqlPlantMappingRepository.Get(plantMapping.Id);
+            mpm1.Name = "Pear";
+            _mySqlDbDataModifier.SqlPlantMappingRepository.Save(mpm1, Guid.Empty);
+            _mySqlDbDataModifier.SqlPlantMappingRepository.Delete(mpm1.Id);
+
 
             //IUserRepository userRepository = new UserRepository();
             //foreach (var user in userRepository.GetAll())

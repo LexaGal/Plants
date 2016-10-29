@@ -1,27 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using Database;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
-using MongoDbServer.BsonClassMaps;
 using MongoDbServer.MongoDocs;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
-using PlantingLib.Sensors;
-using BsonWriter = Newtonsoft.Json.Bson.BsonWriter;
 
 namespace MongoDbServer
 {

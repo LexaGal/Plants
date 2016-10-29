@@ -1,6 +1,4 @@
-﻿using System;
-using MongoDbServer.BsonClassMaps;
-using Quartz;
+﻿using Quartz;
 using Quartz.Impl;
 
 namespace MongoDbServer

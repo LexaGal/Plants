@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Database.DatabaseStructure.Repository.Abstract;
+﻿using Database.DatabaseStructure.Repository.Abstract;
 
 namespace AspNet.Identity.MySQL.Repository.Concrete
 {

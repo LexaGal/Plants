@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Runtime.Remoting.Contexts;
 using AspNet.Identity.MySQL.Database;
-using AspNet.Identity.MySQL.IdentityUserData;
-using Database;
 
 namespace AspNet.Identity.MySQL.Repository.Concrete
 {
