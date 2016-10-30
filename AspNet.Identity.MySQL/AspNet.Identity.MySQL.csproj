@@ -94,6 +94,10 @@
   <ItemGroup>
     <Compile Include="IdentityUserData\IdentityRole.cs" />
     <Compile Include="Repository\Concrete\IMySqlRepository.cs" />
+    <Compile Include="Repository\Concrete\MySqlMeasuringMessageMappingRepository.cs" />
+    <Compile Include="Repository\Concrete\MySqlServiceScheduleMappingRepository.cs" />
+    <Compile Include="Repository\Concrete\MySqlSensorMappingRepository.cs" />
+    <Compile Include="Repository\Concrete\MySqlPlantsAreaMappingRepository.cs" />
     <Compile Include="Repository\Concrete\MySqlPlantMappingRepository.cs" />
     <Compile Include="Repository\Concrete\MySqlMeasurableParameterMappingRepository.cs" />
     <Compile Include="Repository\Concrete\MySqlRepository.cs" />

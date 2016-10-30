@@ -25,6 +25,7 @@ using MongoDbServer.BsonClassMaps;
 using MongoDbServer.MongoDocs;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviders;
+using PlantingLib.Messenging;
 using PlantingLib.Observation;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
@@ -508,8 +509,10 @@ namespace PlantsWpf
         }
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
-        {                   
-            _mySqlDbDataModifier = new MySqlDbDataModifier(new MySqlMeasurableParameterMappingRepository(), new MySqlPlantMappingRepository());
+        {
+            _mySqlDbDataModifier = new MySqlDbDataModifier(new MySqlMeasurableParameterMappingRepository(),
+                new MySqlPlantMappingRepository(), new MySqlPlantsAreaMappingRepository(),
+                new MySqlSensorMappingRepository(), new MySqlServiceScheduleMappingRepository(), new MySqlMeasuringMessageMappingRepository());
             //MeasurableParameterMapping mpm = new MeasurableParameterMapping(Guid.NewGuid(), 10, 9, 11,
             //    ParameterEnum.Temperature.ToString());
             //_mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Save(mpm, Guid.Empty);
@@ -518,17 +521,65 @@ namespace PlantsWpf
             //_mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Save(mpm1, Guid.Empty);
             //_mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Delete(mpm1.Id);
 
-            PlantMapping plantMapping = new PlantMapping(Guid.NewGuid(), new Guid("a2948b2a-921f-4c7c-806d-a5724e7302cb"),
-                new Guid("3555C74B-E887-4685-A627-005017305139"), new Guid("FDCF0612-1077-45D6-B294-272504C4E51E"),
-                new Guid("F8867AAB-1B2C-4629-BB51-04E61B714222"),
-                "Apple", null);
+            //PlantMapping plantMapping = new PlantMapping(Guid.NewGuid(), new Guid("a2948b2a-921f-4c7c-806d-a5724e7302cb"),
+            //    new Guid("3555C74B-E887-4685-A627-005017305139"), new Guid("FDCF0612-1077-45D6-B294-272504C4E51E"),
+            //    new Guid("F8867AAB-1B2C-4629-BB51-04E61B714222"),
+            //    "Apple", null);
 
-            _mySqlDbDataModifier.SqlPlantMappingRepository.Save(plantMapping, Guid.Empty);
-            var mpm1 = _mySqlDbDataModifier.SqlPlantMappingRepository.Get(plantMapping.Id);
-            mpm1.Name = "Pear";
-            _mySqlDbDataModifier.SqlPlantMappingRepository.Save(mpm1, Guid.Empty);
-            _mySqlDbDataModifier.SqlPlantMappingRepository.Delete(mpm1.Id);
+            //_mySqlDbDataModifier.SqlPlantMappingRepository.Save(plantMapping, Guid.Empty);
+            //var mpm1 = _mySqlDbDataModifier.SqlPlantMappingRepository.Get(plantMapping.Id);
+            //mpm1.Name = "Pear";
+            //_mySqlDbDataModifier.SqlPlantMappingRepository.Save(mpm1, Guid.Empty);
+            //_mySqlDbDataModifier.SqlPlantMappingRepository.Delete(mpm1.Id);
 
+            //PlantsAreaMapping mpm = new PlantsAreaMapping(Guid.NewGuid(), new Guid("aafdb697-fd67-48e8-9ea8-7f2afe5989d0"), 10, new Guid("9adc5dca-94bc-4c35-afb5-42b06eedf989"));
+            //_mySqlDbDataModifier.SqlPlantsAreaMappingRepository.Save(mpm, Guid.Empty);
+            //var mpm1 = _mySqlDbDataModifier.SqlPlantsAreaMappingRepository.Get(mpm.Id);
+            //mpm1.Number = 23;
+            //_mySqlDbDataModifier.SqlPlantsAreaMappingRepository.Save(mpm1, Guid.Empty);
+
+            //SensorMapping mpm = new SensorMapping(Guid.NewGuid(), new Guid("48664c4e-8300-4a2c-a7d5-3829005b1d7e"), 3,
+            //    new Guid("a2948b2a-921f-4c7c-806d-a5724e7302cb"), ParameterEnum.Temperature.ToString());
+            //_mySqlDbDataModifier.SqlSensorMappingRepository.Save(mpm, Guid.Empty);
+            //mpm = new SensorMapping(Guid.NewGuid(), new Guid("48664c4e-8300-4a2c-a7d5-3829005b1d7e"), 3,
+            //    new Guid("3555C74B-E887-4685-A627-005017305139"), ParameterEnum.Humidity.ToString());
+            //_mySqlDbDataModifier.SqlSensorMappingRepository.Save(mpm, Guid.Empty);
+            //mpm = new SensorMapping(Guid.NewGuid(), new Guid("48664c4e-8300-4a2c-a7d5-3829005b1d7e"), 3,
+            //    new Guid("FDCF0612-1077-45D6-B294-272504C4E51E"), ParameterEnum.Nutrient.ToString());
+            //_mySqlDbDataModifier.SqlSensorMappingRepository.Save(mpm, Guid.Empty);
+            //mpm = new SensorMapping(Guid.NewGuid(), new Guid("48664c4e-8300-4a2c-a7d5-3829005b1d7e"), 3,
+            //    new Guid("F8867AAB-1B2C-4629-BB51-04E61B714222"), ParameterEnum.SoilPh.ToString());
+            //_mySqlDbDataModifier.SqlSensorMappingRepository.Save(mpm, Guid.Empty);
+            //var mpm1 = _mySqlDbDataModifier.SqlSensorMappingRepository.Get(new Guid("74e4da76-a799-48b4-b75e-65e5f3fc2cd8"));
+            //mpm1.MeasuringTimeout = 25;
+            //_mySqlDbDataModifier.SqlSensorMappingRepository.Save(mpm1, Guid.Empty);
+
+            //ServiceScheduleMapping mpm = new ServiceScheduleMapping(Guid.NewGuid(),
+            //    new Guid("48664c4e-8300-4a2c-a7d5-3829005b1d7e"), ServiceStateEnum.Watering.ToString(), 3, 2,
+            //        "a2948b2a-921f-4c7c-806d-a5724e7302cb,3555C74B-E887-4685-A627-005017305139");
+            //_mySqlDbDataModifier.SqlServiceScheduleMappingRepository.Save(mpm, Guid.Empty);
+
+            //mpm = new ServiceScheduleMapping(Guid.NewGuid(), new Guid("2e664c4e-8300-4a2c-a7d5-3829005b1d7e"), ServiceStateEnum.Nutrienting.ToString(), 3, 2,
+            //        "F8867AAB-1B2C-4629-BB51-04E61B714222,FDCF0612-1077-45D6-B294-272504C4E51E");
+            //_mySqlDbDataModifier.SqlServiceScheduleMappingRepository.Save(mpm, Guid.Empty);
+
+            //mpm = new ServiceScheduleMapping(Guid.NewGuid(), new Guid("7be64c4e-8300-4a2c-a7d5-3829005b1d7e"), ServiceStateEnum.Warming.ToString(), 3, 2,
+            //        "F8867AAB-1B2C-4629-BB51-04E61B714222");
+            //_mySqlDbDataModifier.SqlServiceScheduleMappingRepository.Save(mpm, Guid.Empty);
+
+            //mpm = new ServiceScheduleMapping(Guid.NewGuid(), new Guid("9ce64c4e-8300-4a2c-a7d5-3829005b1d7e"), ServiceStateEnum.Cooling.ToString(), 3, 2,
+            //        "F8867AAB-1B2C-4629-BB51-04E61B714222");
+            //_mySqlDbDataModifier.SqlServiceScheduleMappingRepository.Save(mpm, Guid.Empty);
+
+            //var mpm1 = _mySqlDbDataModifier.SqlServiceScheduleMappingRepository.Get(new Guid("0824a75a-f91e-4f57-84a8-1f9bf45a995f"));
+            //mpm1.ServicingPauseSpan = 5;
+            //_mySqlDbDataModifier.SqlServiceScheduleMappingRepository.Save(mpm1, Guid.Empty);
+
+            //var mm = new MeasuringMessageMapping(Guid.NewGuid(), DateTime.Now, MessageTypeEnum.UsualInfo.ToString(),
+            //    ParameterEnum.Nutrient.ToString(), new Guid("48664c4e-8300-4a2c-a7d5-3829005b1d7e"), 12.66);
+            //_mySqlDbDataModifier.SqlMeasuringMessageMappingRepository.Save(mm, Guid.Empty);
+
+            //_mySqlDbDataModifier.SqlMeasuringMessageMappingRepository.Delete(mm.Id);
 
             //IUserRepository userRepository = new UserRepository();
             //foreach (var user in userRepository.GetAll())
@@ -570,7 +621,7 @@ namespace PlantsWpf
                     LoginButton.IsEnabled = true;
                     return;
                 }
-                username = response.Content.ReadAsStringAsync().Result;                
+                username = response.Content.ReadAsStringAsync().Result;
             }
             else
             {
@@ -590,7 +641,7 @@ namespace PlantsWpf
                 //}
 
                 username = $"{firstName} {lastName}";
-           
+
                 RegisterViewModel registerViewModel = new RegisterViewModel
                 {
                     Name = username,
@@ -607,7 +658,7 @@ namespace PlantsWpf
                     LoginButton.IsEnabled = true;
                     return;
                 }
- }
+            }
 
             //for MS Sql and Mongo DBs
             //_user = new User(firstName, lastName, email, Encrypt(password));

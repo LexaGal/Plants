@@ -15,19 +15,44 @@ namespace PlantsWpf.DbDataAccessors
     {
         public MySqlMeasurableParameterMappingRepository SqlMeasurableParameterMappingRepository =>
             _mySqlMeasurableParameterMappingRepository ?? new MySqlMeasurableParameterMappingRepository();
-        
-        public MySqlPlantMappingRepository SqlPlantMappingRepository =>
-                    _sqlPlantMappingRepository ?? new MySqlPlantMappingRepository();
 
+        public MySqlPlantMappingRepository SqlPlantMappingRepository =>
+            _sqlPlantMappingRepository ?? new MySqlPlantMappingRepository();
+
+        public MySqlPlantsAreaMappingRepository SqlPlantsAreaMappingRepository =>
+            _sqlPlantsAreaMappingRepository ?? new MySqlPlantsAreaMappingRepository();
+
+        public MySqlSensorMappingRepository SqlSensorMappingRepository =>
+            _sqlSensorMappingRepository ?? new MySqlSensorMappingRepository();
+
+        public MySqlServiceScheduleMappingRepository SqlServiceScheduleMappingRepository =>
+            _sqlServiceScheduleMappingRepository ?? new MySqlServiceScheduleMappingRepository();
+
+        public MySqlMeasuringMessageMappingRepository SqlMeasuringMessageMappingRepository =>
+            _sqlMeasuringMessageMappingRepository ?? new MySqlMeasuringMessageMappingRepository();
+
+        private readonly MySqlMeasuringMessageMappingRepository _sqlMeasuringMessageMappingRepository;
+        private readonly MySqlServiceScheduleMappingRepository _sqlServiceScheduleMappingRepository;
+        private readonly MySqlSensorMappingRepository _sqlSensorMappingRepository;
         private readonly MySqlMeasurableParameterMappingRepository _mySqlMeasurableParameterMappingRepository;
         private readonly MySqlPlantMappingRepository _sqlPlantMappingRepository;
+        private readonly MySqlPlantsAreaMappingRepository _sqlPlantsAreaMappingRepository;
 
         private string _baseServerUr = "http://localhost:63958/";
 
-        public MySqlDbDataModifier(MySqlMeasurableParameterMappingRepository mySqlMeasurableParameterMappingRepository, MySqlPlantMappingRepository sqlPlantMappingRepository)
+        public MySqlDbDataModifier(MySqlMeasurableParameterMappingRepository mySqlMeasurableParameterMappingRepository,
+            MySqlPlantMappingRepository sqlPlantMappingRepository,
+            MySqlPlantsAreaMappingRepository sqlPlantsAreaMappingRepository,
+            MySqlSensorMappingRepository sqlSensorMappingRepository,
+            MySqlServiceScheduleMappingRepository sqlServiceScheduleMappingRepository,
+            MySqlMeasuringMessageMappingRepository sqlMeasuringMessageMappingRepository)
         {
             _mySqlMeasurableParameterMappingRepository = mySqlMeasurableParameterMappingRepository;
             _sqlPlantMappingRepository = sqlPlantMappingRepository;
+            _sqlPlantsAreaMappingRepository = sqlPlantsAreaMappingRepository;
+            _sqlServiceScheduleMappingRepository = sqlServiceScheduleMappingRepository;
+            _sqlMeasuringMessageMappingRepository = sqlMeasuringMessageMappingRepository;
+            _sqlSensorMappingRepository = sqlSensorMappingRepository;
         }
 
         public HttpResponseMessage RegisterUser(RegisterViewModel registerViewModel)

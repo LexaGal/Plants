@@ -6,14 +6,14 @@ namespace Database.MappingTypes
     public class ServiceScheduleMapping
     {
         [Key]
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
-        public Guid PlantsAreaId { get; private set; }
-        public string ServiceState { get; private set; }
-        public int ServicingSpan { get; private set; }
-        public int ServicingPauseSpan { get; private set; }
+        public Guid PlantsAreaId { get; set; }
+        public string ServiceState { get; set; }
+        public int ServicingSpan { get; set; }
+        public int ServicingPauseSpan { get; set; }
 
-        public string MeasurableParametersIds { get; private set; }
+        public string MeasurableParametersIds { get; set; }
 
         public ServiceScheduleMapping()
         {
