@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Database.MappingTypes;
 
@@ -8,27 +9,21 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
     public class MySqlPlantMappingRepository : MySqlRepository<PlantMapping>
     {
 
-      public override List<PlantMapping> GetAll(
-            Expression<Func<PlantMapping, bool>> func = null)
+        public override List<PlantMapping> GetAll(
+              Expression<Func<PlantMapping, bool>> func = null)
         {
             List<PlantMapping> plantMappings = new List<PlantMapping>();
             string commandText = "Select * from plant";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var plantMapping = (PlantMapping)Activator.CreateInstance(typeof(PlantMapping));
-                plantMapping.Id = Guid.Parse(row["Id"]);
-                plantMapping.TemperatureId = Guid.Parse(row["TemperatureId"]);
-                plantMapping.HumidityId = Guid.Parse(row["HumidityId"]);
-                plantMapping.SoilPhId = Guid.Parse(row["SoilPhId"]);
-                plantMapping.NutrientId = Guid.Parse(row["NutrientId"]);
-                plantMapping.Name = string.IsNullOrEmpty(row["Name"]) ? null : row["Name"];
-                plantMapping.CustomParametersIds = string.IsNullOrEmpty(row["CustomParametersIds"])
-                    ? null
-                    : row["CustomParametersIds"];
-                plantMappings.Add(plantMapping);
+                plantMappings.Add(CreateMapping(row));
+            }
+            if (func != null)
+            {
+                return plantMappings.Where(func.Compile()).ToList();
             }
             return plantMappings;
         }
@@ -36,22 +31,12 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
         public override PlantMapping Get(Guid id)
         {
             string commandText = "Select * from plant where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var plantMapping = (PlantMapping)Activator.CreateInstance(typeof(PlantMapping));
-                plantMapping.Id = Guid.Parse(row["Id"]);
-                plantMapping.TemperatureId = Guid.Parse(row["TemperatureId"]);
-                plantMapping.HumidityId = Guid.Parse(row["HumidityId"]);
-                plantMapping.SoilPhId = Guid.Parse(row["SoilPhId"]);
-                plantMapping.NutrientId = Guid.Parse(row["NutrientId"]);
-                plantMapping.Name = string.IsNullOrEmpty(row["Name"]) ? null : row["Name"];
-                plantMapping.CustomParametersIds = string.IsNullOrEmpty(row["CustomParametersIds"])
-                    ? null
-                    : row["CustomParametersIds"];
-                return plantMapping;
+                return CreateMapping(row);
             }
             return null;
         }
@@ -92,10 +77,26 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
         public override bool Delete(Guid id)
         {
             string commandText = "Delete from plant where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
 
             Database.Execute(commandText, parameters);
             return true;
         }
+
+        protected override PlantMapping CreateMapping(Dictionary<string, string> row)
+        {
+            PlantMapping plantMapping = (PlantMapping)Activator.CreateInstance(typeof(PlantMapping));
+            plantMapping.Id = Guid.Parse(row["Id"]);
+            plantMapping.TemperatureId = Guid.Parse(row["TemperatureId"]);
+            plantMapping.HumidityId = Guid.Parse(row["HumidityId"]);
+            plantMapping.SoilPhId = Guid.Parse(row["SoilPhId"]);
+            plantMapping.NutrientId = Guid.Parse(row["NutrientId"]);
+            plantMapping.Name = string.IsNullOrEmpty(row["Name"]) ? null : row["Name"];
+            plantMapping.CustomParametersIds = string.IsNullOrEmpty(row["CustomParametersIds"])
+                ? null
+                : row["CustomParametersIds"];
+            return plantMapping;
+        }
+
     }
 }

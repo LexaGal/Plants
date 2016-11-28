@@ -74,7 +74,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             string commandText = "Select Id from Roles where Name = @name";
             Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@name", roleName } };
 
-            var result = _database.QueryValue(commandText, parameters);
+            object result = _database.QueryValue(commandText, parameters);
             if (result != null)
             {
                 return Convert.ToString(result);
@@ -90,7 +90,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         /// <returns></returns>
         public IdentityRole GetRoleById(string roleId)
         {
-            var roleName = GetRoleName(roleId);
+            string roleName = GetRoleName(roleId);
             IdentityRole role = null;
 
             if(roleName != null)
@@ -109,7 +109,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         /// <returns></returns>
         public IdentityRole GetRoleByName(string roleName)
         {
-            var roleId = GetRoleId(roleName);
+            string roleId = GetRoleId(roleName);
             IdentityRole role = null;
 
             if (roleId != null)

@@ -31,8 +31,8 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("@userId", userId);
 
-            var rows = _database.Query(commandText, parameters);
-            foreach(var row in rows)
+            List<Dictionary<string, string>> rows = _database.Query(commandText, parameters);
+            foreach(Dictionary<string, string> row in rows)
             {
                 roles.Add(row["Name"]);
             }

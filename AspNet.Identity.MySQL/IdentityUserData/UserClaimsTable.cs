@@ -31,8 +31,8 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             string commandText = "Select * from UserClaims where UserId = @userId";
             Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@UserId", userId } };
 
-            var rows = _database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = _database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
                 Claim claim = new Claim(row["ClaimType"], row["ClaimValue"]);
                 claims.AddClaim(claim);

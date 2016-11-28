@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
@@ -16,6 +17,9 @@ namespace Mapper.MapperContext
 {
     public class DbMapper
     {
+        private readonly MySqlPlantMappingRepository _sqlPlantMappingRepository;
+        private readonly MySqlMeasurableParameterMappingRepository _sqlMeasurableParameterMappingRepository;
+        private readonly MySqlServiceScheduleMappingRepository _sqlServiceScheduleMappingRepository;
         private readonly IPlantMappingRepository _plantRepository;
         private readonly IMeasurableParameterMappingRepository _measurableParameterRepository;
         private readonly IServiceScheduleMappingRepository _serviceScheduleMappingRepository;
@@ -25,12 +29,25 @@ namespace Mapper.MapperContext
             return new DbMapper(new PlantMappingRepository(), new MeasurableParameterMappingRepository(), new ServiceScheduleMappingRepository());
         }
 
+        public static DbMapper GetMySqlDbMapper()
+        {
+            return new DbMapper(new MySqlPlantMappingRepository(), new MySqlMeasurableParameterMappingRepository(), new MySqlServiceScheduleMappingRepository());
+        }
+
         public DbMapper(IPlantMappingRepository plantRepository,
             IMeasurableParameterMappingRepository measurableParameterRepository, IServiceScheduleMappingRepository serviceScheduleMappingRepository)
         {
             _plantRepository = plantRepository;
             _measurableParameterRepository = measurableParameterRepository;
             _serviceScheduleMappingRepository = serviceScheduleMappingRepository;
+        }
+
+        public DbMapper(MySqlPlantMappingRepository sqlPlantMappingRepository, MySqlMeasurableParameterMappingRepository sqlMeasurableParameterMappingRepository, MySqlServiceScheduleMappingRepository sqlServiceScheduleMappingRepository)
+        {
+            _sqlPlantMappingRepository = sqlPlantMappingRepository;
+            _sqlMeasurableParameterMappingRepository = sqlMeasurableParameterMappingRepository;
+            _sqlServiceScheduleMappingRepository = sqlServiceScheduleMappingRepository;
+            //throw new NotImplementedException();
         }
 
         public PlantMapping GetPlantMapping(Plant plant)
@@ -71,7 +88,7 @@ namespace Mapper.MapperContext
         public SensorMapping GetSensorMapping(Sensor sensor)
         {
             return new SensorMapping(sensor.Id, sensor.PlantsArea.Id,
-                (int) sensor.MeasuringTimeout.TotalSeconds, sensor.MeasurableParameter.Id,
+                (int)sensor.MeasuringTimeout.TotalSeconds, sensor.MeasurableParameter.Id,
                 sensor.MeasurableParameter.MeasurableType);
         }
 
@@ -86,8 +103,8 @@ namespace Mapper.MapperContext
             }
             return new ServiceScheduleMapping(serviceSchedule.Id, serviceSchedule.PlantsAreaId,
                 serviceSchedule.ServiceName,
-                (int) serviceSchedule.ServicingSpan.TotalSeconds,
-                (int) serviceSchedule.ServicingPauseSpan.TotalSeconds, builder.ToString());
+                (int)serviceSchedule.ServicingSpan.TotalSeconds,
+                (int)serviceSchedule.ServicingPauseSpan.TotalSeconds, builder.ToString());
         }
 
         public MeasurableParameter RestoreMeasurableParameter(MeasurableParameterMapping measurableParameterMapping)
@@ -135,10 +152,19 @@ namespace Mapper.MapperContext
                 {
                     string[] ids = serviceScheduleMapping.MeasurableParametersIds.Split(',');
                     List<MeasurableParameterMapping> measurableParameterMappings =
-                        ids.Select(id => _measurableParameterRepository.Get(Guid.Parse(id))).ToList();
+                        ids.Select(id => _sqlMeasurableParameterMappingRepository.Get(Guid.Parse(id))).ToList();
 
                     measurableParameterMappings.ForEach(
-                        mapping => mps.Add(measurableParameters.Single(parameter => parameter.Id == mapping.Id)));
+                        mapping =>
+                        {
+                            var param =
+                                measurableParameters.SingleOrDefault(
+                                    parameter => parameter != null && parameter.Id == mapping.Id);
+                            if (param != null)
+                            {
+                                mps.Add(param);
+                            }
+                        });
                 }
                 return new ServiceSchedule(serviceScheduleMapping.Id, serviceScheduleMapping.PlantsAreaId,
                     serviceScheduleMapping.ServiceState,
@@ -158,20 +184,20 @@ namespace Mapper.MapperContext
             try
             {
                 MeasurableParameterMapping temperatureMapping =
-                    _measurableParameterRepository.Get(plantMapping.TemperatureId);
+                    _sqlMeasurableParameterMappingRepository.Get(plantMapping.TemperatureId);
                 MeasurableParameterMapping soilPhMapping =
-                    _measurableParameterRepository.Get(plantMapping.SoilPhId);
+                    _sqlMeasurableParameterMappingRepository.Get(plantMapping.SoilPhId);
                 MeasurableParameterMapping humidityMapping =
-                    _measurableParameterRepository.Get(plantMapping.HumidityId);
+                    _sqlMeasurableParameterMappingRepository.Get(plantMapping.HumidityId);
                 MeasurableParameterMapping nutrientMapping =
-                    _measurableParameterRepository.Get(plantMapping.NutrientId);
+                    _sqlMeasurableParameterMappingRepository.Get(plantMapping.NutrientId);
 
                 Temperature temperature = RestoreMeasurableParameter(temperatureMapping) as Temperature;
                 Humidity humidity = RestoreMeasurableParameter(humidityMapping) as Humidity;
                 SoilPh soilPh = RestoreMeasurableParameter(soilPhMapping) as SoilPh;
                 Nutrient nutrient = RestoreMeasurableParameter(nutrientMapping) as Nutrient;
 
-                PlantNameEnum name = (PlantNameEnum) Enum.Parse(typeof (PlantNameEnum), plantMapping.Name);
+                PlantNameEnum name = (PlantNameEnum)Enum.Parse(typeof(PlantNameEnum), plantMapping.Name);
                 Plant plant = new Plant(plantMapping.Id, temperature, humidity, soilPh, nutrient, name);
 
                 //if custom sensor
@@ -179,7 +205,7 @@ namespace Mapper.MapperContext
                 {
                     string[] ids = plantMapping.CustomParametersIds.Split(',');
                     List<MeasurableParameterMapping> measurableParameterMappings =
-                        ids.Select(id => _measurableParameterRepository.Get(Guid.Parse(id))).ToList();
+                        ids.Select(id => _sqlMeasurableParameterMappingRepository.Get(Guid.Parse(id))).ToList();
 
                     List<MeasurableParameter> measurableParameters =
                         measurableParameterMappings.Select(RestoreMeasurableParameter)
@@ -201,13 +227,13 @@ namespace Mapper.MapperContext
         {
             try
             {
-                PlantMapping plantMapping = _plantRepository.Get(plantsAreaMapping.PlantId);
+                PlantMapping plantMapping = _sqlPlantMappingRepository.Get(plantsAreaMapping.PlantId);
                 Plant plant = RestorePlant(plantMapping);
-                
+
                 PlantsArea area = new PlantsArea(plantsAreaMapping.Id, plantsAreaMapping.UserId, plant, plantsAreaMapping.Number);
 
                 List<ServiceScheduleMapping> serviceScheduleMappings =
-                    _serviceScheduleMappingRepository.GetAll(s => s.PlantsAreaId == area.Id);
+                    _sqlServiceScheduleMappingRepository.GetAll(s => s.PlantsAreaId == area.Id);
 
                 if (serviceScheduleMappings.Count != 0)
                 {
@@ -229,7 +255,7 @@ namespace Mapper.MapperContext
             {
                 MeasurableParameter mp =
                     plantsArea.Plant.MeasurableParameters.SingleOrDefault(
-                        m => m.Id == sensorMapping.MeasurableParameterId);
+                        m => m != null && m.Id == sensorMapping.MeasurableParameterId);
 
                 if (mp != null)
                 {

@@ -391,13 +391,13 @@ namespace WebApi.Areas.HelpPage
         {
             try
             {
-                foreach (var item in sampleGenerator.GetSampleRequests(apiModel.ApiDescription))
+                foreach (KeyValuePair<MediaTypeHeaderValue, object> item in sampleGenerator.GetSampleRequests(apiModel.ApiDescription))
                 {
                     apiModel.SampleRequests.Add(item.Key, item.Value);
                     LogInvalidSampleAsError(apiModel, item.Value);
                 }
 
-                foreach (var item in sampleGenerator.GetSampleResponses(apiModel.ApiDescription))
+                foreach (KeyValuePair<MediaTypeHeaderValue, object> item in sampleGenerator.GetSampleResponses(apiModel.ApiDescription))
                 {
                     apiModel.SampleResponses.Add(item.Key, item.Value);
                     LogInvalidSampleAsError(apiModel, item.Value);

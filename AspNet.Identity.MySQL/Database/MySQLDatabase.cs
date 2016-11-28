@@ -52,7 +52,7 @@ namespace AspNet.Identity.MySQL.Database
             try
             {
                 EnsureConnectionOpen();
-                var command = CreateCommand(commandText, parameters);
+                MySqlCommand command = CreateCommand(commandText, parameters);
                 result = command.ExecuteNonQuery();
             }
             finally
@@ -81,7 +81,7 @@ namespace AspNet.Identity.MySQL.Database
             try
             {
                 EnsureConnectionOpen();
-                var command = CreateCommand(commandText, parameters);
+                MySqlCommand command = CreateCommand(commandText, parameters);
                 result = command.ExecuteScalar();
             }
             finally
@@ -110,17 +110,17 @@ namespace AspNet.Identity.MySQL.Database
             try
             {
                 EnsureConnectionOpen();
-                var command = CreateCommand(commandText, parameters);
+                MySqlCommand command = CreateCommand(commandText, parameters);
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     rows = new List<Dictionary<string, string>>();
                     while (reader.Read())
                     {
-                        var row = new Dictionary<string, string>();
-                        for (var i = 0; i < reader.FieldCount; i++)
+                        Dictionary<string, string> row = new Dictionary<string, string>();
+                        for (int i = 0; i < reader.FieldCount; i++)
                         {
-                            var columnName = reader.GetName(i);
-                            var columnValue = reader.IsDBNull(i) ? null : reader.GetString(i);
+                            string columnName = reader.GetName(i);
+                            string columnValue = reader.IsDBNull(i) ? null : reader.GetString(i);
                             row.Add(columnName, columnValue);
                         }
                         rows.Add(row);
@@ -140,7 +140,7 @@ namespace AspNet.Identity.MySQL.Database
         /// </summary>
         private void EnsureConnectionOpen()
         {
-            var retries = 3;
+            int retries = 3;
             if (_connection.State == ConnectionState.Open)
             {
                 return;
@@ -194,9 +194,9 @@ namespace AspNet.Identity.MySQL.Database
                 return;
             }
 
-            foreach (var param in parameters)
+            foreach (KeyValuePair<string, object> param in parameters)
             {
-                var parameter = command.CreateParameter();
+                MySqlParameter parameter = command.CreateParameter();
                 parameter.ParameterName = param.Key;
                 parameter.Value = param.Value ?? DBNull.Value;
                 command.Parameters.Add(parameter);

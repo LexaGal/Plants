@@ -58,10 +58,10 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             string commandText = "Select * from Users where Id = @id";
             Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@id", userId } };
 
-            var rows = _database.Query(commandText, parameters);
+            List<Dictionary<string, string>> rows = _database.Query(commandText, parameters);
             if (rows != null && rows.Count == 1)
             {
-                var row = rows[0];
+                Dictionary<string, string> row = rows[0];
                 user = (TUser)Activator.CreateInstance(typeof(TUser));
                 user.Id = row["Id"];
                 user.UserName = row["UserName"];
@@ -90,8 +90,8 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             string commandText = "Select * from Users where UserName = @name";
             Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@name", userName } };
 
-            var rows = _database.Query(commandText, parameters);
-            foreach(var row in rows)
+            List<Dictionary<string, string>> rows = _database.Query(commandText, parameters);
+            foreach(Dictionary<string, string> row in rows)
             {
                 TUser user = (TUser)Activator.CreateInstance(typeof(TUser));
                 user.Id = row["Id"];
@@ -118,8 +118,8 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             string commandText = "Select * from Users where Email = @email";
             Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@email", email } };
 
-            var rows = _database.Query(commandText, parameters);
-            foreach(var row in rows)
+            List<Dictionary<string, string>> rows = _database.Query(commandText, parameters);
+            foreach(Dictionary<string, string> row in rows)
             {
                 TUser user = (TUser)Activator.CreateInstance(typeof(TUser));
                 user.Id = row["Id"];
@@ -151,7 +151,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("@id", userId);
 
-            var passHash = _database.GetStrValue(commandText, parameters);
+            string passHash = _database.GetStrValue(commandText, parameters);
             if(string.IsNullOrEmpty(passHash))
             {
                 return null;
@@ -185,7 +185,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         {
             string commandText = "Select SecurityStamp from Users where Id = @id";
             Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@id", userId } };
-            var result = _database.GetStrValue(commandText, parameters);
+            string result = _database.GetStrValue(commandText, parameters);
 
             return result;
         }

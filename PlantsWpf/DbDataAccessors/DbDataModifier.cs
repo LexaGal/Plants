@@ -100,6 +100,7 @@ namespace PlantsWpf.DbDataAccessors
         {
             try
             {
+                //TODO: use private
                 IPlantMappingRepository plantMappingRepository = new PlantMappingRepository();
                 IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
                 IMeasurableParameterMappingRepository measurableParameterMappingRepository =

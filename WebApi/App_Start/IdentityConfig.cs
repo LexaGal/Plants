@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AspNet.Identity.MySQL;
 using AspNet.Identity.MySQL.IdentityUserData;
 using AspNet.Identity.MySQL.WebApiModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace WebApi
 {
@@ -39,7 +39,7 @@ namespace WebApi
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            ApplicationUserManager manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
@@ -75,7 +75,7 @@ namespace WebApi
             });
             manager.EmailService = new EmailService();
             manager.SmsService = new SmsService();
-            var dataProtectionProvider = options.DataProtectionProvider;
+            IDataProtectionProvider dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
                 manager.UserTokenProvider = 

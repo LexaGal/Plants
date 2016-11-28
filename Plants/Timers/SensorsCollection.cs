@@ -23,7 +23,7 @@ namespace PlantingLib.Sensors
             {
                 Sensors = new List<Sensor>();
             }
-            if (Sensors.Any(s => s.Id == sensor.Id))
+            if (Sensors.Any(s => s != null && s.Id == sensor.Id))
             {
                 Sensor old = Sensors.First(s => s.Id == sensor.Id);
                 old = sensor;

@@ -1,7 +1,7 @@
-﻿using System.EnterpriseServices;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Web;
 using System.Web.Http;
@@ -45,10 +45,10 @@ namespace WebApi.Controllers
         [Route("api/identity/login")]
         public HttpResponseMessage Login(LoginViewModel model)
         {
-            var applicationUser = UserManager.FindByEmailAsync(model.Email).Result;
+            ApplicationUser applicationUser = UserManager.FindByEmailAsync(model.Email).Result;
             if (applicationUser != null)
             {
-                var result = SignInManager.PasswordSignIn(applicationUser.UserName, model.Password, model.RememberMe,
+                SignInStatus result = SignInManager.PasswordSignIn(applicationUser.UserName, model.Password, model.RememberMe,
                     true);
                 switch (result)
                 {
@@ -56,10 +56,10 @@ namespace WebApi.Controllers
                         return new HttpResponseMessage(HttpStatusCode.OK)
                         {
                             ReasonPhrase = "Successful login.",
-                            Content = new StringContent(applicationUser.UserName, Encoding.UTF8, "application/json")
+                            Content = new ObjectContent<ApplicationUser>(applicationUser, new JsonMediaTypeFormatter())
                         };
                     case SignInStatus.LockedOut:
-                        return new HttpResponseMessage(HttpStatusCode.Forbidden) {ReasonPhrase = "Locked out."};
+                        return new HttpResponseMessage(HttpStatusCode.Forbidden) { ReasonPhrase = "Locked out." };
                     case SignInStatus.Failure:
                         return new HttpResponseMessage(HttpStatusCode.Forbidden)
                         {
@@ -68,7 +68,7 @@ namespace WebApi.Controllers
                 }
                 return new HttpResponseMessage(HttpStatusCode.Forbidden)
                 {
-                    ReasonPhrase = "Successful login."
+                    ReasonPhrase = "User with this email does not exist."
                 };
             }
             return new HttpResponseMessage(HttpStatusCode.Forbidden)
@@ -88,17 +88,21 @@ namespace WebApi.Controllers
                     ReasonPhrase = "The password and confirmation password do not match."
                 };
             }
-            var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
-            var result = UserManager.CreateAsync(user, model.Password).Result;
+            ApplicationUser user = new ApplicationUser { UserName = model.Name, Email = model.Email };
+            IdentityResult result = UserManager.CreateAsync(user, model.Password).Result;
             if (result.Succeeded)
             {
                 SignInManager.SignIn(user, false, false);
                 return new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    ReasonPhrase = "Successful registration."
+                    ReasonPhrase = "Successful registration.",
+                    Content = new ObjectContent<ApplicationUser>(user, new JsonMediaTypeFormatter())
                 };
             }
-            return new HttpResponseMessage(HttpStatusCode.InternalServerError) { ReasonPhrase = result.Errors.First() };
+            return new HttpResponseMessage(HttpStatusCode.InternalServerError)
+            {
+                ReasonPhrase = result.Errors.First()
+            };
         }
     }
 }

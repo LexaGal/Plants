@@ -19,7 +19,7 @@ namespace DatabaseCleanerServer
             //        measuringMessageMappingRepository.DeleteMany();
             //    }
             using (
-                var sc =
+                SqlConnection sc =
                     new SqlConnection(
                         ConfigurationManager.ConnectionStrings["PlantingDb"].ConnectionString))
             {

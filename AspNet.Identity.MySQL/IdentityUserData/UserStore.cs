@@ -242,7 +242,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
                 throw new ArgumentNullException("login");
             }
 
-            var userId = userLoginsTable.FindUserIdByLogin(login);
+            string userId = userLoginsTable.FindUserIdByLogin(login);
             if (userId != null)
             {
                 TUser user = userTable.GetUserById(userId) as TUser;
@@ -424,7 +424,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         /// <returns></returns>
         public Task<bool> HasPasswordAsync(TUser user)
         {
-            var hasPassword = !string.IsNullOrEmpty(userTable.GetPasswordHash(user.Id));
+            bool hasPassword = !string.IsNullOrEmpty(userTable.GetPasswordHash(user.Id));
 
             return Task.FromResult<bool>(Boolean.Parse(hasPassword.ToString()));
         }

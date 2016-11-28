@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using AspNet.Identity.MySQL.Database;
+using Database.MappingTypes;
 
 namespace AspNet.Identity.MySQL.Repository.Concrete
 {
@@ -25,6 +26,11 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             {
                 Database.Dispose();
             }
+        }
+
+        protected virtual T CreateMapping(Dictionary<string, string> row)
+        {
+            throw new NotImplementedException();
         }
     }
 }

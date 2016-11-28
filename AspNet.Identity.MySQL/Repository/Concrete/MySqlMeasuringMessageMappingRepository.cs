@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Database.MappingTypes;
 
@@ -15,22 +16,14 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from measuringmessage";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
+            {               
+                measuringMessageMappings.Add(CreateMapping(row));
+            }
+            if (func != null)
             {
-                var measuringMessageMapping =
-                    (MeasuringMessageMapping) Activator.CreateInstance(typeof(MeasuringMessageMapping));
-                measuringMessageMapping.Id = Guid.Parse(row["Id"]);
-                measuringMessageMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
-                measuringMessageMapping.DateTime = DateTime.Parse(row["DateTime"]);
-                measuringMessageMapping.MeasurableType = string.IsNullOrEmpty(row["MeasurableType"])
-                    ? null
-                    : row["MeasurableType"];
-                measuringMessageMapping.MessageType = string.IsNullOrEmpty(row["MessageType"])
-                    ? null
-                    : row["MessageType"];
-                measuringMessageMapping.ParameterValue = Double.Parse(row["ParameterValue"]);
-                measuringMessageMappings.Add(measuringMessageMapping);
+                return measuringMessageMappings.Where(func.Compile()).ToList();
             }
             return measuringMessageMappings;
         }
@@ -40,22 +33,10 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from measuringmessage where Id = @Id";
             Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var measuringMessageMapping =
-                    (MeasuringMessageMapping) Activator.CreateInstance(typeof(MeasuringMessageMapping));
-                measuringMessageMapping.Id = Guid.Parse(row["Id"]);
-                measuringMessageMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
-                measuringMessageMapping.DateTime = DateTime.Parse(row["DateTime"]);
-                measuringMessageMapping.MeasurableType = string.IsNullOrEmpty(row["MeasurableType"])
-                    ? null
-                    : row["MeasurableType"];
-                measuringMessageMapping.MessageType = string.IsNullOrEmpty(row["MessageType"])
-                    ? null
-                    : row["MessageType"];
-                measuringMessageMapping.ParameterValue = Double.Parse(row["ParameterValue"]);
-                return measuringMessageMapping;
+                return CreateMapping(row);
             }
             return null;
         }
@@ -98,6 +79,23 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
             Database.Execute(commandText, parameters);
             return true;
+        }
+
+        protected override MeasuringMessageMapping CreateMapping(Dictionary<string, string> row)
+        {
+            MeasuringMessageMapping measuringMessageMapping =
+                    (MeasuringMessageMapping) Activator.CreateInstance(typeof(MeasuringMessageMapping));
+                measuringMessageMapping.Id = Guid.Parse(row["Id"]);
+                measuringMessageMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
+                measuringMessageMapping.DateTime = DateTime.Parse(row["DateTime"]);
+                measuringMessageMapping.MeasurableType = string.IsNullOrEmpty(row["MeasurableType"])
+                    ? null
+                    : row["MeasurableType"];
+                measuringMessageMapping.MessageType = string.IsNullOrEmpty(row["MessageType"])
+                    ? null
+                    : row["MessageType"];
+                measuringMessageMapping.ParameterValue = Double.Parse(row["ParameterValue"]);
+                return measuringMessageMapping;
         }
     }
 }

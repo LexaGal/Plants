@@ -86,7 +86,7 @@ namespace PlantsWpf.DbDataAccessors
                 //    {
                 //        try
                 //        {
-                var measuringMessageMappings = _measuringMessageMappingRepository.GetAll(func);
+                List<MeasuringMessageMapping> measuringMessageMappings = _measuringMessageMappingRepository.GetAll(func);
                 //    tr.Commit();
                 //}
                 //catch (Exception e)

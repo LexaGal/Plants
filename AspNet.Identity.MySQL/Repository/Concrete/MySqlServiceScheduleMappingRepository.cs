@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Database.MappingTypes;
 
@@ -15,22 +16,14 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from serviceschedule";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var serviceScheduleMapping =
-                    (ServiceScheduleMapping) Activator.CreateInstance(typeof(ServiceScheduleMapping));
-                serviceScheduleMapping.Id = Guid.Parse(row["Id"]);
-                serviceScheduleMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
-                serviceScheduleMapping.MeasurableParametersIds = string.IsNullOrEmpty(row["MeasurableParameterId"])
-                    ? null
-                    : row["MeasurableParameterId"];
-                serviceScheduleMapping.ServicingSpan = Convert.ToInt32(row["ServicingSpan"]);
-                serviceScheduleMapping.ServicingPauseSpan = Convert.ToInt32(row["ServicingPauseSpan"]);
-                serviceScheduleMapping.ServiceState = string.IsNullOrEmpty(row["ServiceState"])
-                    ? null
-                    : row["ServiceState"];
-                serviceScheduleMappings.Add(serviceScheduleMapping);
+                serviceScheduleMappings.Add(CreateMapping(row));
+            }
+           if (func != null)
+            {
+                return serviceScheduleMappings.Where(func.Compile()).ToList();
             }
             return serviceScheduleMappings;
         }
@@ -38,24 +31,12 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
         public override ServiceScheduleMapping Get(Guid id)
         {
             string commandText = "Select * from serviceschedule where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var serviceScheduleMapping =
-                    (ServiceScheduleMapping) Activator.CreateInstance(typeof(ServiceScheduleMapping));
-                serviceScheduleMapping.Id = Guid.Parse(row["Id"]);
-                serviceScheduleMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
-                serviceScheduleMapping.MeasurableParametersIds = string.IsNullOrEmpty(row["MeasurableParametersIds"])
-                    ? null
-                    : row["MeasurableParametersIds"];
-                serviceScheduleMapping.ServicingSpan = Convert.ToInt32(row["ServicingSpan"]);
-                serviceScheduleMapping.ServicingPauseSpan = Convert.ToInt32(row["ServicingPauseSpan"]);
-                serviceScheduleMapping.ServiceState = string.IsNullOrEmpty(row["ServiceState"])
-                    ? null
-                    : row["ServiceState"];
-                return serviceScheduleMapping;
+                return CreateMapping(row);
             }
             return null;
         }
@@ -94,10 +75,28 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
         public override bool Delete(Guid id)
         {
             string commandText = "Delete from serviceschedule where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
 
             Database.Execute(commandText, parameters);
             return true;
         }
+
+        protected override ServiceScheduleMapping CreateMapping(Dictionary<string, string> row)
+        {
+            ServiceScheduleMapping serviceScheduleMapping =
+                                (ServiceScheduleMapping)Activator.CreateInstance(typeof(ServiceScheduleMapping));
+            serviceScheduleMapping.Id = Guid.Parse(row["Id"]);
+            serviceScheduleMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
+            serviceScheduleMapping.MeasurableParametersIds = string.IsNullOrEmpty(row["MeasurableParametersIds"])
+                ? null
+                : row["MeasurableParametersIds"];
+            serviceScheduleMapping.ServicingSpan = Convert.ToInt32(row["ServicingSpan"]);
+            serviceScheduleMapping.ServicingPauseSpan = Convert.ToInt32(row["ServicingPauseSpan"]);
+            serviceScheduleMapping.ServiceState = string.IsNullOrEmpty(row["ServiceState"])
+                ? null
+                : row["ServiceState"];
+            return serviceScheduleMapping;
+        }
+
     }
 }

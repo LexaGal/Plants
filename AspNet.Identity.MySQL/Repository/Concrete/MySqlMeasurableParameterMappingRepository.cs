@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Database.MappingTypes;
 
@@ -15,17 +16,14 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from measurableparameter";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
+            {                
+                measurableParameterMappings.Add(CreateMapping(row));
+            }
+            if (func != null)
             {
-                var measurableParameterMapping = (MeasurableParameterMapping)Activator.CreateInstance(typeof(MeasurableParameterMapping));
-                measurableParameterMapping.Id = Guid.Parse(row["Id"]);
-                measurableParameterMapping.Optimal = Convert.ToInt32(row["Optimal"]);
-                measurableParameterMapping.Min = Convert.ToInt32(row["Min"]);
-                measurableParameterMapping.Max = Convert.ToInt32(row["Max"]);
-                measurableParameterMapping.Type = string.IsNullOrEmpty(row["Type"]) ? null : row["Type"];
-
-                measurableParameterMappings.Add(measurableParameterMapping);
+                return measurableParameterMappings.Where(func.Compile()).ToList();
             }
             return measurableParameterMappings;
         }
@@ -35,16 +33,10 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from measurableparameter where Id = @Id";
             Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var measurableParameterMapping = (MeasurableParameterMapping)Activator.CreateInstance(typeof(MeasurableParameterMapping));
-                measurableParameterMapping.Id = Guid.Parse(row["Id"]);
-                measurableParameterMapping.Optimal = Convert.ToInt32(row["Optimal"]);
-                measurableParameterMapping.Min = Convert.ToInt32(row["Min"]);
-                measurableParameterMapping.Max = Convert.ToInt32(row["Max"]);
-                measurableParameterMapping.Type = string.IsNullOrEmpty(row["Type"]) ? null : row["Type"];
-                return measurableParameterMapping;
+                return CreateMapping(row);
             }
             return null;
         }
@@ -85,6 +77,18 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
             Database.Execute(commandText, parameters);
             return true;
+        }
+
+        protected override MeasurableParameterMapping CreateMapping(Dictionary<string, string> row)
+        {
+            MeasurableParameterMapping measurableParameterMapping =
+                (MeasurableParameterMapping) Activator.CreateInstance(typeof(MeasurableParameterMapping));
+            measurableParameterMapping.Id = Guid.Parse(row["Id"]);
+            measurableParameterMapping.Optimal = Convert.ToInt32(row["Optimal"]);
+            measurableParameterMapping.Min = Convert.ToInt32(row["Min"]);
+            measurableParameterMapping.Max = Convert.ToInt32(row["Max"]);
+            measurableParameterMapping.Type = string.IsNullOrEmpty(row["Type"]) ? null : row["Type"];
+            return measurableParameterMapping;
         }
     }
 }

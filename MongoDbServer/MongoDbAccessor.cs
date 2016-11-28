@@ -73,7 +73,7 @@ namespace MongoDbServer
 
         public void UpdateCollections()
         {
-            DbMapper dbMapper = DbMapper.GetDbMapper();
+            DbMapper dbMapper = DbMapper.GetMySqlDbMapper();
             IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
             ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
             ParameterServicesInfo.SetBaseParameters();
@@ -151,14 +151,14 @@ namespace MongoDbServer
         public void DeleteMongoPlantsArea(MongoPlantsArea mongoPlantsArea)
         {
             IMongoCollection<BsonDocument> plantsAreasCollection = GetMongoCollection("plantsareas");
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", mongoPlantsArea.objId);
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", mongoPlantsArea.objId);
             plantsAreasCollection.DeleteOneAsync(filter);
         }
 
         public void DeleteMongoSensor(MongoSensor mongoSensor)
         {
             IMongoCollection<BsonDocument> sensorsCollection = GetMongoCollection("sensors");
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", mongoSensor.objId);
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", mongoSensor.objId);
             sensorsCollection.DeleteOneAsync(filter);
         }
     }

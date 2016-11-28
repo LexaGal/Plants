@@ -37,25 +37,27 @@ namespace PlantsWpf.ControlsBuilders
             _plantAreaChartsPanel.Children.Clear();
             foreach (MeasurableParameter measurableParameter in _measurableParameters)
             {
-                Chart chart = new Chart
+                if (measurableParameter != null)
                 {
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Width = 1100,
-                    Height = 225,
-                    BorderBrush = Brushes.Black,
-                    Background = (LinearGradientBrush) MainWindow.ResourceDictionary["ChartBackground"],
-                    Title = measurableParameter.MeasurableType,
-                };
+                    Chart chart = new Chart
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Width = 1100,
+                        Height = 225,
+                        BorderBrush = Brushes.Black,
+                        Background = (LinearGradientBrush) MainWindow.ResourceDictionary["ChartBackground"],
+                        Title = measurableParameter.MeasurableType,
+                    };
 
-                AreaSeries areaSeries = new AreaSeries
-                {
-                    IndependentValueBinding = new Binding("Key"),
-                    DependentValueBinding = new Binding("Value"),
-                    Title = measurableParameter.MeasurableType,
-                };
-                chart.Series.Add(areaSeries);
-                _plantAreaChartsPanel.Children.Add(chart);
-
+                    AreaSeries areaSeries = new AreaSeries
+                    {
+                        IndependentValueBinding = new Binding("Key"),
+                        DependentValueBinding = new Binding("Value"),
+                        Title = measurableParameter.MeasurableType,
+                    };
+                    chart.Series.Add(areaSeries);
+                    _plantAreaChartsPanel.Children.Add(chart);
+                }
             }
 
             DockPanel chartDescriptorPanel = CreateChartDescriptorPanel();

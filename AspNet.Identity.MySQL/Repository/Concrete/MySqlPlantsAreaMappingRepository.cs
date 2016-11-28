@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Database.MappingTypes;
 
@@ -15,16 +16,14 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from plantsarea";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var plantsAreaMapping = (PlantsAreaMapping)Activator.CreateInstance(typeof(PlantsAreaMapping));
-                plantsAreaMapping.Id = Guid.Parse(row["Id"]);
-                plantsAreaMapping.PlantId = Guid.Parse(row["PlantId"]);
-                plantsAreaMapping.UserId = Guid.Parse(row["UserId"]);
-                plantsAreaMapping.Number = Convert.ToInt32(row["Number"]);
-
-                plantsAreaMappings.Add(plantsAreaMapping);
+                plantsAreaMappings.Add(CreateMapping(row));
+            }
+           if (func != null)
+            {
+                return plantsAreaMappings.Where(func.Compile()).ToList();
             }
             return plantsAreaMappings;
         }
@@ -34,15 +33,10 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from plantsarea where Id = @Id";
             Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var plantsAreaMapping = (PlantsAreaMapping)Activator.CreateInstance(typeof(PlantsAreaMapping));
-                plantsAreaMapping.Id = Guid.Parse(row["Id"]);
-                plantsAreaMapping.PlantId = Guid.Parse(row["PlantId"]);
-                plantsAreaMapping.UserId = Guid.Parse(row["UserId"]);
-                plantsAreaMapping.Number = Convert.ToInt32(row["Number"]);
-                return plantsAreaMapping;
+                return CreateMapping(row);
             }
             return null;
         }
@@ -81,6 +75,17 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
             Database.Execute(commandText, parameters);
             return true;
+        }
+
+        protected override PlantsAreaMapping CreateMapping(Dictionary<string, string> row)
+        {
+            PlantsAreaMapping plantsAreaMapping =
+                (PlantsAreaMapping) Activator.CreateInstance(typeof(PlantsAreaMapping));
+            plantsAreaMapping.Id = Guid.Parse(row["Id"]);
+            plantsAreaMapping.PlantId = Guid.Parse(row["PlantId"]);
+            plantsAreaMapping.UserId = Guid.Parse(row["UserId"]);
+            plantsAreaMapping.Number = Convert.ToInt32(row["Number"]);
+            return plantsAreaMapping;
         }
     }
 }

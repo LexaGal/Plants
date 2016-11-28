@@ -60,7 +60,7 @@ namespace PlantsWpf
         private MongoDbAccessor _mongoDbAccessor;
         private MySqlDbDataModifier _mySqlDbDataModifier;
 
-        private User _user;
+        private ApplicationUser _user;
 
         public MainWindow()
         {
@@ -111,7 +111,7 @@ namespace PlantsWpf
             if (!SystemTimer.IsEnabled)
             {
                 SystemTimer.Start(SendMessagesHandler, new TimeSpan(0, 0, 0, 0, 1000));
-                DatabaseCleanerScheduler.Start();
+                //DatabaseCleanerScheduler.Start();
                 MongoServerScheduler.Start();
             }
         }
@@ -151,15 +151,21 @@ namespace PlantsWpf
 
         public void Initialize()
         {
-            IPlantMappingRepository plantRepository = new PlantMappingRepository();
-            IPlantsAreaMappingRepository plantsAreaRepository = new PlantsAreaMappingRepository();
-            IMeasurableParameterMappingRepository measurableParameterRepository =
-                new MeasurableParameterMappingRepository();
-            ISensorMappingRepository sensorRepository = new SensorMappingRepository();
-            IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
+            //IPlantMappingRepository plantRepository = new PlantMappingRepository();
+            //IPlantsAreaMappingRepository plantsAreaRepository = new PlantsAreaMappingRepository();
+            //IMeasurableParameterMappingRepository measurableParameterRepository =
+            //    new MeasurableParameterMappingRepository();
+            //ISensorMappingRepository sensorRepository = new SensorMappingRepository();
+            //IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
 
-            _dbMapper = new DbMapper(plantRepository,
-                measurableParameterRepository, serviceScheduleMappingRepository);
+            MySqlMeasurableParameterMappingRepository sqlMeasurableParameterMappingRepository = new MySqlMeasurableParameterMappingRepository();
+            MySqlPlantMappingRepository sqlPlantMappingRepository = new MySqlPlantMappingRepository();
+            MySqlPlantsAreaMappingRepository sqlPlantsAreaMappingRepository = new MySqlPlantsAreaMappingRepository();
+            MySqlSensorMappingRepository sqlSensorMappingRepository = new MySqlSensorMappingRepository();
+            MySqlServiceScheduleMappingRepository sqlServiceScheduleMappingRepository = new MySqlServiceScheduleMappingRepository();
+
+            _dbMapper = new DbMapper(sqlPlantMappingRepository,
+                sqlMeasurableParameterMappingRepository, sqlServiceScheduleMappingRepository);
 
             _mongoDbAccessor = new MongoDbAccessor();
 
@@ -167,22 +173,25 @@ namespace PlantsWpf
 
             if (_user != null)
             {
-                plantsAreaMappings = plantsAreaRepository.GetAll(mapping => mapping.UserId == _user.Id);
+                plantsAreaMappings = sqlPlantsAreaMappingRepository.GetAll(mapping => mapping.Id == new Guid(_user.Id));
             }
 
             _plantsAreas = new PlantsAreas();
-
+                
             plantsAreaMappings.ForEach(p => _plantsAreas.AddPlantsArea(_dbMapper.RestorePlantArea(p)));
 
             _sensorsCollection = new SensorsCollection();
 
             foreach (PlantsArea area in _plantsAreas.Areas)
             {
-                foreach (SensorMapping sensorMapping in sensorRepository.GetAll(sm => sm.PlantsAreaId == area.Id))
+                foreach (SensorMapping sensorMapping in sqlSensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id))
                 {
                     Sensor sensor = _dbMapper.RestoreSensor(sensorMapping, area);
-                    _sensorsCollection.AddSensor(sensor);
-                    sensor.IsOn = true;
+                    if (sensor != null)
+                    {
+                        _sensorsCollection.AddSensor(sensor);
+                        sensor.IsOn = true;
+                    }
                 }
             }
 
@@ -204,8 +213,16 @@ namespace PlantsWpf
 
             _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
 
-            _dbDataModifier = new DbDataModifier(_plantsAreas, _sensorsCollection, measurableParameterRepository,
-                plantRepository, sensorRepository, plantsAreaRepository, serviceScheduleMappingRepository);
+            //_dbDataModifier = new DbDataModifier(_plantsAreas, _sensorsCollection, measurableParameterRepository,
+            //    plantRepository, sensorRepository, plantsAreaRepository, serviceScheduleMappingRepository);
+
+            _mySqlDbDataModifier = new MySqlDbDataModifier(sqlMeasurableParameterMappingRepository,
+                sqlPlantMappingRepository, sqlPlantsAreaMappingRepository, sqlSensorMappingRepository,
+                sqlServiceScheduleMappingRepository, new MySqlMeasuringMessageMappingRepository(), _sensorsCollection,
+                _plantsAreas);
+            //new MySqlMeasurableParameterMappingRepository(),
+            //               new MySqlPlantMappingRepository(), new MySqlPlantsAreaMappingRepository(),
+            //               new MySqlSensorMappingRepository(), new MySqlServiceScheduleMappingRepository(), new MySqlMeasuringMessageMappingRepository(), new SensorsCollection(), new PlantsAreas());
         }
 
         private void SetPlantsGrid(int numberInRow)
@@ -373,12 +390,12 @@ namespace PlantsWpf
 
         private bool SaveServiceSchedule(PlantsArea area, ServiceSchedule serviceSchedule)
         {
-            return _dbDataModifier.SaveServiceSchedule(area, serviceSchedule);
+            return _mySqlDbDataModifier.SaveServiceSchedule(area, serviceSchedule);
         }
 
         private bool SaveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
-            if (_dbDataModifier.SaveSensor(area, sensor, serviceSchedule))
+            if (_mySqlDbDataModifier.SaveSensor(area, sensor, serviceSchedule))
             {
                 _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor));
                 _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(sensor.PlantsArea));
@@ -392,7 +409,7 @@ namespace PlantsWpf
 
         private bool AddPlantsArea(PlantsArea plantsArea)
         {
-            if (_dbDataModifier.AddPlantsArea(plantsArea))
+            if (_mySqlDbDataModifier.AddPlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
                 MessageBox.Show($"{plantsArea} area added");
@@ -413,7 +430,7 @@ namespace PlantsWpf
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
                 $"{sensor.MeasurableType} sensor removed", _user.Id.ToString()));
 
-            if (_dbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
+            if (_mySqlDbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
                 MessageBox.Show($"'{sensor.MeasurableType}': sensor removed");
 
@@ -431,7 +448,7 @@ namespace PlantsWpf
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
                 $"{plantsArea} removed", _user.Id.ToString()));
 
-            if (_dbDataModifier.RemovePlantsArea(plantsArea))
+            if (_mySqlDbDataModifier.RemovePlantsArea(plantsArea))
             {
                 SetPlantsGrid(1);
                 MessageBox.Show($"{plantsArea} area removed");
@@ -477,42 +494,44 @@ namespace PlantsWpf
         public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
         {
             PlantsArea plantsArea = e.PlantsArea;
-            plantsArea.UserId = _user.Id;
+            plantsArea.UserId = new Guid(_user.Id);
             AddPlantsArea(plantsArea);
         }
 
-        private User GetUser(string fn, string ln, string pass)
-        {
-            IUserRepository userRepository = new UserRepository();
-            return userRepository.GetUser(fn, ln, Encrypt(pass));
-        }
+        //private User GetUser(string fn, string ln, string pass)
+        //{
+        //    IUserRepository userRepository = new UserRepository();
+        //    return userRepository.GetUser(fn, ln, Encrypt(pass));
+        //}
 
-        private bool CreateUserAccount()
-        {
-            IUserRepository userRepository = new UserRepository();
-            if (userRepository.GetUser(_user.FirstName, _user.LastName, _user.PasswordHash) != null)
-            {
-                return false;
-            }
-            userRepository.Save(_user, _user.Id);
-            return true;
-        }
+        //private bool CreateUserAccount()
+        //{
+        //    IUserRepository userRepository = new UserRepository();
+        //    if (userRepository.GetUser(_user.FirstName, _user.LastName, _user.PasswordHash) != null)
+        //    {
+        //        return false;
+        //    }
+        //    userRepository.Save(_user, _user.Id);
+        //    return true;
+        //}
 
-        private string Encrypt(string password)
-        {
-            SHA256 sha256 = SHA256.Create();
-            var data = Encoding.UTF8.GetBytes(password);
-            var result = sha256.ComputeHash(data);
+        //private string Encrypt(string password)
+        //{
+        //    SHA256 sha256 = SHA256.Create();
+        //    byte[] data = Encoding.UTF8.GetBytes(password);
+        //    byte[] result = sha256.ComputeHash(data);
 
-            string hashString = result.Aggregate(string.Empty, (current, x) => current + $"{x:x2}");
-            return hashString;
-        }
+        //    string hashString = result.Aggregate(string.Empty, (current, x) => current + $"{x:x2}");
+        //    return hashString;
+        //}
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
-            _mySqlDbDataModifier = new MySqlDbDataModifier(new MySqlMeasurableParameterMappingRepository(),
-                new MySqlPlantMappingRepository(), new MySqlPlantsAreaMappingRepository(),
-                new MySqlSensorMappingRepository(), new MySqlServiceScheduleMappingRepository(), new MySqlMeasuringMessageMappingRepository());
+            _mySqlDbDataModifier = new MySqlDbDataModifier();
+            //new MySqlMeasurableParameterMappingRepository(),
+            //    new MySqlPlantMappingRepository(), new MySqlPlantsAreaMappingRepository(),
+            //    new MySqlSensorMappingRepository(), new MySqlServiceScheduleMappingRepository(), new MySqlMeasuringMessageMappingRepository(), new SensorsCollection(), new PlantsAreas());
+
             //MeasurableParameterMapping mpm = new MeasurableParameterMapping(Guid.NewGuid(), 10, 9, 11,
             //    ParameterEnum.Temperature.ToString());
             //_mySqlDbDataModifier.SqlMeasurableParameterMappingRepository.Save(mpm, Guid.Empty);
@@ -593,10 +612,10 @@ namespace PlantsWpf
 
             string firstName = FirstName.Text;
             string lastName = LastName.Text;
-            string username;
             string email = Email.Text;
             string password = Password.Password;
 
+            HttpResponseMessage response;
             if (CreateAccount.IsChecked != null && !(bool)CreateAccount.IsChecked)
             {
                 //_user = GetUser(firstName, lastName, password);
@@ -613,15 +632,17 @@ namespace PlantsWpf
                     RememberMe = true
                 };
 
-                var response = _mySqlDbDataModifier.LoginUser(loginViewModel);
+                response = _mySqlDbDataModifier.LoginUser(loginViewModel);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     Logginglabel.Content = response.ReasonPhrase;
                     LoginButton.IsEnabled = true;
+
+                    //_user = (response.Content as ObjectContent)?.Value as ApplicationUser;
                     return;
                 }
-                username = response.Content.ReadAsStringAsync().Result;
+                _user = response.Content.ReadAsAsync<ApplicationUser>().Result;
             }
             else
             {
@@ -640,7 +661,7 @@ namespace PlantsWpf
                 //    return;
                 //}
 
-                username = $"{firstName} {lastName}";
+                string username = $"{firstName} {lastName}";
 
                 RegisterViewModel registerViewModel = new RegisterViewModel
                 {
@@ -650,14 +671,17 @@ namespace PlantsWpf
                     ConfirmPassword = confirmPassword
                 };
 
-                var response = _mySqlDbDataModifier.RegisterUser(registerViewModel);
+                response = _mySqlDbDataModifier.RegisterUser(registerViewModel);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     Logginglabel.Content = response.ReasonPhrase;
                     LoginButton.IsEnabled = true;
+
+                    //_user = (response.Content as ObjectContent)?.Value as ApplicationUser;
                     return;
                 }
+                _user = response.Content.ReadAsAsync<ApplicationUser>().Result;
             }
 
             //for MS Sql and Mongo DBs
@@ -674,9 +698,13 @@ namespace PlantsWpf
             //    return;
             //}
 
-            StartMainProcess();
-            LoginNameLabel.Content = $"You are logged in as {username}";
-            LoginNameLabel.Background = Brushes.Wheat;
+
+            if (_user != null)
+            {
+                StartMainProcess();
+                LoginNameLabel.Content = $"You are logged in as {_user.UserName}";
+                LoginNameLabel.Background = Brushes.Wheat;
+            }
         }
 
         private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)

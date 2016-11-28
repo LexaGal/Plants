@@ -49,6 +49,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AspNet.Identity.MySQL\AspNet.Identity.MySQL.csproj">
+      <Project>{26F6ECF9-4369-417B-8CF2-54FA92DF3660}</Project>
+      <Name>AspNet.Identity.MySQL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Database\Database.csproj">
       <Project>{3a18d4ac-4b79-4fed-b466-87d8e29101d3}</Project>
       <Name>Database</Name>

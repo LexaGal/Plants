@@ -1,8 +1,6 @@
-@using System.Web.Http
 @using System.Web.Http.Controllers
 @using System.Web.Http.Description
 @using System.Collections.ObjectModel
-@using WebApi.Areas.HelpPage.Models
 @model Collection<ApiDescription>
 
 @{
@@ -30,7 +28,7 @@
         </div>
     </section>
     <section class="content-wrapper main-content clear-fix">
-        @foreach (var group in apiGroups)
+        @foreach (IGrouping<HttpControllerDescriptor, ApiDescription> group in apiGroups)
         {
             @Html.DisplayFor(m => group, "ApiGroup")
         }

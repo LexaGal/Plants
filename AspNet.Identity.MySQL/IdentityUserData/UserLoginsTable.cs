@@ -94,10 +94,10 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             string commandText = "Select * from UserLogins where UserId = @userId";
             Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@userId", userId } };
 
-            var rows = _database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = _database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var login = new UserLoginInfo(row["LoginProvider"], row["ProviderKey"]);
+                UserLoginInfo login = new UserLoginInfo(row["LoginProvider"], row["ProviderKey"]);
                 logins.Add(login);
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Database.MappingTypes;
 
@@ -15,16 +16,14 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from sensor";
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var sensorMapping = (SensorMapping)Activator.CreateInstance(typeof(SensorMapping));
-                sensorMapping.Id = Guid.Parse(row["Id"]);
-                sensorMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
-                sensorMapping.MeasurableParameterId = Guid.Parse(row["MeasurableParameterId"]);
-                sensorMapping.MeasuringTimeout = Convert.ToInt32(row["MeasuringTimeout"]);
-                sensorMapping.Type = string.IsNullOrEmpty(row["Type"]) ? null : row["Type"];
-                sensorMappings.Add(sensorMapping);
+                sensorMappings.Add(CreateMapping(row));
+            }
+            if (func != null)
+            {
+                return sensorMappings.Where(func.Compile()).ToList();
             }
             return sensorMappings;
         }
@@ -34,16 +33,10 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             string commandText = "Select * from sensor where Id = @Id";
             Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
 
-            var rows = Database.Query(commandText, parameters);
-            foreach (var row in rows)
+            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
             {
-                var sensorMapping = (SensorMapping)Activator.CreateInstance(typeof(SensorMapping));
-                sensorMapping.Id = Guid.Parse(row["Id"]);
-                sensorMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
-                sensorMapping.MeasurableParameterId = Guid.Parse(row["MeasurableParameterId"]);
-                sensorMapping.MeasuringTimeout = Convert.ToInt32(row["MeasuringTimeout"]);
-                sensorMapping.Type = string.IsNullOrEmpty(row["Type"]) ? null : row["Type"];
-                return sensorMapping;
+                return CreateMapping(row);
             }
             return null;
         }
@@ -84,6 +77,18 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
             Database.Execute(commandText, parameters);
             return true;
+        }
+
+        protected override SensorMapping CreateMapping(Dictionary<string, string> row)
+        {
+            SensorMapping sensorMapping = (SensorMapping)Activator.CreateInstance(typeof(SensorMapping));
+            sensorMapping.Id = Guid.Parse(row["Id"]);
+            sensorMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
+            sensorMapping.MeasurableParameterId = Guid.Parse(row["MeasurableParameterId"]);
+            sensorMapping.MeasuringTimeout = Convert.ToInt32(row["MeasuringTimeout"]);
+            sensorMapping.Type = string.IsNullOrEmpty(row["Type"]) ? null : row["Type"];
+            return sensorMapping;
+
         }
     }
 }

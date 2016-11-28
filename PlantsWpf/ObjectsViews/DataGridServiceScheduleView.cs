@@ -122,7 +122,10 @@ namespace PlantsWpf.ObjectsViews
             StringBuilder builder = new StringBuilder();
             _serviceSchedule.MeasurableParameters.ToList()
                 .ForEach(m => builder.Append($"{m.MeasurableType}, "));
-            builder.Remove(builder.Length - 2, 2);
+            if (builder.Length > 2)
+            {
+                builder.Remove(builder.Length - 2, 2);
+            }
 
             return builder.ToString();   
         }
