@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
@@ -74,10 +75,13 @@ namespace MongoDbServer
         public void UpdateCollections()
         {
             DbMapper dbMapper = DbMapper.GetMySqlDbMapper();
-            IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
-            ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
+            //IPlantsAreaMappingRepository plantsAreaMappingRepository = new PlantsAreaMappingRepository();
+            //ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
+            MySqlPlantsAreaMappingRepository sqlPlantsAreaMappingRepository = new MySqlPlantsAreaMappingRepository();
+            MySqlSensorMappingRepository sqlSensorMappingRepository = new MySqlSensorMappingRepository();
+
             ParameterServicesInfo.SetBaseParameters();
-            List<PlantsAreaMapping> plantsAreaMappings = plantsAreaMappingRepository.GetAll();
+            List<PlantsAreaMapping> plantsAreaMappings = sqlPlantsAreaMappingRepository.GetAll();
 
             List<MongoPlantsArea> mongoPlantsAreas = new List<MongoPlantsArea>();
             List<MongoSensor> mongoSensors = new List<MongoSensor>();
@@ -87,7 +91,7 @@ namespace MongoDbServer
 
             foreach (PlantsArea area in pas.Areas)
             {
-                sensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id)
+                sqlSensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id)
                     .ForEach(sensorMapping => dbMapper.RestoreSensor(sensorMapping, area));
             }
    
