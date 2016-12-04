@@ -5,7 +5,10 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using AspNet.Identity.MySQL.Database;
+using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
+using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using PlantingLib.Messenging;
 using PlantsWpf.ObjectsViews;
@@ -15,16 +18,24 @@ namespace PlantsWpf.DbDataAccessors
     public class DbMeasuringMessagesRetriever
     {
         private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
+        private readonly IMySqlRepository<MeasuringMessageMapping> _mySqlMeasuringMessageMappingRepository;
         private readonly IDictionary<Guid, List<MeasuringMessage>> _messagesDictionary;
+
         public DbMeasuringMessagesRetriever(IMeasuringMessageMappingRepository measuringMessageMappingRepository, IDictionary<Guid, List<MeasuringMessage>> messagesDictionary)
         {
             _measuringMessageMappingRepository = measuringMessageMappingRepository;
             _messagesDictionary = messagesDictionary;
         }
 
+        public DbMeasuringMessagesRetriever(MySqlMeasuringMessageMappingRepository mySqlMeasuringMessageMappingRepository, Dictionary<Guid, List<MeasuringMessage>> observerMessagesDictionary)
+        {
+            _messagesDictionary = observerMessagesDictionary;
+            _mySqlMeasuringMessageMappingRepository = mySqlMeasuringMessageMappingRepository;
+        }
+
         public IEnumerable<KeyValuePair<DateTime, double>> RetrieveMessagesStatistics(ChartDescriptor chartDescriptor)
         {
-            return ReturnRowset(chartDescriptor);
+            return ReturnRowsetMySql(chartDescriptor);
 
             lock (_messagesDictionary[chartDescriptor.PlantsAreaId])
             {
@@ -135,7 +146,7 @@ namespace PlantsWpf.DbDataAccessors
             SqlDataReader reader = cmd.ExecuteReader();
             // Data is accessible through the DataReader object here.
             List<KeyValuePair<DateTime, double>> list = new List<KeyValuePair<DateTime, double>>();
-            
+
             while (reader.HasRows)
             {
                 while (reader.Read())
@@ -147,6 +158,40 @@ namespace PlantsWpf.DbDataAccessors
             sqlConnection.Close();
 
             return list;
+        }
+
+        private List<KeyValuePair<DateTime, double>> ReturnRowsetMySql(ChartDescriptor chartDescriptor)
+        {
+            MySQLDatabase mySqlDatabase = new MySQLDatabase();
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                {"@dateTimeFrom", chartDescriptor.DateTimeFrom.ToString("yyyy-MM-dd HH:mm:ss")},
+                {"@dateTimeTo", chartDescriptor.DateTimeTo.ToString("yyyy-MM-dd HH:mm:ss")},
+                {"@measurableType", chartDescriptor.MeasurableType},
+                {"@plantsAreaId", chartDescriptor.PlantsAreaId.ToString().ToUpper()},
+                {"@criticalInfo", chartDescriptor.OnlyCritical ? 1 : 0},
+                {"@number", chartDescriptor.Number}
+            };
+
+            //cmd.Parameters.Add("@dateTimeFrom", SqlDbType.DateTime).Value =   chartDescriptor.DateTimeFrom;
+            //cmd.Parameters.Add("@dateTimeTo", SqlDbType.DateTime).Value =     chartDescriptor.DateTimeTo;
+            //cmd.Parameters.Add("@measurableType", SqlDbType.NVarChar).Value = chartDescriptor.MeasurableType;
+            //cmd.Parameters.Add("@plantsAreaId", SqlDbType.NVarChar).Value =   chartDescriptor.PlantsAreaId.ToString().ToUpper();
+            //cmd.Parameters.Add("@criticalInfo", SqlDbType.Bit).Value =        chartDescriptor.OnlyCritical ? 1 : 0;
+            //cmd.Parameters.Add("@number", SqlDbType.Int).Value =              chartDescriptor.Number;
+
+            List<KeyValuePair<DateTime, double>> measuringMessageMappings = new List<KeyValuePair<DateTime, double>>();
+
+            string commandText =
+                "call statistics(@dateTimeFrom, @dateTimeTo, @measurableType, @plantsAreaId, @criticalInfo, @number)";
+            
+            List<Dictionary<string, string>> rows = mySqlDatabase.Query(commandText, parameters);
+            foreach (Dictionary<string, string> row in rows)
+            {
+                measuringMessageMappings.Add(new KeyValuePair<DateTime, double>(DateTime.Parse(row["DateTime"]), Double.Parse(row["ParameterValue"])));
+            }
+            return measuringMessageMappings;
         }
     }
 }

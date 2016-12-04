@@ -35,4 +35,3 @@ D:\Projects\PlantingWork\Plants\Database\bin\Release\EntityFramework.xml
 D:\Projects\PlantingWork\Plants\Database\bin\Release\EntityFramework.SqlServer.xml
 D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.dll
 D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.pdb
-D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.csprojResolveAssemblyReference.cache

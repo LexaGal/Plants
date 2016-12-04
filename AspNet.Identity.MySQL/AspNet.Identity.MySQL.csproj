@@ -129,10 +129,6 @@
       <Project>{3A18D4AC-4B79-4FED-B466-87D8E29101D3}</Project>
       <Name>Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Plants\PlantingLib.csproj">
-      <Project>{b3521b62-7b55-452d-9b22-99075e2e4116}</Project>
-      <Name>PlantingLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

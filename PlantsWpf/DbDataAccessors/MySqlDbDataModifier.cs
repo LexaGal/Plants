@@ -290,7 +290,7 @@ namespace PlantsWpf.DbDataAccessors
         {
             try
             {
-                if (_sqlPlantsAreaMappingRepository.Delete(plantsArea.Id) &&
+                    if (_sqlPlantsAreaMappingRepository.Delete(plantsArea.Id) &&
                     _sqlPlantMappingRepository.Delete(plantsArea.Plant.Id))
                 {
                     if (plantsArea.ServicesSchedulesStates.ServicesSchedules

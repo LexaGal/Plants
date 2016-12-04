@@ -23,7 +23,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             }
            if (func != null)
             {
-                return serviceScheduleMappings.Where(func.Compile()).ToList();
+                return serviceScheduleMappings.AsQueryable().Where(func).ToList();
             }
             return serviceScheduleMappings;
         }

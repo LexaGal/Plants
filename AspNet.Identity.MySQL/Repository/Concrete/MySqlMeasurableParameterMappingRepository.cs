@@ -23,7 +23,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             }
             if (func != null)
             {
-                return measurableParameterMappings.Where(func.Compile()).ToList();
+                return measurableParameterMappings.AsQueryable().Where(func).ToList();
             }
             return measurableParameterMappings;
         }

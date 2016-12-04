@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Windows.Forms;
 using Database.MappingTypes;
 
 namespace AspNet.Identity.MySQL.Repository.Concrete
 {
     public class MySqlMeasuringMessageMappingRepository : MySqlRepository<MeasuringMessageMapping>
     {
+        object _lockObject = new object();
 
         public override List<MeasuringMessageMapping> GetAll(
             Expression<Func<MeasuringMessageMapping, bool>> func = null)
@@ -23,7 +25,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             }
             if (func != null)
             {
-                return measuringMessageMappings.Where(func.Compile()).ToList();
+                return measuringMessageMappings.AsQueryable().Where(func).ToList();
             }
             return measuringMessageMappings;
         }
@@ -43,28 +45,32 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         public override bool Save(MeasuringMessageMapping value, Guid id)
         {
-            string commandText =
-                "Insert into measuringmessage(Id, PlantsAreaId, DateTime, MeasurableType, MessageType, ParameterValue) values(@Id, @PlantsAreaId, @DateTime, @MeasurableType, @MessageType, @ParameterValue) " +
-                "ON DUPLICATE KEY UPDATE " +
-                "Id = values(Id), " +
-                "PlantsAreaId = values(PlantsAreaId), " +
-                "DateTime = values(DateTime), " +
-                "MeasurableType = values(MeasurableType), " +
-                "ParameterValue = values(ParameterValue), " +
-                "MessageType = values(`MessageType`)";
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>
+            lock (_lockObject)
             {
-                {"@Id", value.Id.ToString()},
-                {"@PlantsAreaId", value.PlantsAreaId},
-                {"@DateTime", value.DateTime},
-                {"@MeasurableType", value.MeasurableType},
-                {"@MessageType", value.MessageType},
-                {"ParameterValue", value.ParameterValue}
-            };
+                string commandText =
+                    "Insert into measuringmessage(Id, PlantsAreaId, DateTime, MeasurableType, MessageType, ParameterValue) values(@Id, @PlantsAreaId, @DateTime, @MeasurableType, @MessageType, @ParameterValue) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "Id = values(Id), " +
+                    "PlantsAreaId = values(PlantsAreaId), " +
+                    "DateTime = values(DateTime), " +
+                    "MeasurableType = values(MeasurableType), " +
+                    "ParameterValue = values(ParameterValue), " +
+                    "MessageType = values(`MessageType`)";
 
-            Database.Execute(commandText, parameters);
+                Dictionary<string, object> parameters = new Dictionary<string, object>
+                {
+                    {"@Id", value.Id.ToString()},
+                    {"@PlantsAreaId", value.PlantsAreaId},
+                    {"@DateTime", value.DateTime},
+                    {"@MeasurableType", value.MeasurableType},
+                    {"@MessageType", value.MessageType},
+                    {"ParameterValue", value.ParameterValue}
+                };
+
+                Database.Execute(commandText, parameters);
             return true;
+            }
         }
 
         public override bool Edit(MeasuringMessageMapping value)
@@ -97,5 +103,60 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 measuringMessageMapping.ParameterValue = Double.Parse(row["ParameterValue"]);
                 return measuringMessageMapping;
         }
+
+        public void SaveMany(List<MeasuringMessageMapping> measuringMessageMappings)
+        {
+            try
+            {
+                measuringMessageMappings.ForEach(mapping =>
+                {
+                    //Database.EnsureConnectionClosed();
+                    Save(mapping, mapping.Id);
+                });           
+            
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.StackTrace);
+            }
+        }
+
+        //public int DeleteMany(int n = 1000, Expression<Func<MeasuringMessageMapping, bool>> func = null)
+        //{
+        //    using (Context = new PlantingDb())
+        //    {
+        //        IQueryable<MeasuringMessageMapping> measuringMessageMappings;
+        //        if (func != null)
+        //        {
+        //            measuringMessageMappings = Context.MeasuringMessagesSet
+        //                .OrderBy(mapping => mapping.DateTime)
+        //                .Where(func)
+        //                .Take(Math.Min(n, Context.MeasuringMessagesSet.Count() / 3));
+
+        //            Context.MeasuringMessagesSet.RemoveRange(measuringMessageMappings);
+
+        //            return Context.SaveChanges();
+        //        }
+
+        //        measuringMessageMappings = Context.MeasuringMessagesSet
+        //            .OrderBy(mapping => mapping.DateTime)
+        //            .Take(Math.Min(n, Context.MeasuringMessagesSet.Count() / 3));
+
+        //        Context.MeasuringMessagesSet.RemoveRange(measuringMessageMappings);
+
+        //        try
+        //        {
+        //            //return
+        //            Context.SaveChanges();
+        //            MessageBox.Show("Good!");
+        //            return 0;
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            MessageBox.Show(e.Message);
+        //            return 0;
+        //        }
+        //    }
+        //}
     }
 }

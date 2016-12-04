@@ -124,6 +124,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AspNet.Identity.MySQL\AspNet.Identity.MySQL.csproj">
+      <Project>{26F6ECF9-4369-417B-8CF2-54FA92DF3660}</Project>
+      <Name>AspNet.Identity.MySQL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Database\Database.csproj">
       <Project>{3A18D4AC-4B79-4FED-B466-87D8E29101D3}</Project>
       <Name>Database</Name>

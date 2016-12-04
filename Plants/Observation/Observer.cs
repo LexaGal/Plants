@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
@@ -18,7 +19,8 @@ namespace PlantingLib.Observation
         public Dictionary<Guid, List<MeasuringMessage>> MessagesDictionary;
         private const int MessagesLimit = 10;
         private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
-        
+        private readonly MySqlMeasuringMessageMappingRepository _sqlMeasuringMessageMappingRepository;
+
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)
         {
             //subscribing
@@ -30,7 +32,8 @@ namespace PlantingLib.Observation
 
             PlantsAreas.Areas.ToList().ForEach(pa => MessagesDictionary.Add(pa.Id, new List<MeasuringMessage>()));
 
-            _measuringMessageMappingRepository = new MeasuringMessageMappingRepository();
+            //_measuringMessageMappingRepository = new MeasuringMessageMappingRepository();
+            _sqlMeasuringMessageMappingRepository = new MySqlMeasuringMessageMappingRepository();
         }
 
         private void AddMeasuringMessage(MeasuringMessage measuringMessage)
@@ -103,7 +106,7 @@ namespace PlantingLib.Observation
                         message.MessageType.ToString(), message.MeasurableType,
                         message.PlantsAreaId, message.ParameterValue));
 
-             _measuringMessageMappingRepository.SaveMany(measuringMessageMappings);
+             _sqlMeasuringMessageMappingRepository.SaveMany(measuringMessageMappings);
             }
         }
 

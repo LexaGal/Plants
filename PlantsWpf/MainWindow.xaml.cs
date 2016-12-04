@@ -173,7 +173,7 @@ namespace PlantsWpf
 
             if (_user != null)
             {
-                plantsAreaMappings = sqlPlantsAreaMappingRepository.GetAll(mapping => mapping.Id == new Guid(_user.Id));
+                plantsAreaMappings = sqlPlantsAreaMappingRepository.GetAll(mapping => mapping.UserId == new Guid(_user.Id));
             }
 
             _plantsAreas = new PlantsAreas();
@@ -350,8 +350,8 @@ namespace PlantsWpf
             Menu menu = new Menu();
 
             DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever =
-                new DbMeasuringMessagesRetriever(new MeasuringMessageMappingRepository(), _observer.MessagesDictionary);
-
+                new DbMeasuringMessagesRetriever(new MySqlMeasuringMessageMappingRepository(), _observer.MessagesDictionary);
+            
             PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
                 plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, dbMeasuringMessagesRetriever,
                 chartDescriptor);
