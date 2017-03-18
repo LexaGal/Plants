@@ -61,15 +61,22 @@ namespace PlantsWpf
         private MySqlDbDataModifier _mySqlDbDataModifier;
 
         private ApplicationUser _user;
+        private User _oldUser;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            Logginglabel.SetBinding(Label.VisibilityProperty, new Binding()
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+            });
             Logginglabel.SetBinding(Label.ContentProperty, new Binding()
             {
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
             });
+            Logginglabel.SetValue(Label.ContentProperty, "You are being logged in. Please, wait...");
+            Logginglabel.SetValue(Label.VisibilityProperty, Visibility.Hidden);
 
             ResourceDictionary = Application.LoadComponent(
                 new Uri("/PlantsWpf;component/ResDictionary.xaml",
@@ -103,7 +110,6 @@ namespace PlantsWpf
 
             SetPlantsGrid(1);
 
-            Logginglabel.Content = String.Empty;
             LoginButton.IsEnabled = true;
             AddArea.IsEnabled = true;
             WeatherBox.IsEnabled = true;
@@ -253,7 +259,7 @@ namespace PlantsWpf
             }
             catch (InvalidOperationException e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
             }
         }
 
@@ -400,7 +406,7 @@ namespace PlantsWpf
                 _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor));
                 _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(sensor.PlantsArea));
                 _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
-                    $"{sensor.MeasurableType} sensor added/updated", _user.Id.ToString()));
+                    $"{sensor.MeasurableType} sensor added/updated", _user.Id));
 
                 return true;
             }
@@ -417,7 +423,7 @@ namespace PlantsWpf
                 _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(plantsArea));
                 plantsArea.Sensors.ForEach(sensor => _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor)));
                 _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
-                    $"{plantsArea} added", _user.Id.ToString()));
+                    $"{plantsArea} added", _user.Id));
 
                 return true;
             }
@@ -428,7 +434,7 @@ namespace PlantsWpf
         {
             _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor));
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
-                $"{sensor.MeasurableType} sensor removed", _user.Id.ToString()));
+                $"{sensor.MeasurableType} sensor removed", _user.Id));
 
             if (_mySqlDbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
@@ -446,7 +452,7 @@ namespace PlantsWpf
             plantsArea.Sensors.ForEach(sensor => _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor)));
             _mongoDbAccessor.DeleteMongoPlantsArea(new MongoPlantsArea(plantsArea));
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
-                $"{plantsArea} removed", _user.Id.ToString()));
+                $"{plantsArea} removed", _user.Id));
 
             if (_mySqlDbDataModifier.RemovePlantsArea(plantsArea))
             {
@@ -498,11 +504,12 @@ namespace PlantsWpf
             AddPlantsArea(plantsArea);
         }
 
-        //private User GetUser(string fn, string ln, string pass)
-        //{
-        //    IUserRepository userRepository = new UserRepository();
-        //    return userRepository.GetUser(fn, ln, Encrypt(pass));
-        //}
+        //MS Sql
+        private User GetUser(string fn, string ln, string pass)
+        {
+            IUserRepository userRepository = new UserRepository();
+            return userRepository.GetUser(fn, ln, Encrypt(pass));
+        }
 
         //private bool CreateUserAccount()
         //{
@@ -514,18 +521,19 @@ namespace PlantsWpf
         //    userRepository.Save(_user, _user.Id);
         //    return true;
         //}
+        
+        //MS Sql
+        private string Encrypt(string password)
+        {
+            SHA256 sha256 = SHA256.Create();
+            byte[] data = Encoding.UTF8.GetBytes(password);
+            byte[] result = sha256.ComputeHash(data);
 
-        //private string Encrypt(string password)
-        //{
-        //    SHA256 sha256 = SHA256.Create();
-        //    byte[] data = Encoding.UTF8.GetBytes(password);
-        //    byte[] result = sha256.ComputeHash(data);
+            string hashString = result.Aggregate(string.Empty, (current, x) => current + $"{x:x2}");
+            return hashString;
+        }
 
-        //    string hashString = result.Aggregate(string.Empty, (current, x) => current + $"{x:x2}");
-        //    return hashString;
-        //}
-
-        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        private async void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
             _mySqlDbDataModifier = new MySqlDbDataModifier();
             //new MySqlMeasurableParameterMappingRepository(),
@@ -607,7 +615,8 @@ namespace PlantsWpf
             //    _mongoDbAccessor.AddMongoUser(new MongoUser(user));
             //}
 
-            Logginglabel.Content = @"You are being logged in. Please, wait...";
+            Logginglabel.Visibility = Visibility.Visible;
+                //Content = @"You are being logged in. Please, wait...";
             LoginButton.IsEnabled = false;
 
             string firstName = FirstName.Text;
@@ -618,13 +627,16 @@ namespace PlantsWpf
             HttpResponseMessage response;
             if (CreateAccount.IsChecked != null && !(bool)CreateAccount.IsChecked)
             {
-                //_user = GetUser(firstName, lastName, password);
+                //_oldUser = GetUser(firstName, lastName, password);
+                //return;
+                
                 //if (_user == null)
                 //{
                 //    Logginglabel.Content = @"User with such credentials does not exist";
                 //    LoginButton.IsEnabled = true;
                 //    return;
                 //}
+                
                 LoginViewModel loginViewModel = new LoginViewModel
                 {
                     Email = email,
@@ -632,7 +644,7 @@ namespace PlantsWpf
                     RememberMe = true
                 };
 
-                response = _mySqlDbDataModifier.LoginUser(loginViewModel);
+                 response = await _mySqlDbDataModifier.LoginUser(loginViewModel);//.Result;
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -671,7 +683,7 @@ namespace PlantsWpf
                     ConfirmPassword = confirmPassword
                 };
 
-                response = _mySqlDbDataModifier.RegisterUser(registerViewModel);
+                response =  await _mySqlDbDataModifier.RegisterUser(registerViewModel);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -699,12 +711,16 @@ namespace PlantsWpf
             //}
 
 
+            //if (_oldUser != null) 
             if (_user != null)
             {
                 StartMainProcess();
                 LoginNameLabel.Content = $"You are logged in as {_user.UserName}";
+                                         //$"{_oldUser.FirstName}";
                 LoginNameLabel.Background = Brushes.Wheat;
+                Logginglabel.Visibility = Visibility.Hidden;
             }
+            LogIn.IsExpanded = false;
         }
 
         private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)

@@ -34,7 +34,7 @@
         </ScrollViewer>
 
         <Canvas Grid.Column="0" Panel.ZIndex="99" Margin="0,0,114,283">
-            <Expander Header="Log in / Register" Height="26" Canvas.Left="152" Canvas.Top="15" Width="156">
+            <Expander IsExpanded="True" Name="LogIn" Header="Log in / Register" Height="26" Canvas.Left="152" Canvas.Top="15" Width="156">
                 <Canvas Panel.ZIndex="99" Background="LightGreen" Height="252" Margin="0,0,-198,0">
                     <Canvas.Effect>
                         <DropShadowEffect/>
@@ -56,7 +56,8 @@
 
                     <Button x:Name="LoginButton" Content="Submit" Click="LoginButton_OnClick" Canvas.Left="8" Canvas.Top="222" Width="75" Height="23"/>
                     <CheckBox x:Name="CreateAccount" Content="Create account" Checked="CreateAccount_OnChecked" Unchecked="CreateAccount_OnUnchecked" Canvas.Left="252" Canvas.Top="4"/>
-                    <Label x:Name="Logginglabel" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Content="" Foreground="Red" Canvas.Left="9" Canvas.Top="189" Width="337" Height="32"/>
+                    <Label x:Name="Logginglabel" Visibility="Hidden" HorizontalAlignment="Left" HorizontalContentAlignment="Left" Content="You are being logged in. Please, wait..."
+                           Foreground="Red" Canvas.Left="9" Canvas.Top="189" Width="337" Height="32"/>
 
                 </Canvas>
             </Expander>

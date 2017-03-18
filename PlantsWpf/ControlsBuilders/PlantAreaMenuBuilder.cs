@@ -118,7 +118,7 @@ namespace PlantsWpf.ControlsBuilders
             {
                 Content = "Refresh",
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Width = 60
+                Width = 65
             };
 
             Action backgroundWork = delegate
@@ -160,18 +160,18 @@ namespace PlantsWpf.ControlsBuilders
 
             SetDispatcherTimer(backgroundWork);
 
-            Label refreshLastMinLabel = new Label {Content = "Refresh last min"};
+            Label refreshLastMinLabel = new Label {Content = "Refresh only last min"};
             CheckBox refreshLastMinCheckBox = new CheckBox
             {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
             };
             
-            Label autorefreshLabel = new Label {Content = "Autorefresh"};
+            Label autorefreshLabel = new Label {Content = "Auto refresh"};
             CheckBox autorefreshCheckBox = new CheckBox
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
+                VerticalAlignment = VerticalAlignment.Center,
             };
 
             refreshLastMinCheckBox.Checked += delegate

@@ -48,7 +48,7 @@ namespace PlantsWpf.ControlsBuilders
                 },
                 CellStyle = new Style
                 {
-                    TargetType = typeof (DataGridCell),
+                    TargetType = typeof(DataGridCell),
                     Triggers =
                     {
                         new DataTrigger
@@ -78,7 +78,7 @@ namespace PlantsWpf.ControlsBuilders
                 },
                 CellStyle = new Style
                 {
-                    TargetType = typeof (DataGridCell),
+                    TargetType = typeof(DataGridCell),
                     Triggers =
                     {
                         new DataTrigger
@@ -88,7 +88,7 @@ namespace PlantsWpf.ControlsBuilders
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
                             Value = PlantingLib.Properties.Resources.IsScheduledSign,
-                            Setters = 
+                            Setters =
                             {
                                 new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["ScheduleBackground"])
                             }
@@ -121,6 +121,13 @@ namespace PlantsWpf.ControlsBuilders
                 ColumnWidth = DataGridLength.Auto
             };
 
+            var style = new Style(typeof(DataGridCell))
+            {
+                Setters =
+                {
+                    new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Center)
+                }
+            };
             DataGridTextColumn measurableType = new DataGridTextColumn
             {
                 Header = "Measurable",
@@ -132,9 +139,9 @@ namespace PlantsWpf.ControlsBuilders
                     ValidatesOnExceptions = true,
                 },
 
-                CellStyle = new Style(typeof (TextBox))
+                CellStyle = new Style(typeof(TextBox))
                 {
-                    TargetType = typeof (DataGridCell),
+                    TargetType = typeof(DataGridCell),
                     Triggers =
                     {
                         new DataTrigger
@@ -158,7 +165,8 @@ namespace PlantsWpf.ControlsBuilders
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
                     ValidatesOnExceptions = true,
-                }
+                },
+                CellStyle = style
             };
             DataGridTextColumn optimal = new DataGridTextColumn
             {
@@ -169,7 +177,8 @@ namespace PlantsWpf.ControlsBuilders
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
                     ValidatesOnExceptions = true,
-                }
+                },
+                CellStyle = style
             };
             DataGridTextColumn min = new DataGridTextColumn
             {
@@ -180,7 +189,8 @@ namespace PlantsWpf.ControlsBuilders
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
                     ValidatesOnExceptions = true,
-                }
+                },
+                CellStyle = style
             };
             DataGridTextColumn max = new DataGridTextColumn
             {
@@ -191,7 +201,8 @@ namespace PlantsWpf.ControlsBuilders
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
                     ValidatesOnExceptions = true,
-                }
+                },
+                CellStyle = style
             };
             DataGridTextColumn value = new DataGridTextColumn
             {
@@ -201,17 +212,20 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                     Mode = BindingMode.OneWay
                 },
-                IsReadOnly = true
+                IsReadOnly = true,
+                CellStyle = style
             };
+
             DataGridTextColumn numberOfTimes = new DataGridTextColumn
             {
-                Header = "N",
+                Header = "Messages",
                 Binding = new Binding("N")
                 {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                     Mode = BindingMode.OneWay
                 },
-                IsReadOnly = true
+                IsReadOnly = true,
+                CellStyle = style
             };
             DataGridTemplateColumn remove = new DataGridTemplateColumn
             {
@@ -220,9 +234,9 @@ namespace PlantsWpf.ControlsBuilders
                 {
                     VisualTree = removeSensorButtonTemplate
                 },
-                CellStyle = new Style(typeof (Button))
+                CellStyle = new Style(typeof(Button))
                 {
-                    TargetType = typeof (DataGridCell),
+                    TargetType = typeof(DataGridCell),
                     Triggers =
                     {
                         new DataTrigger
@@ -244,9 +258,9 @@ namespace PlantsWpf.ControlsBuilders
                 {
                     VisualTree = sensorSaveButtonTemplate
                 },
-                CellStyle = new Style(typeof (Button))
+                CellStyle = new Style(typeof(Button))
                 {
-                    TargetType = typeof (DataGridCell),
+                    TargetType = typeof(DataGridCell),
                     Triggers =
                     {
                         new DataTrigger
@@ -283,7 +297,9 @@ namespace PlantsWpf.ControlsBuilders
                 CellTemplate = new DataTemplate
                 {
                     VisualTree = onOffSensorButtonTemplate,
-                }   
+                }
+                ,
+                CellStyle = style
             };
             dataGrid.Columns.Clear();
             dataGrid.Columns.Add(measurableType);
@@ -340,11 +356,11 @@ namespace PlantsWpf.ControlsBuilders
                     },
                 }
             };
-            
+
             dataGrid.ItemsSource = dataGridSensorViews;
             return dataGrid;
         }
-  
+
         public DataGrid CreateServicesSchedulesDataGrid(PlantsArea area,
             BindingList<DataGridServiceScheduleView> serviceScheduleViews,
             FrameworkElementFactory serviceScheduleSaveButtonTemplate, FrameworkElementFactory onOffSensorButtonTemplate)
@@ -463,7 +479,7 @@ namespace PlantsWpf.ControlsBuilders
 
             dataGrid.RowStyle = new Style
             {
-                TargetType = typeof (DataGridRow),
+                TargetType = typeof(DataGridRow),
                 Triggers =
                 {
                     new DataTrigger
@@ -496,5 +512,5 @@ namespace PlantsWpf.ControlsBuilders
             dataGrid.ItemsSource = serviceScheduleViews;
             return dataGrid;
         }
-     }
+    }
 }

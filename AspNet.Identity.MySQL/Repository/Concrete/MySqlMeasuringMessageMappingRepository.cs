@@ -117,7 +117,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
             }
         }
 

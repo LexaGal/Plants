@@ -91,13 +91,13 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
 
         public bool AddPlantsArea(PlantsArea plantsArea)
-        {
+        {           
             try
             {
                 //TODO: use private
@@ -172,7 +172,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
@@ -193,7 +193,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;         
             }
         } 
@@ -244,7 +244,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
@@ -283,7 +283,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }

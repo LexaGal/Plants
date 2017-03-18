@@ -123,7 +123,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
@@ -208,7 +208,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
@@ -229,7 +229,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
@@ -281,7 +281,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
@@ -320,32 +320,34 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace);
+                //MessageBox.Show(e.StackTrace);
                 return false;
             }
         }
 
-        public HttpResponseMessage RegisterUser(RegisterViewModel registerViewModel)
+        public async Task<HttpResponseMessage> RegisterUser(RegisterViewModel registerViewModel)
         {
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_baseServerUr);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = client.PostAsJsonAsync("api/identity/register", registerViewModel).Result;
-                return response;
+                Task<HttpResponseMessage> response = client.PostAsJsonAsync("api/identity/register", registerViewModel);
+                //.Result;
+                return await response;
             }
         }
 
-        public HttpResponseMessage LoginUser(LoginViewModel loginViewModel)
+        public async Task<HttpResponseMessage> LoginUser(LoginViewModel loginViewModel)
         {
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_baseServerUr);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = client.PostAsJsonAsync("api/identity/login", loginViewModel).Result;
-                return response;
+                Task<HttpResponseMessage> response = client.PostAsJsonAsync("api/identity/login", loginViewModel);
+                //Result;
+                return await response;
             }
         }
     }

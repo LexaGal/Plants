@@ -34,7 +34,7 @@ namespace PlantsWpf.ControlsBuilders
 
         public FrameworkElementFactory CreateOnOffSensorButtonTemplate()
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (CheckBox));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(CheckBox));
             buttonTemplate.SetValue(UIElement.ClipToBoundsProperty, true);
             buttonTemplate.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsOffByUser")
             {
@@ -45,7 +45,7 @@ namespace PlantsWpf.ControlsBuilders
                 ToggleButton.CheckedEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement)o).DataContext as DataGridSensorView;
                     if (dataGridSensorView != null)
                     {
                         dataGridSensorView.IsOffByUser = true.ToString();
@@ -56,19 +56,21 @@ namespace PlantsWpf.ControlsBuilders
                 ToggleButton.UncheckedEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement)o).DataContext as DataGridSensorView;
                     if (dataGridSensorView != null)
                     {
                         dataGridSensorView.IsOffByUser = false.ToString();
                     }
                 }));
 
-            return buttonTemplate;
+            var vb = new FrameworkElementFactory(typeof(Viewbox));
+            vb.AppendChild(buttonTemplate);
+            return vb;
         }
 
         public FrameworkElementFactory CreateOnOffServiceScheduleButtonTemplate()
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (CheckBox));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(CheckBox));
             buttonTemplate.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsOn")
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
@@ -79,7 +81,7 @@ namespace PlantsWpf.ControlsBuilders
                 new RoutedEventHandler((o, e) =>
                 {
                     DataGridServiceScheduleView dataGridServiceScheduleView =
-                        ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
+                        ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
                     if (dataGridServiceScheduleView != null)
                     {
                         dataGridServiceScheduleView.IsOn = true.ToString();
@@ -90,13 +92,15 @@ namespace PlantsWpf.ControlsBuilders
                 new RoutedEventHandler((o, e) =>
                 {
                     DataGridServiceScheduleView dataGridServiceScheduleView =
-                        ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
+                        ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
                     if (dataGridServiceScheduleView != null)
                     {
                         dataGridServiceScheduleView.IsOn = false.ToString();
                     }
                 }));
-            return buttonTemplate;
+            var vb = new FrameworkElementFactory(typeof(Viewbox));
+            vb.AppendChild(buttonTemplate);
+            return vb;
         }
 
         public FrameworkElementFactory CreateRemoveSensorButtonTemplate(PlantsArea area,
@@ -104,13 +108,13 @@ namespace PlantsWpf.ControlsBuilders
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews,
             Func<PlantsArea, Sensor, ServiceSchedule, bool> removeSensor)
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "X");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement)o).DataContext as DataGridSensorView;
                     if (dataGridSensorView != null)
                     {
                         if (dataGridSensorViews.Count(s => s.Measurable == dataGridSensorView.Measurable) == 0)
@@ -150,13 +154,13 @@ namespace PlantsWpf.ControlsBuilders
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews,
             Func<PlantsArea, Sensor, ServiceSchedule, bool> saveSensor)
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "Save");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
                 {
-                    DataGridSensorView dataGridSensorView = ((FrameworkElement) o).DataContext as DataGridSensorView;
+                    DataGridSensorView dataGridSensorView = ((FrameworkElement)o).DataContext as DataGridSensorView;
 
                     if (dataGridSensorView != null)
                     {
@@ -243,7 +247,7 @@ namespace PlantsWpf.ControlsBuilders
 
                             serviceSchedule = new ServiceSchedule(Guid.NewGuid(), area.Id,
                                 serviceState.ServiceName, new TimeSpan(0, 0, 10), new TimeSpan(0, 1, 0),
-                                new List<MeasurableParameter> {sensor.MeasurableParameter});
+                                new List<MeasurableParameter> { sensor.MeasurableParameter });
 
                             area.ServicesSchedulesStates.AddServiceSchedule(serviceSchedule);
 
@@ -271,14 +275,14 @@ namespace PlantsWpf.ControlsBuilders
             BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews, Func<PlantsArea,
                 ServiceSchedule, bool> saveServiceSchedule)
         {
-            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof (Button));
+            FrameworkElementFactory buttonTemplate = new FrameworkElementFactory(typeof(Button));
             buttonTemplate.SetValue(ContentControl.ContentProperty, "Save");
             buttonTemplate.AddHandler(
                 ButtonBase.ClickEvent,
                 new RoutedEventHandler((o, e) =>
                 {
                     DataGridServiceScheduleView dataGridServiceScheduleView =
-                        ((FrameworkElement) o).DataContext as DataGridServiceScheduleView;
+                        ((FrameworkElement)o).DataContext as DataGridServiceScheduleView;
 
                     if (dataGridServiceScheduleView != null)
                     {
@@ -313,7 +317,7 @@ namespace PlantsWpf.ControlsBuilders
 
                             serviceSchedule = new ServiceSchedule(Guid.NewGuid(), area.Id,
                                 dataGridServiceScheduleView.ServiceName,
-                                servicingSpan, servicingPauseSpan, new List<MeasurableParameter> {measurableParameter});
+                                servicingSpan, servicingPauseSpan, new List<MeasurableParameter> { measurableParameter });
                         }
                         saveServiceSchedule(area, serviceSchedule);
 
@@ -333,8 +337,8 @@ namespace PlantsWpf.ControlsBuilders
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top,
                 Content = "X",
-                Width = 21,
-                Height = 21
+                Width = 24,
+                Height = 24
             };
 
             removePlantsAreaButton.Click += (sender, args) =>

@@ -138,7 +138,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, $"MeasurableParameter Id: {measurableParameterMapping.Id}");
+                //MessageBox.Show(e.StackTrace, $"MeasurableParameter Id: {measurableParameterMapping.Id}");
                 return null;
             }
         }
@@ -174,7 +174,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, $"ServiceSchedule Id: {serviceScheduleMapping.Id}");
+                //MessageBox.Show(e.StackTrace, $"ServiceSchedule Id: {serviceScheduleMapping.Id}");
                 return null;
             }
         }
@@ -217,7 +217,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, $"Plant Id: {plantMapping.Id}");
+                //MessageBox.Show(e.StackTrace, $"Plant Id: {plantMapping.Id}");
                 return null;
             }
         }
@@ -244,7 +244,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, $"PlantsArea Id: {plantsAreaMapping.Id}");
+                //MessageBox.Show(e.StackTrace, $"PlantsArea Id: {plantsAreaMapping.Id}");
                 return null;
             }
         }
@@ -287,7 +287,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.StackTrace, $"Sensor Id: {sensorMapping.Id}");
+                //MessageBox.Show(e.StackTrace, $"Sensor Id: {sensorMapping.Id}");
                 return null;
             }
             return null;
