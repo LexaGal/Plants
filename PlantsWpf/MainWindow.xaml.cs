@@ -183,7 +183,7 @@ namespace PlantsWpf
             }
 
             _plantsAreas = new PlantsAreas();
-                
+
             plantsAreaMappings.ForEach(p => _plantsAreas.AddPlantsArea(_dbMapper.RestorePlantArea(p)));
 
             _sensorsCollection = new SensorsCollection();
@@ -357,7 +357,7 @@ namespace PlantsWpf
 
             DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever =
                 new DbMeasuringMessagesRetriever(new MySqlMeasuringMessageMappingRepository(), _observer.MessagesDictionary);
-            
+
             PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
                 plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, dbMeasuringMessagesRetriever,
                 chartDescriptor);
@@ -521,7 +521,7 @@ namespace PlantsWpf
         //    userRepository.Save(_user, _user.Id);
         //    return true;
         //}
-        
+
         //MS Sql
         private string Encrypt(string password)
         {
@@ -616,7 +616,7 @@ namespace PlantsWpf
             //}
 
             Logginglabel.Visibility = Visibility.Visible;
-                //Content = @"You are being logged in. Please, wait...";
+            //Content = @"You are being logged in. Please, wait...";
             LoginButton.IsEnabled = false;
 
             string firstName = FirstName.Text;
@@ -625,18 +625,18 @@ namespace PlantsWpf
             string password = Password.Password;
 
             HttpResponseMessage response;
-            if (CreateAccount.IsChecked != null && !(bool)CreateAccount.IsChecked)
+            if (CreateAccount.IsChecked != null && !(bool) CreateAccount.IsChecked)
             {
                 //_oldUser = GetUser(firstName, lastName, password);
                 //return;
-                
+
                 //if (_user == null)
                 //{
                 //    Logginglabel.Content = @"User with such credentials does not exist";
                 //    LoginButton.IsEnabled = true;
                 //    return;
                 //}
-                
+
                 LoginViewModel loginViewModel = new LoginViewModel
                 {
                     Email = email,
@@ -644,7 +644,7 @@ namespace PlantsWpf
                     RememberMe = true
                 };
 
-                 response = await _mySqlDbDataModifier.LoginUser(loginViewModel);//.Result;
+                response = await _mySqlDbDataModifier.LoginUser(loginViewModel); //.Result;
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -658,6 +658,7 @@ namespace PlantsWpf
             }
             else
             {
+                Logginglabel.Content = "You are being registered. Please, wait...";
                 string confirmPassword = ConfirmPassword.Password;
                 //EmailAddressAttribute addressAttribute = new EmailAddressAttribute();
                 //if (!addressAttribute.IsValid(Email.Text))
@@ -683,7 +684,7 @@ namespace PlantsWpf
                     ConfirmPassword = confirmPassword
                 };
 
-                response =  await _mySqlDbDataModifier.RegisterUser(registerViewModel);
+                response = await _mySqlDbDataModifier.RegisterUser(registerViewModel);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -694,29 +695,32 @@ namespace PlantsWpf
                     return;
                 }
                 _user = response.Content.ReadAsAsync<ApplicationUser>().Result;
+
+
+                //for MS Sql and Mongo DBs
+                //_user = new User(firstName, lastName, email, Encrypt(password));
+                //if (CreateUserAccount())
+                //{
+
+                _mongoDbAccessor = new MongoDbAccessor();
+                _mongoDbAccessor.AddMongoUser(
+                    new MongoUser(new User(_user.UserName.Split(' ')[0], _user.UserName.Split(' ')[1], _user.Email,
+                        Encrypt(Password.Password))));
+                //}
+                //else
+                //{
+                //    Logginglabel.Content = @"User with such credentials already exists";
+                //    LoginButton.IsEnabled = true;
+                //    return;
+                //}
             }
-
-            //for MS Sql and Mongo DBs
-            //_user = new User(firstName, lastName, email, Encrypt(password));
-            //if (CreateUserAccount())
-            //{
-            //    _mongoDbAccessor = new MongoDbAccessor();
-            //    _mongoDbAccessor.AddMongoUser(new MongoUser(_user));
-            //}
-            //else
-            //{
-            //    Logginglabel.Content = @"User with such credentials already exists";
-            //    LoginButton.IsEnabled = true;
-            //    return;
-            //}
-
 
             //if (_oldUser != null) 
             if (_user != null)
             {
                 StartMainProcess();
                 LoginNameLabel.Content = $"You are logged in as {_user.UserName}";
-                                         //$"{_oldUser.FirstName}";
+                //$"{_oldUser.FirstName}";
                 LoginNameLabel.Background = Brushes.Wheat;
                 Logginglabel.Visibility = Visibility.Hidden;
             }

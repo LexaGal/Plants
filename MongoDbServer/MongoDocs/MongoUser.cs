@@ -1,4 +1,5 @@
 using System;
+using AspNet.Identity.MySQL.WebApiModels;
 using Database.MappingTypes;
 
 namespace MongoDbServer.MongoDocs
@@ -13,7 +14,8 @@ namespace MongoDbServer.MongoDocs
         public DateTime dateTime { get; set; }
         public string name { get; set; }
 
-        public MongoUser(User user)
+        public MongoUser(//ApplicationUser user)
+            User user)
         {
             objId = user.Id.ToString();
             first_name = user.FirstName;
