@@ -616,7 +616,6 @@ namespace PlantsWpf
             //}
 
             Logginglabel.Visibility = Visibility.Visible;
-            //Content = @"You are being logged in. Please, wait...";
             LoginButton.IsEnabled = false;
 
             string firstName = FirstName.Text;
@@ -627,6 +626,8 @@ namespace PlantsWpf
             HttpResponseMessage response;
             if (CreateAccount.IsChecked != null && !(bool) CreateAccount.IsChecked)
             {
+                Logginglabel.Content = @"You are being logged in. Please, wait...";
+              
                 //_oldUser = GetUser(firstName, lastName, password);
                 //return;
 

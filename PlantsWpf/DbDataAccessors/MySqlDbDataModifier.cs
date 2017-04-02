@@ -47,7 +47,7 @@ namespace PlantsWpf.DbDataAccessors
         private readonly MySqlPlantMappingRepository _sqlPlantMappingRepository;
         private readonly MySqlPlantsAreaMappingRepository _sqlPlantsAreaMappingRepository;
 
-        private string _baseServerUr = "http://localhost:63958/";
+        private string _baseServerUr = "http://qwertyuiop1.azurewebsites.net/";
         private readonly DbMapper _dbMapper;
         private readonly SensorsCollection _sensorsCollection;
         private readonly PlantsAreas _plantsAreas;
