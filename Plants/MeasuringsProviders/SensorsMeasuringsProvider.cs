@@ -34,7 +34,12 @@ namespace PlantingLib.MeasuringsProviders
                     }
                 }
                 catch (DivideByZeroException)
-                {}
+                {
+                }
+                catch (Exception)
+                {
+                    
+                }
             }
         }
 

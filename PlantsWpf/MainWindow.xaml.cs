@@ -20,6 +20,9 @@ using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using DatabaseCleanerServer;
 using Mapper.MapperContext;
+using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using MongoDbServer;
 using MongoDbServer.BsonClassMaps;
 using MongoDbServer.MongoDocs;
@@ -65,6 +68,19 @@ namespace PlantsWpf
 
         public MainWindow()
         {
+
+            // Retrieve storage account from connection string.
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+                CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+            // Create the queue client.
+            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+
+            // Retrieve a reference to a container.
+            CloudQueue queue = queueClient.GetQueueReference("myqueue");
+
+            var mes = queue.GetMessage();
+
             InitializeComponent();
 
             Logginglabel.SetBinding(Label.VisibilityProperty, new Binding()
