@@ -98,5 +98,3 @@ D:\Projects\PlantingWork\Plants\Plants\bin\Debug\System.Web.Razor.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\System.Web.WebPages.Razor.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\System.Web.WebPages.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\System.Web.WebPages.Deployment.xml
-D:\Projects\PlantingWork\Plants\Plants\bin\Debug\PlantingLib.dll.CodeAnalysisLog.xml
-D:\Projects\PlantingWork\Plants\Plants\bin\Debug\PlantingLib.dll.lastcodeanalysissucceeded

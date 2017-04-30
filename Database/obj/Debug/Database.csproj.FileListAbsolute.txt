@@ -45,5 +45,3 @@ D:\Projects\PlantingWork\Plants\Database\bin\Debug\EntityFramework.SqlServer.xml
 D:\Projects\PlantingWork\Plants\Database\obj\Debug\Database.dll
 D:\Projects\PlantingWork\Plants\Database\obj\Debug\Database.pdb
 D:\Projects\PlantingWork\Plants\Database\obj\Debug\Database.csprojResolveAssemblyReference.cache
-D:\Projects\PlantingWork\Plants\Database\bin\Debug\Database.dll.CodeAnalysisLog.xml
-D:\Projects\PlantingWork\Plants\Database\bin\Debug\Database.dll.lastcodeanalysissucceeded

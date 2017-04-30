@@ -334,7 +334,8 @@ namespace PlantsWpf.DbDataAccessors
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 Task<HttpResponseMessage> response = client.PostAsJsonAsync("api/identity/register", registerViewModel);
                 //.Result;
-                return await response;
+                return await
+                response;
             }
         }
 

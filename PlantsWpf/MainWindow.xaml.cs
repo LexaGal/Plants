@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using AspNet.Identity.MySQL.Repository.Concrete;
 using AspNet.Identity.MySQL.WebApiModels;
+using AzureQueuing;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
@@ -52,22 +54,30 @@ namespace PlantsWpf
     {
         private SensorsCollection _sensorsCollection;
         private Observer _observer;
-        private MongoMessagesListener _mongoMessagesListener;
+        //private MongoMessagesListener _mongoMessagesListener;
         private PlantsAreas _plantsAreas;
         private SensorsMeasuringsProvider _sensorsMeasuringsProvider;
         private ServiceProvider _serviceProvider;
         private DbMapper _dbMapper;
         private DateTime _beginDateTime;
-        private DbDataModifier _dbDataModifier;
+        //private DbDataModifier _dbDataModifier;
         public static ResourceDictionary ResourceDictionary;
         private MongoDbAccessor _mongoDbAccessor;
         private MySqlDbDataModifier _mySqlDbDataModifier;
 
         private ApplicationUser _user;
-        private User _oldUser;
+        //private User _oldUser;
 
         public MainWindow()
         {
+             var w = new MessageQueueWorker("StorageConnectionString",
+                                       "test",
+                                       "poison-test",
+                                        1,
+                                        1);
+             w.Start();
+
+            //
 
             // Retrieve storage account from connection string.
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
@@ -80,6 +90,8 @@ namespace PlantsWpf
             CloudQueue queue = queueClient.GetQueueReference("myqueue");
 
             var mes = queue.GetMessage();
+
+            //
 
             InitializeComponent();
 
@@ -231,7 +243,7 @@ namespace PlantsWpf
 
             _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
 
-            _mongoMessagesListener = new MongoMessagesListener(_observer);
+            //_mongoMessagesListener = new MongoMessagesListener(_observer);
 
             _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
 
@@ -661,7 +673,7 @@ namespace PlantsWpf
                     RememberMe = true
                 };
 
-                response = await _mySqlDbDataModifier.LoginUser(loginViewModel); //.Result;
+                response = await _mySqlDbDataModifier.LoginUser(loginViewModel);//.Start();//ContinueWith(); //.Result;
 
                 if (!response.IsSuccessStatusCode)
                 {

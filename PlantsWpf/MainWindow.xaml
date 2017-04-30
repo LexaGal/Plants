@@ -42,7 +42,7 @@
 
                     <Label x:Name="EmailLabel" Height="30" Canvas.Top="22" Canvas.Left="11" Content="Email"/>
                     <Label Height="30" Canvas.Top="52" Content="Password" RenderTransformOrigin="0.45,1.867" Canvas.Left="9"/>
-                    <TextBox x:Name="Email" Text="Aliaksei_Halushkin@epam.com" Background="White" Height="29" Canvas.Left="114" Canvas.Top="22" Width="234"/>
+                    <TextBox x:Name="Email" Text="galushkin.aleksey@gmail.com" Background="White" Height="29" Canvas.Left="114" Canvas.Top="22" Width="234"/>
                     <PasswordBox x:Name="Password" Password="qYYfO8Di12345!" Background="White" Height="29" Canvas.Left="114" Canvas.Top="53" Width="234"/>
 
                     <UniformGrid x:Name="RegisterGrid" Height="95" Canvas.Left="8" Canvas.Top="85" Width="340" Visibility="Collapsed">

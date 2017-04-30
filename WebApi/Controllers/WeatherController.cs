@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Mvc;
 using Microsoft.Azure; // Namespace for CloudConfigurationManager
@@ -20,6 +21,7 @@ namespace WebApi.Controllers
         [System.Web.Http.Route("api/weather/set")]
         public JsonResult Set(WeatherModel weather)
         {
+            //JsonResult>
             // Retrieve storage account from connection string.
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
                 CloudConfigurationManager.GetSetting("StorageConnectionString"));
@@ -36,8 +38,11 @@ namespace WebApi.Controllers
             var w = JsonConvert.SerializeObject(weather);
 
             // Create a message and add it to the queue.
-            CloudQueueMessage message = new CloudQueueMessage(w);//"Hello, World");
+            CloudQueueMessage message = new CloudQueueMessage(w); //"Hello, World");
+            //return
             queue.AddMessage(message);
+
+            //await//Async
 
             return new JsonResult
             {
@@ -47,42 +52,43 @@ namespace WebApi.Controllers
                 }
             };
         }
-
-        struct InfoData: IInfoData
-        {
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-        }
-
-        class Source
-        {
-            internal void CheckAndProceed(List<InfoData> data)
-            {
-                var dest = new Destination();
-
-                //do something
-
-                dest.ProceedData(data.Select(i => i as IInfoData).ToList()); // as List<IInfoData>//new List<object> {data});
-            }
-        }
-
-        class Destination
-        {
-            internal void ProceedData(List<IInfoData> data) //List<Object> data) //ValueType> data)
-            {
-                foreach (var item in data)
-                {
-                    //do something
-                }
-            }
-        }
     }
 
-    internal interface IInfoData
-    {
-        string FirstName { get; set; }
-        string LastName { get; set; }
-    }
+    //    struct InfoData: IInfoData
+    //    {
+    //        public string FirstName { get; set; }
+    //        public string LastName { get; set; }
+    //    }
+
+    //    class Source
+    //    {
+    //        internal void CheckAndProceed(List<InfoData> data)
+    //        {
+    //            var dest = new Destination();
+
+    //            //do something
+
+    //            dest.ProceedData(data.Select(i => i as IInfoData).ToList()); // as List<IInfoData>//new List<object> {data});
+    //        }
+    //    }
+
+    //    class Destination
+    //    {
+    //        internal void ProceedData(List<IInfoData> data) //List<Object> data) //ValueType> data)
+    //        {
+    //            foreach (var item in data)
+    //            {
+    //                //do something
+    //            }
+    //        }
+    //    }
+    //}
+
+    //internal interface IInfoData
+    //{
+    //    string FirstName { get; set; }
+    //    string LastName { get; set; }
+    //}
 
     public class WeatherItem
     {

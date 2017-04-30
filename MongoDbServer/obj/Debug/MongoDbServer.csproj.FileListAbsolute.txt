@@ -81,5 +81,3 @@ D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\System.Web.WebPages.Depl
 D:\Projects\PlantingWork\Plants\MongoDbServer\obj\Debug\MongoDbServer.csprojResolveAssemblyReference.cache
 D:\Projects\PlantingWork\Plants\MongoDbServer\obj\Debug\MongoDbServer.exe
 D:\Projects\PlantingWork\Plants\MongoDbServer\obj\Debug\MongoDbServer.pdb
-D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDbServer.exe.CodeAnalysisLog.xml
-D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDbServer.exe.lastcodeanalysissucceeded

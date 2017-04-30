@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.MySQL", "As
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{E5FBFD7E-F290-4543-8DFD-0C4C060ABE7A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureQueuing", "AzureQueuing\AzureQueuing.csproj", "{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,8 +60,15 @@ Global
 		{E5FBFD7E-F290-4543-8DFD-0C4C060ABE7A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{E5FBFD7E-F290-4543-8DFD-0C4C060ABE7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5FBFD7E-F290-4543-8DFD-0C4C060ABE7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\TransientFaultHandling.Core.5.1.1209.0\lib\NET4;packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.WindowsAzure.TransientFaultHandling.5.1.1212.0\lib\NET4;packages\EnterpriseLibrary.WindowsAzure.TransientFaultHandling.5.1.1212.0\DesignTime
 	EndGlobalSection
 EndGlobal
