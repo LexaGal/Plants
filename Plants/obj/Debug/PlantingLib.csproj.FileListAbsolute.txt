@@ -65,7 +65,6 @@ C:\Users\Alex\Documents\Visual Studio 2015\Projects\Plants\Plants\bin\Debug\Mong
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\PlantingLib.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\PlantingLib.pdb
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\AspNet.Identity.MySQL.dll
-D:\Projects\PlantingWork\Plants\Plants\bin\Debug\AutoMapper.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\Database.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\EntityFramework.SqlServer.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\MongoDB.Bson.dll
@@ -85,7 +84,6 @@ D:\Projects\PlantingWork\Plants\Plants\bin\Debug\System.Web.WebPages.Deployment.
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\AspNet.Identity.MySQL.pdb
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\Database.pdb
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\ObservationUtil.pdb
-D:\Projects\PlantingWork\Plants\Plants\bin\Debug\AutoMapper.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\EntityFramework.SqlServer.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\MongoDB.Bson.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\NLog.xml

@@ -43,7 +43,6 @@ D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Mapper.dll
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Bson.dll
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Driver.Core.dll
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Driver.dll
-D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Newtonsoft.Json.dll
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\NLog.dll
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\ObservationUtil.dll
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\PlantingLib.dll
@@ -71,7 +70,6 @@ D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\EntityFramework.xml
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\EntityFramework.SqlServer.xml
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Bson.xml
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\MongoDB.Driver.xml
-D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Newtonsoft.Json.xml
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\NLog.xml
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Quartz.pdb
 D:\Projects\PlantingWork\Plants\MongoDbServer\bin\Debug\Quartz.xml

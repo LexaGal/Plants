@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Windows.Forms;
 using Quartz;
 
 namespace DatabaseCleanerServer
@@ -40,9 +39,9 @@ namespace DatabaseCleanerServer
                         }
                         //tr.Commit();
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        MessageBox.Show(e.Message);
+                        //MessageBox.Show(e.Message);
                         //tr.Rollback();
                     }
                 //}
