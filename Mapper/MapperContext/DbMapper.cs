@@ -6,6 +6,7 @@ using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
+using NLog;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
@@ -16,6 +17,8 @@ namespace Mapper.MapperContext
 {
     public class DbMapper
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly MySqlPlantMappingRepository _sqlPlantMappingRepository;
         private readonly MySqlMeasurableParameterMappingRepository _sqlMeasurableParameterMappingRepository;
         private readonly MySqlServiceScheduleMappingRepository _sqlServiceScheduleMappingRepository;
@@ -137,7 +140,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace, $"MeasurableParameter Id: {measurableParameterMapping.Id}");
+                logger.Error(e.GetBaseException().Message, $"MeasurableParameter Id: {measurableParameterMapping.Id}");
                 return null;
             }
         }
@@ -173,7 +176,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace, $"ServiceSchedule Id: {serviceScheduleMapping.Id}");
+                logger.Error(e.GetBaseException().Message, $"ServiceSchedule Id: {serviceScheduleMapping.Id}");
                 return null;
             }
         }
@@ -216,7 +219,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace, $"Plant Id: {plantMapping.Id}");
+                logger.Error(e.GetBaseException().Message, $"Plant Id: {plantMapping.Id}");
                 return null;
             }
         }
@@ -243,7 +246,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace, $"PlantsArea Id: {plantsAreaMapping.Id}");
+                logger.Error(e.GetBaseException().Message, $"PlantsArea Id: {plantsAreaMapping.Id}");
                 return null;
             }
         }
@@ -286,7 +289,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace, $"Sensor Id: {sensorMapping.Id}");
+                logger.Error(e.GetBaseException().Message, $"Sensor Id: {sensorMapping.Id}");
                 return null;
             }
             return null;

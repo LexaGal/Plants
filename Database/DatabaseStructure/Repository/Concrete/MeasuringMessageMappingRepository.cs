@@ -4,12 +4,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 using Database.DatabaseStructure.Repository.Abstract;
+using NLog;
 using MeasuringMessageMapping = Database.MappingTypes.MeasuringMessageMapping;
 
 namespace Database.DatabaseStructure.Repository.Concrete
 {
     public class MeasuringMessageMappingRepository : Repository<MeasuringMessageMapping>, IMeasuringMessageMappingRepository
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public override bool Edit(MeasuringMessageMapping value)
         {
             throw new NotImplementedException();
@@ -28,7 +31,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
             catch (Exception e)
             {
                 
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return 0;
             }
         }

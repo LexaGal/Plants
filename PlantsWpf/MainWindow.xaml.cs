@@ -20,6 +20,7 @@ using Mapper.MapperContext;
 using MongoDbServer;
 using MongoDbServer.BsonClassMaps;
 using MongoDbServer.MongoDocs;
+using NLog;
 using ObservationUtil;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviders;
@@ -45,6 +46,8 @@ namespace PlantsWpf
     /// </summary>
     public partial class MainWindow : IReciever
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private SensorsCollection _sensorsCollection;
         private Observer _observer;
         //private MongoMessagesListener _mongoMessagesListener;
@@ -285,7 +288,7 @@ namespace PlantsWpf
             }
             catch (InvalidOperationException e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
             }
         }
 
@@ -748,7 +751,6 @@ namespace PlantsWpf
             {
                 StartMainProcess();
                 LoginNameLabel.Content = $"You are logged in as {_user.UserName}";
-                //$"{_oldUser.FirstName}";
                 LoginNameLabel.Background = Brushes.Wheat;
                 Logginglabel.Visibility = Visibility.Hidden;
             }
@@ -778,6 +780,7 @@ namespace PlantsWpf
             }
             catch (Exception e)
             {
+                logger.Error(e.GetBaseException().Message);
             }
         }
     }

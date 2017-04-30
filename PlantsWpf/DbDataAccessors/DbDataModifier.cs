@@ -4,6 +4,7 @@ using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
+using NLog;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
@@ -15,6 +16,8 @@ namespace PlantsWpf.DbDataAccessors
 {
     public class DbDataModifier
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly PlantsAreas _plantsAreas;
         private readonly SensorsCollection _sensorsCollection;
         private readonly DbMapper _dbMapper;
@@ -45,6 +48,7 @@ namespace PlantsWpf.DbDataAccessors
         {
             try
             {
+                //throw new Exception();
                 MeasurableParameterMapping measurableParameterMapping =
                     _dbMapper.GetMeasurableParameterMapping(sensor.MeasurableParameter);
 
@@ -89,7 +93,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }
@@ -170,7 +174,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }
@@ -191,7 +195,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;         
             }
         } 
@@ -242,7 +246,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }
@@ -281,7 +285,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
+using NLog;
 using ObservationUtil;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Messenging;
@@ -14,6 +15,8 @@ namespace PlantingLib.ServiceSystems
 {
     public class ServiceProvider : IReciever
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public ISender<MeasuringMessage> Sender { get; private set; }
         public PlantsAreas PlantsAreas { get; }
         private readonly Timer _timer;
@@ -103,7 +106,7 @@ namespace PlantingLib.ServiceSystems
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
             }
         }
 

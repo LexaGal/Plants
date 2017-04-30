@@ -69,6 +69,7 @@ D:\Projects\PlantingWork\Plants\Plants\bin\Debug\AutoMapper.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\Database.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\EntityFramework.SqlServer.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\MongoDB.Bson.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Debug\NLog.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\ObservationUtil.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\MySql.Data.dll
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\System.Web.Mvc.dll
@@ -87,6 +88,7 @@ D:\Projects\PlantingWork\Plants\Plants\bin\Debug\ObservationUtil.pdb
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\AutoMapper.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\EntityFramework.SqlServer.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\MongoDB.Bson.xml
+D:\Projects\PlantingWork\Plants\Plants\bin\Debug\NLog.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\System.Web.Mvc.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\Microsoft.AspNet.Identity.Core.xml
 D:\Projects\PlantingWork\Plants\Plants\bin\Debug\Microsoft.Owin.xml
@@ -100,5 +102,3 @@ D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.Properties.Resource
 D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.csproj.GenerateResource.Cache
 D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.dll
 D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.pdb
-D:\Projects\PlantingWork\Plants\Plants\bin\Debug\NLog.dll
-D:\Projects\PlantingWork\Plants\Plants\bin\Debug\NLog.xml

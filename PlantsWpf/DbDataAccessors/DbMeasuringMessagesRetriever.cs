@@ -36,6 +36,7 @@ namespace PlantsWpf.DbDataAccessors
         {
             return ReturnRowsetMySql(chartDescriptor);
 
+/*
             lock (_messagesDictionary[chartDescriptor.PlantsAreaId])
             {
                 List<MeasuringMessage> measuringMessages =
@@ -117,6 +118,7 @@ namespace PlantsWpf.DbDataAccessors
 
                 return list;
             }
+*/
         }
 
         // Call the stored procedure.

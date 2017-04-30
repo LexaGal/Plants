@@ -4,6 +4,7 @@ using System.Linq;
 using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.MappingTypes;
+using NLog;
 using ObservationUtil;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
@@ -13,6 +14,8 @@ namespace PlantingLib.Observation
 {
     public class Observer : IReciever, ISender<MeasuringMessage>
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public PlantsAreas PlantsAreas { get; }
         public Dictionary<Guid, List<MeasuringMessage>> MessagesDictionary;
         private const int MessagesLimit = 10;
@@ -91,7 +94,7 @@ namespace PlantingLib.Observation
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
             }
         }
 

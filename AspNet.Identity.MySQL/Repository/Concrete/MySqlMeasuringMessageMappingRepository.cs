@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Database.MappingTypes;
+using NLog;
 
 namespace AspNet.Identity.MySQL.Repository.Concrete
 {
     public class MySqlMeasuringMessageMappingRepository : MySqlRepository<MeasuringMessageMapping>
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         object _lockObject = new object();
 
         public override List<MeasuringMessageMapping> GetAll(
@@ -116,7 +119,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
             }
         }
 

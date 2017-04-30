@@ -7,6 +7,7 @@ using AspNet.Identity.MySQL.Repository.Concrete;
 using AspNet.Identity.MySQL.WebApiModels;
 using Database.MappingTypes;
 using Mapper.MapperContext;
+using NLog;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
@@ -18,6 +19,8 @@ namespace PlantsWpf.DbDataAccessors
 {
     class MySqlDbDataModifier
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public MySqlMeasurableParameterMappingRepository SqlMeasurableParameterMappingRepository =>
             _sqlMeasurableParameterMappingRepository ?? new MySqlMeasurableParameterMappingRepository();
 
@@ -119,7 +122,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }
@@ -204,7 +207,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }
@@ -225,7 +228,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }
@@ -277,7 +280,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }
@@ -316,7 +319,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                //MessageBox.Show(e.StackTrace);
+                logger.Error(e.GetBaseException().Message);
                 return false;
             }
         }

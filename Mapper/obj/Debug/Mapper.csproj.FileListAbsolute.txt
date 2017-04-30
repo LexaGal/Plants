@@ -58,6 +58,7 @@ D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Mapper.dll
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Mapper.pdb
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\AspNet.Identity.MySQL.dll
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Database.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\NLog.dll
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\PlantingLib.dll
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\MySql.Data.dll
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\System.Web.Mvc.dll
@@ -75,6 +76,7 @@ D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\System.Web.WebPages.Deployment.
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\AspNet.Identity.MySQL.pdb
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Database.pdb
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\PlantingLib.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\NLog.xml
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\System.Web.Mvc.xml
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Microsoft.AspNet.Identity.Core.xml
 D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\Microsoft.Owin.xml
@@ -88,5 +90,3 @@ D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\System.Web.WebPages.Deployment.
 D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.csprojResolveAssemblyReference.cache
 D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.dll
 D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.pdb
-D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\NLog.dll
-D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\NLog.xml

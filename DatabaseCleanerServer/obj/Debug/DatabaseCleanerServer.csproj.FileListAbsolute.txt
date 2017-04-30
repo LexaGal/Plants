@@ -28,6 +28,7 @@ D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Common.Logging.d
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Database.dll
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\EntityFramework.dll
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\EntityFramework.SqlServer.dll
+D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\NLog.dll
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Quartz.dll
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Database.pdb
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Common.Logging.pdb
@@ -36,10 +37,9 @@ D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Common.Logging.C
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Common.Logging.Core.xml
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\EntityFramework.xml
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\EntityFramework.SqlServer.xml
+D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\NLog.xml
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Quartz.pdb
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Quartz.xml
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\obj\Debug\DatabaseCleanerServer.csprojResolveAssemblyReference.cache
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\obj\Debug\DatabaseCleanerServer.dll
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\obj\Debug\DatabaseCleanerServer.pdb
-D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\NLog.dll
-D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\NLog.xml
