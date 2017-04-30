@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using AspNet.Identity.MySQL.Database;
-using Database.MappingTypes;
 
 namespace AspNet.Identity.MySQL.Repository.Concrete
 {

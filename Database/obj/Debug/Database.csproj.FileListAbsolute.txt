@@ -44,3 +44,6 @@ D:\Projects\PlantingWork\Plants\Database\bin\Debug\EntityFramework.xml
 D:\Projects\PlantingWork\Plants\Database\bin\Debug\EntityFramework.SqlServer.xml
 D:\Projects\PlantingWork\Plants\Database\obj\Debug\Database.dll
 D:\Projects\PlantingWork\Plants\Database\obj\Debug\Database.pdb
+D:\Projects\PlantingWork\Plants\Database\obj\Debug\Database.csprojResolveAssemblyReference.cache
+D:\Projects\PlantingWork\Plants\Database\bin\Debug\NLog.dll
+D:\Projects\PlantingWork\Plants\Database\bin\Debug\NLog.xml

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
-using System.Windows.Forms;
 using ObservationUtil;
 using PlantingLib.MeasurableParameters;
-using PlantingLib.MeasuringsProviders;
 using PlantingLib.Messenging;
-using PlantingLib.Observation;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Database.DatabaseStructure.Repository.Abstract;
 using MeasuringMessageMapping = Database.MappingTypes.MeasuringMessageMapping;
@@ -28,6 +27,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
             }
             catch (Exception e)
             {
+                
                 //MessageBox.Show(e.StackTrace);
                 return 0;
             }

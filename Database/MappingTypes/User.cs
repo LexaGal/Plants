@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Windows.Forms;
 
 namespace Database.MappingTypes
 {

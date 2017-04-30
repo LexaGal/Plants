@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PlantingLib.Sensors;
 
-namespace PlantingLib.Sensors
+namespace PlantingLib.Timers
 {
     public class SensorsCollection
     {

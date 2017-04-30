@@ -100,3 +100,5 @@ D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.Properties.Resource
 D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.csproj.GenerateResource.Cache
 D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.dll
 D:\Projects\PlantingWork\Plants\Plants\obj\Debug\PlantingLib.pdb
+D:\Projects\PlantingWork\Plants\Plants\bin\Debug\NLog.dll
+D:\Projects\PlantingWork\Plants\Plants\bin\Debug\NLog.xml

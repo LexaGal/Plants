@@ -8,7 +8,6 @@ using System.Linq.Expressions;
 using AspNet.Identity.MySQL.Database;
 using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
-using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using PlantingLib.Messenging;
 using PlantsWpf.ObjectsViews;

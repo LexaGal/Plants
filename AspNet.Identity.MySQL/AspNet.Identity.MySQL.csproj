@@ -51,6 +51,10 @@
     <Reference Include="MySql.Data">
       <HintPath>packages\MySql.Data.6.7.4\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.8\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
@@ -101,9 +105,19 @@
     <Compile Include="Repository\Concrete\MySqlPlantMappingRepository.cs" />
     <Compile Include="Repository\Concrete\MySqlMeasurableParameterMappingRepository.cs" />
     <Compile Include="Repository\Concrete\MySqlRepository.cs" />
-    <Compile Include="WebApiModels\AccountViewModels.cs" />
-    <Compile Include="WebApiModels\IdentityModels.cs" />
-    <Compile Include="WebApiModels\ManageViewModels.cs" />
+    <Compile Include="WebApiModels\ExternalLoginConfirmationViewModel.cs" />
+    <Compile Include="WebApiModels\AddPhoneNumberViewModel.cs" />
+    <Compile Include="WebApiModels\ApplicationDbContext.cs" />
+    <Compile Include="WebApiModels\ChangePasswordViewModel.cs" />
+    <Compile Include="WebApiModels\ConfigureTwoFactorViewModel.cs" />
+    <Compile Include="WebApiModels\ExternalLoginListViewModel.cs" />
+    <Compile Include="WebApiModels\FactorViewModel.cs" />
+    <Compile Include="WebApiModels\ForgotPasswordViewModel.cs" />
+    <Compile Include="WebApiModels\ForgotViewModel.cs" />
+    <Compile Include="WebApiModels\ApplicationUser.cs" />
+    <Compile Include="WebApiModels\LoginViewModel.cs" />
+    <Compile Include="WebApiModels\ManageLoginsViewModel.cs" />
+    <Compile Include="WebApiModels\IndexViewModel.cs" />
     <Compile Include="IdentityUserData\RoleStore.cs" />
     <Compile Include="IdentityUserData\IdentityUser.cs" />
     <Compile Include="IdentityUserData\UserLoginsTable.cs" />
@@ -112,10 +126,16 @@
     <Compile Include="Database\MySQLDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IdentityUserData\RoleTable.cs" />
-    <Compile Include="IdentityUserData\UserRoleTable.cs" />
+    <Compile Include="IdentityUserData\UserRolesTable.cs" />
     <Compile Include="IdentityUserData\UserTable.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WebApiModels\RegisterViewModel.cs" />
+    <Compile Include="WebApiModels\ResetPasswordViewModel.cs" />
+    <Compile Include="WebApiModels\SendCodeViewModel.cs" />
+    <Compile Include="WebApiModels\SetPasswordViewModel.cs" />
+    <Compile Include="WebApiModels\VerifyCodeViewModel.cs" />
+    <Compile Include="WebApiModels\VerifyPhoneNumberViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

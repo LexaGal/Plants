@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using AspNet.Identity.MySQL.Repository.Concrete;
 using Database.DatabaseStructure.Repository.Abstract;
-using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using ObservationUtil;
-using PlantingLib.MeasuringsProviders;
 using PlantingLib.Messenging;
 using PlantingLib.Plants;
 using PlantingLib.Sensors;
@@ -19,7 +16,7 @@ namespace PlantingLib.Observation
         public PlantsAreas PlantsAreas { get; }
         public Dictionary<Guid, List<MeasuringMessage>> MessagesDictionary;
         private const int MessagesLimit = 10;
-        private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
+        //private readonly IMeasuringMessageMappingRepository _measuringMessageMappingRepository;
         private readonly MySqlMeasuringMessageMappingRepository _sqlMeasuringMessageMappingRepository;
 
         public Observer(ISender<MeasuringMessage> sender, PlantsAreas plantsAreas)

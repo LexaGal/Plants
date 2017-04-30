@@ -1,5 +1,4 @@
 using System;
-using AspNet.Identity.MySQL.WebApiModels;
 using Database.MappingTypes;
 
 namespace MongoDbServer.MongoDocs

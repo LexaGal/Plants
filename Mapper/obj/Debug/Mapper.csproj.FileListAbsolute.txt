@@ -88,3 +88,5 @@ D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\System.Web.WebPages.Deployment.
 D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.csprojResolveAssemblyReference.cache
 D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.dll
 D:\Projects\PlantingWork\Plants\Mapper\obj\Debug\Mapper.pdb
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\NLog.dll
+D:\Projects\PlantingWork\Plants\Mapper\bin\Debug\NLog.xml

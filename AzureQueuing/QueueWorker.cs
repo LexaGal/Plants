@@ -5,7 +5,6 @@ using Brisebois.WindowsAzure;
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
-using Microsoft.WindowsAzure.Storage.RetryPolicies;
 
 namespace AzureQueuing
 {

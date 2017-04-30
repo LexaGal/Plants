@@ -41,3 +41,5 @@ D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\Quartz.xml
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\obj\Debug\DatabaseCleanerServer.csprojResolveAssemblyReference.cache
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\obj\Debug\DatabaseCleanerServer.dll
 D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\obj\Debug\DatabaseCleanerServer.pdb
+D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\NLog.dll
+D:\Projects\PlantingWork\Plants\DatabaseCleanerServer\bin\Debug\NLog.xml

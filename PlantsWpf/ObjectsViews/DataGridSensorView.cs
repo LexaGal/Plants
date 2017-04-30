@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using PlantingLib.Properties;
 using PlantingLib.Sensors;
-using PlantsWpf.Annotations;
 
 namespace PlantsWpf.ObjectsViews
 {

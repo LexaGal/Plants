@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Forms;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
-using MongoDbServer;
-using MongoDbServer.MongoDocs;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
+using PlantingLib.Timers;
 
 namespace PlantsWpf.DbDataAccessors
 {

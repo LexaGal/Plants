@@ -1,7 +1,8 @@
 ﻿    using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-    using PlantsWpf.Annotations;
+    using PlantingLib.Properties;
+    //using PlantsWpf.Annotations;
     using static System.String;
 
 namespace PlantingLib.Plants.ServiceStates

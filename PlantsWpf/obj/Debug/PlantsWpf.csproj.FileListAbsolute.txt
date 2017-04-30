@@ -246,7 +246,6 @@ D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\Microsoft.Web.Infrastructure
 D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\Microsoft.WindowsAzure.Configuration.dll
 D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\Microsoft.WindowsAzure.Storage.dll
 D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\MongoDB.Bson.dll
-D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\MongoDbServer.exe
 D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\Newtonsoft.Json.dll
 D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\ObservationUtil.dll
 D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\Owin.dll
@@ -373,3 +372,6 @@ D:\Projects\PlantingWork\Plants\PlantsWpf\obj\Debug\PlantsWpf.Properties.Resourc
 D:\Projects\PlantingWork\Plants\PlantsWpf\obj\Debug\PlantsWpf.csproj.GenerateResource.Cache
 D:\Projects\PlantingWork\Plants\PlantsWpf\obj\Debug\PlantsWpf.exe
 D:\Projects\PlantingWork\Plants\PlantsWpf\obj\Debug\PlantsWpf.pdb
+D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\NLog.dll
+D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\NLog.xml
+D:\Projects\PlantingWork\Plants\PlantsWpf\bin\Debug\MongoDbServer.dll

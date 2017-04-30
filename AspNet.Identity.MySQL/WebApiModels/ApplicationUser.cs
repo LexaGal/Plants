@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using AspNet.Identity.MySQL.Database;
 using AspNet.Identity.MySQL.IdentityUserData;
 using Microsoft.AspNet.Identity;
 
@@ -15,24 +14,6 @@ namespace AspNet.Identity.MySQL.WebApiModels
             ClaimsIdentity userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
-        }
-    }
-
-    public class ApplicationDbContext : MySQLDatabase
-    {
-        public ApplicationDbContext(string connectionName)
-        : base(connectionName)
-        {
-        }
-
-        public ApplicationDbContext()
-            : base("MySqlDefaultConnection")
-        {
-        }
-
-        public static ApplicationDbContext Create()
-        {
-            return new ApplicationDbContext();
         }
     }
 }

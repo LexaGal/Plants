@@ -1,6 +1,4 @@
 ﻿using System;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.ParametersFunctions;
 using PlantingLib.Plants;

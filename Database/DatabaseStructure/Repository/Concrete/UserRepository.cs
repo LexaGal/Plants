@@ -1,8 +1,5 @@
 using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Windows.Forms;
 using Database.DatabaseStructure.Repository.Abstract;
 using Database.MappingTypes;
 

@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using AspNet.Identity.MySQL.Repository.Concrete;
 using AspNet.Identity.MySQL.WebApiModels;
-using Database.DatabaseStructure.Repository.Abstract;
-using Database.DatabaseStructure.Repository.Concrete;
 using Database.MappingTypes;
 using Mapper.MapperContext;
 using PlantingLib.MeasurableParameters;
@@ -17,6 +12,7 @@ using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
 using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
+using PlantingLib.Timers;
 
 namespace PlantsWpf.DbDataAccessors
 {

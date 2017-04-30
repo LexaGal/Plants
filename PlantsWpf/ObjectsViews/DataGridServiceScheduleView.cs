@@ -4,7 +4,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using PlantingLib.Plants.ServicesScheduling;
-using PlantsWpf.Annotations;
+using PlantingLib.Properties;
+
+//using PlantsWpf.Annotations;
 
 namespace PlantsWpf.ObjectsViews
 {
