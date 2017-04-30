@@ -284,7 +284,9 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <None Include="Properties\PublishProfiles\qwertyuiop1 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\qwertyuiop1 - Web Deploy.pubxml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -328,6 +330,10 @@
     <ProjectReference Include="..\AspNet.Identity.MySQL\AspNet.Identity.MySQL.csproj">
       <Project>{26F6ECF9-4369-417B-8CF2-54FA92DF3660}</Project>
       <Name>AspNet.Identity.MySQL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WeatherUtil\WeatherUtil.csproj">
+      <Project>{fd017c23-4c62-4bfe-8824-9a83a68f240d}</Project>
+      <Name>WeatherUtil</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

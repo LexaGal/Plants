@@ -1,6 +1,6 @@
 using System;
 
-namespace PlantingLib.Observation
+namespace ObservationUtil
 {
     public interface IReciever
     {

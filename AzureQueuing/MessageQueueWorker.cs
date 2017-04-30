@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json;
+using ObservationUtil;
+using WeatherUtil;
 
 namespace AzureQueuing
 {
-    public class MessageQueueWorker : QueueWorker
+    public class MessageQueueWorker : QueueWorker, ISender<WeatherModel>
     {
         public MessageQueueWorker(string accountConnectionStringName,
             string queueName,
@@ -41,7 +44,17 @@ namespace AzureQueuing
             if (message == "fail")
                 throw new Exception(message);
 
+            OnMessageSending(JsonConvert.DeserializeObject<WeatherModel>(message));
+
             Thread.Sleep(TimeSpan.FromSeconds(10));
+        }
+
+        public event EventHandler MessageSending;
+
+        public void OnMessageSending(WeatherModel message)
+        {
+            EventHandler handler = MessageSending;
+            handler?.Invoke(this, new MessengingEventArgs<WeatherModel>(message));
         }
     }
 }

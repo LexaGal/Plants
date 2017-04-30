@@ -10,6 +10,7 @@ using Microsoft.Azure; // Namespace for CloudConfigurationManager
 using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
+using WeatherUtil;
 
 // Namespace for Queue storage types
 
@@ -88,17 +89,5 @@ namespace WebApi.Controllers
     //{
     //    string FirstName { get; set; }
     //    string LastName { get; set; }
-    //}
-
-    public class WeatherItem
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
-
-    public class WeatherModel
-    {
-        public IEnumerable<string> AreasIds { get; set; }
-        public IEnumerable<WeatherItem> WeatherItems { get; set; }
-    }
+    //}   
 }

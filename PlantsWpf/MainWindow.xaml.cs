@@ -28,6 +28,7 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using MongoDbServer;
 using MongoDbServer.BsonClassMaps;
 using MongoDbServer.MongoDocs;
+using ObservationUtil;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.MeasuringsProviders;
 using PlantingLib.Messenging;
@@ -43,6 +44,7 @@ using PlantsWpf.ArgsForEvents;
 using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
+using WeatherUtil;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
@@ -50,7 +52,7 @@ namespace PlantsWpf
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : IReciever
     {
         private SensorsCollection _sensorsCollection;
         private Observer _observer;
@@ -70,26 +72,23 @@ namespace PlantsWpf
 
         public MainWindow()
         {
-             var w = new MessageQueueWorker("StorageConnectionString",
-                                       "test",
-                                       "poison-test",
-                                        1,
-                                        1);
-             w.Start();
+            var queueWorker = new MessageQueueWorker("StorageConnectionString", "myqueue", "poison-myqueue", 1, 1);
+            queueWorker.MessageSending += RecieveMessage;
+            queueWorker.Start();
 
             //
 
             // Retrieve storage account from connection string.
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-                CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+            //    CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
-            // Create the queue client.
-            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+            //// Create the queue client.
+            //CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
 
-            // Retrieve a reference to a container.
-            CloudQueue queue = queueClient.GetQueueReference("myqueue");
+            //// Retrieve a reference to a container.
+            //CloudQueue queue = queueClient.GetQueueReference("myqueue");
 
-            var mes = queue.GetMessage();
+            //var mes = queue.GetMessage();
 
             //
 
@@ -119,6 +118,10 @@ namespace PlantsWpf
             Weather.SetWeather(WeatherTypesEnum.Warm);
 
             SetBsonClassMaps();
+        }
+
+        public void LoadMessage(string mes)
+        {
         }
 
         private void SetBsonClassMaps()
@@ -171,7 +174,7 @@ namespace PlantsWpf
                 {
                     _beginDateTime = _beginDateTime.Add(SystemTimer.RestartTimeSpan);
 
-                    timeSpan = new TimeSpan(0, 0, (int)(timeSpan.TotalSeconds % SystemTimer.RestartTimeSpan.TotalSeconds));
+                    timeSpan = new TimeSpan(0, 0, (int) (timeSpan.TotalSeconds%SystemTimer.RestartTimeSpan.TotalSeconds));
 
                     //restarting timer and reseting all functions values to base values (new day after night sleep)
                     SystemTimer.Restart();
@@ -192,11 +195,13 @@ namespace PlantsWpf
             //ISensorMappingRepository sensorRepository = new SensorMappingRepository();
             //IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
 
-            MySqlMeasurableParameterMappingRepository sqlMeasurableParameterMappingRepository = new MySqlMeasurableParameterMappingRepository();
+            MySqlMeasurableParameterMappingRepository sqlMeasurableParameterMappingRepository =
+                new MySqlMeasurableParameterMappingRepository();
             MySqlPlantMappingRepository sqlPlantMappingRepository = new MySqlPlantMappingRepository();
             MySqlPlantsAreaMappingRepository sqlPlantsAreaMappingRepository = new MySqlPlantsAreaMappingRepository();
             MySqlSensorMappingRepository sqlSensorMappingRepository = new MySqlSensorMappingRepository();
-            MySqlServiceScheduleMappingRepository sqlServiceScheduleMappingRepository = new MySqlServiceScheduleMappingRepository();
+            MySqlServiceScheduleMappingRepository sqlServiceScheduleMappingRepository =
+                new MySqlServiceScheduleMappingRepository();
 
             _dbMapper = new DbMapper(sqlPlantMappingRepository,
                 sqlMeasurableParameterMappingRepository, sqlServiceScheduleMappingRepository);
@@ -207,7 +212,8 @@ namespace PlantsWpf
 
             if (_user != null)
             {
-                plantsAreaMappings = sqlPlantsAreaMappingRepository.GetAll(mapping => mapping.UserId == new Guid(_user.Id));
+                plantsAreaMappings =
+                    sqlPlantsAreaMappingRepository.GetAll(mapping => mapping.UserId == new Guid(_user.Id));
             }
 
             _plantsAreas = new PlantsAreas();
@@ -218,7 +224,8 @@ namespace PlantsWpf
 
             foreach (PlantsArea area in _plantsAreas.Areas)
             {
-                foreach (SensorMapping sensorMapping in sqlSensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id))
+                foreach (
+                    SensorMapping sensorMapping in sqlSensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id))
                 {
                     Sensor sensor = _dbMapper.RestoreSensor(sensorMapping, area);
                     if (sensor != null)
@@ -276,9 +283,9 @@ namespace PlantsWpf
                     Border borderedPlantAreaPanel = CreateFullPlantAreaPanel(area, marginLeft, marginTop);
                     PlantsGrid.Children.Add(borderedPlantAreaPanel);
 
-                    marginLeft += sizeHorizontal / numberInRow;
+                    marginLeft += sizeHorizontal/numberInRow;
 
-                    if ((index + 1) % numberInRow == 0)
+                    if ((index + 1)%numberInRow == 0)
                     {
                         marginLeft = 10;
                         marginTop += sizeVertical;
@@ -384,7 +391,8 @@ namespace PlantsWpf
             Menu menu = new Menu();
 
             DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever =
-                new DbMeasuringMessagesRetriever(new MySqlMeasuringMessageMappingRepository(), _observer.MessagesDictionary);
+                new DbMeasuringMessagesRetriever(new MySqlMeasuringMessageMappingRepository(),
+                    _observer.MessagesDictionary);
 
             PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
                 plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, dbMeasuringMessagesRetriever,
@@ -412,7 +420,7 @@ namespace PlantsWpf
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 BorderBrush = Brushes.Black,
-                Background = (LinearGradientBrush)ResourceDictionary["PlantsAreaBackground"],
+                Background = (LinearGradientBrush) ResourceDictionary["PlantsAreaBackground"],
                 BorderThickness = new Thickness(2),
                 Width = plantAreaSensorsPanel.Width,
                 Height = plantAreaSensorsPanel.Height,
@@ -655,7 +663,7 @@ namespace PlantsWpf
             if (CreateAccount.IsChecked != null && !(bool) CreateAccount.IsChecked)
             {
                 Logginglabel.Content = @"You are being logged in. Please, wait...";
-              
+
                 //_oldUser = GetUser(firstName, lastName, password);
                 //return;
 
@@ -673,7 +681,7 @@ namespace PlantsWpf
                     RememberMe = true
                 };
 
-                response = await _mySqlDbDataModifier.LoginUser(loginViewModel);//.Start();//ContinueWith(); //.Result;
+                response = await _mySqlDbDataModifier.LoginUser(loginViewModel); //.Start();//ContinueWith(); //.Result;
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -764,6 +772,22 @@ namespace PlantsWpf
         private void CreateAccount_OnUnchecked(object sender, RoutedEventArgs e)
         {
             RegisterGrid.Visibility = Visibility.Collapsed;
+        }
+
+        public void RecieveMessage(object sender, EventArgs eventArgs)
+        {
+            try
+            {
+                MessengingEventArgs<WeatherModel> messengingEventArgs =
+                    eventArgs as MessengingEventArgs<WeatherModel>;
+                if (messengingEventArgs != null)
+                {
+                    WeatherModel recievedMessage = messengingEventArgs.Object;
+                }
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 }

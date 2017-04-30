@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureQueuing", "AzureQueuing\AzureQueuing.csproj", "{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObservationUtil", "ObservationUtil\ObservationUtil.csproj", "{4D9E28C7-50C4-42B7-A42D-8A2A32CFE53C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherUtil", "WeatherUtil\WeatherUtil.csproj", "{FD017C23-4C62-4BFE-8824-9A83A68F240D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +68,14 @@ Global
 		{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ABB1D63-677F-463E-B3AB-1A5DD988FE54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D9E28C7-50C4-42B7-A42D-8A2A32CFE53C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D9E28C7-50C4-42B7-A42D-8A2A32CFE53C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D9E28C7-50C4-42B7-A42D-8A2A32CFE53C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D9E28C7-50C4-42B7-A42D-8A2A32CFE53C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD017C23-4C62-4BFE-8824-9A83A68F240D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD017C23-4C62-4BFE-8824-9A83A68F240D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD017C23-4C62-4BFE-8824-9A83A68F240D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD017C23-4C62-4BFE-8824-9A83A68F240D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

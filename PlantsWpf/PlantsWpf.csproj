@@ -348,9 +348,17 @@
       <Project>{7c987ec6-6a95-469e-8440-24f3e4332d9b}</Project>
       <Name>MongoDbServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ObservationUtil\ObservationUtil.csproj">
+      <Project>{4d9e28c7-50c4-42b7-a42d-8a2a32cfe53c}</Project>
+      <Name>ObservationUtil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Plants\PlantingLib.csproj">
       <Project>{b3521b62-7b55-452d-9b22-99075e2e4116}</Project>
       <Name>PlantingLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WeatherUtil\WeatherUtil.csproj">
+      <Project>{fd017c23-4c62-4bfe-8824-9a83a68f240d}</Project>
+      <Name>WeatherUtil</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

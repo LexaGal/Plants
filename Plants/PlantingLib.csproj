@@ -65,10 +65,7 @@
     <Compile Include="MeasurableParameters\ParameterEnum.cs" />
     <Compile Include="MeasurableParameters\ParameterServices.cs" />
     <Compile Include="MessagesCreators\MeasuringMessageCreator.cs" />
-    <Compile Include="Messenging\MessengingEventArgs.cs" />
-    <Compile Include="MeasuringsProviders\ISender.cs" />
     <Compile Include="Messenging\MeasuringMessage.cs" />
-    <Compile Include="Observation\IReciever.cs" />
     <Compile Include="ParametersFunctions\CustomParameterFunction.cs" />
     <Compile Include="ParametersFunctions\HumidityFunction.cs" />
     <Compile Include="ParametersFunctions\NutrientFunction.cs" />
@@ -131,6 +128,10 @@
     <ProjectReference Include="..\Database\Database.csproj">
       <Project>{3A18D4AC-4B79-4FED-B466-87D8E29101D3}</Project>
       <Name>Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObservationUtil\ObservationUtil.csproj">
+      <Project>{4d9e28c7-50c4-42b7-a42d-8a2a32cfe53c}</Project>
+      <Name>ObservationUtil</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
