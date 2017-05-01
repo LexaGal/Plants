@@ -37,6 +37,7 @@ using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
 using WeatherUtil;
+using Brush = System.Drawing.Brush;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
@@ -64,12 +65,11 @@ namespace PlantsWpf
         private ApplicationUser _user;
         //private User _oldUser;
 
-        public MainWindow()
-        {
-            var queueWorker = new MessageQueueWorker("StorageConnectionString", "myqueue", "poison-myqueue", 1, 1);
-            queueWorker.MessageSending += RecieveMessage;
-            queueWorker.Start();
+        private Dictionary<Guid, IEnumerable<WeatherItem>> _areaWeatherModels = new Dictionary<Guid, IEnumerable<WeatherItem>>();
+        private Dictionary<Guid, Label> _areaWeatherInfoLabels = new Dictionary<Guid, Label>();
 
+        public MainWindow()
+        {            
             //
 
             // Retrieve storage account from connection string.
@@ -114,8 +114,11 @@ namespace PlantsWpf
             SetBsonClassMaps();
         }
 
-        public void LoadMessage(string mes)
+        public void StartQueueWorker()
         {
+            var queueWorker = new MessageQueueWorker("StorageConnectionString", "myqueue", "poison-myqueue", 1, 1);
+            queueWorker.MessageSending += RecieveMessage;
+            queueWorker.Start();
         }
 
         private void SetBsonClassMaps()
@@ -172,7 +175,7 @@ namespace PlantsWpf
 
                     //restarting timer and reseting all functions values to base values (new day after night sleep)
                     SystemTimer.Restart();
-                    _sensorsCollection.Sensors.ForEach(s => s.Function.ResetFunction(s.MeasurableParameter.Optimal));
+                    _sensorsCollection.Sensors.ForEach(s => s.Function.SetCurrentValue(s.MeasurableParameter.Optimal));
                 }
 
                 SystemTimer.CurrentTimeSpan = timeSpan;
@@ -258,11 +261,14 @@ namespace PlantsWpf
             //new MySqlMeasurableParameterMappingRepository(),
             //               new MySqlPlantMappingRepository(), new MySqlPlantsAreaMappingRepository(),
             //               new MySqlSensorMappingRepository(), new MySqlServiceScheduleMappingRepository(), new MySqlMeasuringMessageMappingRepository(), new SensorsCollection(), new PlantsAreas());
+
+            _plantsAreas.Areas.ForEach(a => _areaWeatherModels.Add(a.Id, new List<WeatherItem>()));
+            //_plantsAreas.Areas.ForEach(a => _areaWeatherInfoLabels.Add(a.Id, new List<WeatherItem>()));
         }
 
         private void SetPlantsGrid(int numberInRow)
         {
-            const int sizeHorizontal = 1330;
+            const int sizeHorizontal = 1600;
             const int sizeVertical = 310;
             try
             {
@@ -288,7 +294,7 @@ namespace PlantsWpf
             }
             catch (InvalidOperationException e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
             }
         }
 
@@ -302,7 +308,7 @@ namespace PlantsWpf
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
-                Width = 1330,
+                Width = 1550,
                 Height = 300,
                 CanVerticallyScroll = true,
                 CanHorizontallyScroll = true,
@@ -310,10 +316,29 @@ namespace PlantsWpf
 
             plantAreaSensorsPanel.Children.Add(new Label
             {
+                Margin = new Thickness(10, 10, 0, 0),
+                Name = "AreaInfo",
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Content = area.ToString()
+                Content = area.ToString(),
+                BorderBrush = Brushes.LawnGreen,
+                BorderThickness = new Thickness(1)
             });
+
+            var weatherInfoLabel = new Label
+            {
+                Margin = new Thickness(10, 10, 0, 0),
+                Name = "WeatherInfo",
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Content = WeatherModel.WeatherItemsToString(_areaWeatherModels[area.Id]),
+                BorderBrush = Brushes.LawnGreen,
+                BorderThickness = new Thickness(1)
+            };
+
+            _areaWeatherInfoLabels.Add(area.Id, weatherInfoLabel);
+            
+            plantAreaSensorsPanel.Children.Add(weatherInfoLabel);
 
             BindingList<DataGridSensorView> dataGridSensorViews = new BindingList<DataGridSensorView>(
                 area.Sensors.OrderBy(s => s.IsCustom).ToList().ConvertAll(s => new DataGridSensorView(s)))
@@ -447,6 +472,9 @@ namespace PlantsWpf
         {
             if (_mySqlDbDataModifier.AddPlantsArea(plantsArea))
             {
+                _areaWeatherInfoLabels.Clear();
+                _areaWeatherModels.Add(plantsArea.Id, new List<WeatherItem>());
+
                 SetPlantsGrid(1);
                 MessageBox.Show($"{plantsArea} area added");
 
@@ -486,6 +514,9 @@ namespace PlantsWpf
 
             if (_mySqlDbDataModifier.RemovePlantsArea(plantsArea))
             {
+                _areaWeatherInfoLabels.Clear();
+                _areaWeatherModels.Remove(plantsArea.Id);
+                
                 SetPlantsGrid(1);
                 MessageBox.Show($"{plantsArea} area removed");
 
@@ -755,6 +786,8 @@ namespace PlantsWpf
                 Logginglabel.Visibility = Visibility.Hidden;
             }
             LogIn.IsExpanded = false;
+
+            StartQueueWorker();
         }
 
         private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)
@@ -775,12 +808,39 @@ namespace PlantsWpf
                     eventArgs as MessengingEventArgs<WeatherModel>;
                 if (messengingEventArgs != null)
                 {
-                    WeatherModel recievedMessage = messengingEventArgs.Object;
+                    WeatherModel weatherModel = messengingEventArgs.Object;
+
+                    if (!(Guid.Parse(weatherModel.UserId) == Guid.Parse(_user.Id)))
+                    {
+                        return;
+                    }
+
+                    var guids = weatherModel.AreasIds.Select(Guid.Parse).ToList();
+
+                    guids.ForEach(g =>
+                    {
+                        if (_areaWeatherModels.ContainsKey(g))
+                        {
+                            _areaWeatherModels[g] = weatherModel.WeatherItems;
+                            var items = _areaWeatherModels[g];
+
+                            Dispatcher.Invoke(() =>
+                            {
+                                _areaWeatherInfoLabels[g].Content = WeatherModel.WeatherItemsToString(items);
+                            });
+
+                            var temp = items.Single(i => i.Name == "Temperature").Value;
+
+                            var area = _plantsAreas.Areas.Single(a => a.Id == g);
+                            var tempSensor = area.Sensors.Single(s => s.GetType() == typeof(TemperatureSensor));
+                            tempSensor.Function.SetCurrentValue(double.Parse(temp));
+                        }
+                    });
                 }
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
             }
         }
     }

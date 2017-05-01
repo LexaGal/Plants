@@ -17,29 +17,20 @@ namespace WebApi.Controllers
         [System.Web.Http.Route("api/weather/set")]
         public JsonResult Set(WeatherModel weather)
         {
-            //JsonResult>
-            // Retrieve storage account from connection string.
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
                 CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
-            // Create the queue client.
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
 
-            // Retrieve a reference to a container.
             CloudQueue queue = queueClient.GetQueueReference("myqueue");
 
-            // Create the queue if it doesn't already exist 
             queue.CreateIfNotExists();
 
             var w = JsonConvert.SerializeObject(weather);
 
-            // Create a message and add it to the queue.
-            CloudQueueMessage message = new CloudQueueMessage(w); //"Hello, World");
-            //return
+            CloudQueueMessage message = new CloudQueueMessage(w);
             queue.AddMessage(message);
-
-            //await//Async
-
+            
             return new JsonResult
             {
                 Data = new
@@ -50,17 +41,7 @@ namespace WebApi.Controllers
         }
     }
 
-    //    struct InfoData: IInfoData
-    //    {
-    //        public string FirstName { get; set; }
-    //        public string LastName { get; set; }
-    //    }
-
-    //    class Source
-    //    {
-    //        internal void CheckAndProceed(List<InfoData> data)
-    //        {
-    //            var dest = new Destination();
+                //, new List<WeatherItem>());
 
     //            //do something
 

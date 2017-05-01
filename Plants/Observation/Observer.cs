@@ -94,7 +94,7 @@ namespace PlantingLib.Observation
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
             }
         }
 

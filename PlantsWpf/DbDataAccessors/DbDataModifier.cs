@@ -93,7 +93,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
                 return false;
             }
         }
@@ -174,7 +174,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
                 return false;
             }
         }
@@ -195,7 +195,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
                 return false;         
             }
         } 
@@ -246,7 +246,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
                 return false;
             }
         }
@@ -285,7 +285,7 @@ namespace PlantsWpf.DbDataAccessors
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
                 return false;
             }
         }

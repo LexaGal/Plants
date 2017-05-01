@@ -95,7 +95,7 @@ namespace PlantingLib.ServiceSystems
             Sensor sensor = PlantsArea.Sensors.SingleOrDefault(s => s.MeasurableParameter.MeasurableType == MeasurableType);
             if (sensor != null)
             {
-                sensor.Function.ResetFunction(newFunctionValue);
+                sensor.Function.SetCurrentValue(newFunctionValue);
             }
         }
 

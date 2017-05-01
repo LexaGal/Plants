@@ -31,7 +31,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
             catch (Exception e)
             {
                 
-                logger.Error(e.GetBaseException().Message);
+                logger.Error(e.ToString());
                 return 0;
             }
         }

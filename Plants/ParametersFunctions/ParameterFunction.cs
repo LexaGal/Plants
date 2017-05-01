@@ -34,7 +34,7 @@ namespace PlantingLib.ParametersFunctions
 
         public abstract double NewFunctionValue();
 
-        public void ResetFunction(double newFunctionValue)
+        public void SetCurrentValue(double newFunctionValue)
         {
             CurrentFunctionValue = newFunctionValue;
         }       

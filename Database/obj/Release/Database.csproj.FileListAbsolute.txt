@@ -36,3 +36,5 @@ D:\Projects\PlantingWork\Plants\Database\bin\Release\EntityFramework.SqlServer.x
 D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.dll
 D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.pdb
 D:\Projects\PlantingWork\Plants\Database\obj\Release\Database.csprojResolveAssemblyReference.cache
+D:\Projects\PlantingWork\Plants\Database\bin\Release\NLog.dll
+D:\Projects\PlantingWork\Plants\Database\bin\Release\NLog.xml

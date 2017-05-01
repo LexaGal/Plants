@@ -140,7 +140,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message, $"MeasurableParameter Id: {measurableParameterMapping.Id}");
+                logger.Error(e.ToString(), $"MeasurableParameter Id: {measurableParameterMapping.Id}");
                 return null;
             }
         }
@@ -176,7 +176,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message, $"ServiceSchedule Id: {serviceScheduleMapping.Id}");
+                logger.Error(e.ToString(), $"ServiceSchedule Id: {serviceScheduleMapping.Id}");
                 return null;
             }
         }
@@ -219,7 +219,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message, $"Plant Id: {plantMapping.Id}");
+                logger.Error(e.ToString(), $"Plant Id: {plantMapping.Id}");
                 return null;
             }
         }
@@ -246,7 +246,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message, $"PlantsArea Id: {plantsAreaMapping.Id}");
+                logger.Error(e.ToString(), $"PlantsArea Id: {plantsAreaMapping.Id}");
                 return null;
             }
         }
@@ -289,7 +289,7 @@ namespace Mapper.MapperContext
             }
             catch (Exception e)
             {
-                logger.Error(e.GetBaseException().Message, $"Sensor Id: {sensorMapping.Id}");
+                logger.Error(e.ToString(), $"Sensor Id: {sensorMapping.Id}");
                 return null;
             }
             return null;
