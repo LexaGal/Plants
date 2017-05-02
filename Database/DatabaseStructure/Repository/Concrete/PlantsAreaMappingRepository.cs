@@ -1,6 +1,6 @@
 using System;
 using Database.DatabaseStructure.Repository.Abstract;
-using PlantsAreaMapping = Database.MappingTypes.PlantsAreaMapping;
+using Database.MappingTypes;
 
 namespace Database.DatabaseStructure.Repository.Concrete
 {

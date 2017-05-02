@@ -5,8 +5,6 @@ namespace PlantingLib.Plants
 {
     public class PlantsAreas
     {
-        public List<PlantsArea> Areas { get; private set; }
-
         public PlantsAreas()
         {
             Areas = new List<PlantsArea>();
@@ -17,12 +15,12 @@ namespace PlantingLib.Plants
             Areas = areas;
         }
 
+        public List<PlantsArea> Areas { get; private set; }
+
         public void AddPlantsArea(PlantsArea area)
         {
             if (Areas == null)
-            {
                 Areas = new List<PlantsArea>();
-            }
             Areas.Add(area);
             Areas = Areas
                 //.OrderBy(p => p.Plant.Name)
@@ -34,9 +32,7 @@ namespace PlantingLib.Plants
             if (Areas != null)
             {
                 if (Areas.All(s => s.Id != area.Id))
-                {
                     return false;
-                }
                 return Areas.Remove(area);
             }
             return false;

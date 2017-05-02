@@ -5,16 +5,6 @@ namespace Database.MappingTypes
 {
     public class ServiceScheduleMapping
     {
-        [Key]
-        public Guid Id { get; set; }
-
-        public Guid PlantsAreaId { get; set; }
-        public string ServiceState { get; set; }
-        public int ServicingSpan { get; set; }
-        public int ServicingPauseSpan { get; set; }
-
-        public string MeasurableParametersIds { get; set; }
-
         public ServiceScheduleMapping()
         {
         }
@@ -29,6 +19,16 @@ namespace Database.MappingTypes
             ServicingPauseSpan = servicingPauseSpan;
             MeasurableParametersIds = measurableParametersIds;
         }
+
+        [Key]
+        public Guid Id { get; set; }
+
+        public Guid PlantsAreaId { get; set; }
+        public string ServiceState { get; set; }
+        public int ServicingSpan { get; set; }
+        public int ServicingPauseSpan { get; set; }
+
+        public string MeasurableParametersIds { get; set; }
 
         public void CopyTo(ServiceScheduleMapping serviceScheduleMapping)
         {

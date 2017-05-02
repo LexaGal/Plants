@@ -16,13 +16,13 @@ namespace PlantingLib.ServiceSystems
             {
                 if (ServiceTimeSpan == TimeSpan.Zero)
                 {
-                    TimeSpan timeSpan = new TimeSpan(0, 0, (int) (Math.Abs(ParameterValue -
-                                                                           PlantsArea.Plant.Humidity.Optimal))/3);
+                    var timeSpan = new TimeSpan(0, 0, (int) Math.Abs(ParameterValue -
+                                                                     PlantsArea.Plant.Humidity.Optimal)/3);
                     return timeSpan;
                 }
                 return ServiceTimeSpan;
             }
             return TimeSpan.Zero;
         }
-    }   
+    }
 }

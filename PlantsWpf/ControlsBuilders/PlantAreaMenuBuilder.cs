@@ -22,15 +22,29 @@ namespace PlantsWpf.ControlsBuilders
 {
     public class PlantAreaMenuBuilder
     {
-        private readonly StackPanel _plantAreaSensorsPanel;
-        private readonly StackPanel _plantAreaChartsPanel;
-        private readonly Menu _menu;
         private readonly ChartDescriptor _chartDescriptor;
         private readonly DbMeasuringMessagesRetriever _dbMeasuringMessagesRetriever;
-        private List<Chart> _charts;
-        private bool _refreshLastMin;
+        private readonly Menu _menu;
+        private readonly StackPanel _plantAreaChartsPanel;
+        private readonly StackPanel _plantAreaSensorsPanel;
         private bool _autorefresh;
+        private List<Chart> _charts;
         private DispatcherTimer _dispatcherTimer;
+        private bool _refreshLastMin;
+
+        public PlantAreaMenuBuilder(StackPanel plantAreaSensorsPanel, StackPanel plantAreaChartsPanel,
+            Menu menu, IControlsRefresher controlsRefresher, DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever,
+            ChartDescriptor chartDescriptor)
+        {
+            controlsRefresher.RefreshControl += RefreshControls;
+            _plantAreaSensorsPanel = plantAreaSensorsPanel;
+            _plantAreaChartsPanel = plantAreaChartsPanel;
+            _menu = menu;
+            _chartDescriptor = chartDescriptor;
+            _dbMeasuringMessagesRetriever = dbMeasuringMessagesRetriever;
+            _refreshLastMin = false;
+            _autorefresh = false;
+        }
 
         private Chart Chart => _charts?.Single(ch => ch.Title.ToString() == _chartDescriptor.MeasurableType);
 
@@ -50,20 +64,6 @@ namespace PlantsWpf.ControlsBuilders
             RebuildMenu();
         }
 
-        public PlantAreaMenuBuilder(StackPanel plantAreaSensorsPanel, StackPanel plantAreaChartsPanel,
-            Menu menu, IControlsRefresher controlsRefresher, DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever,
-            ChartDescriptor chartDescriptor)
-        {
-            controlsRefresher.RefreshControl += RefreshControls;
-            _plantAreaSensorsPanel = plantAreaSensorsPanel;
-            _plantAreaChartsPanel = plantAreaChartsPanel;
-            _menu = menu;
-            _chartDescriptor = chartDescriptor;
-            _dbMeasuringMessagesRetriever = dbMeasuringMessagesRetriever;
-            _refreshLastMin = false;
-            _autorefresh = false;
-        }
-
         public void RebuildMenu()
         {
             _menu.Items.Clear();
@@ -72,19 +72,19 @@ namespace PlantsWpf.ControlsBuilders
 
             _charts = _plantAreaChartsPanel.Children.OfType<Chart>().ToList();
 
-            BackgroundWorker worker = new BackgroundWorker();
-            AreaSeries areaSeries = Chart.Series[0] as AreaSeries;
+            var worker = new BackgroundWorker();
+            var areaSeries = Chart.Series[0] as AreaSeries;
             IEnumerable<KeyValuePair<DateTime, double>> statistics = new List<KeyValuePair<DateTime, double>>();
 
-            MenuItem menuItemCharts = new MenuItem
+            var menuItemCharts = new MenuItem
             {
                 Header = "Charts"
             };
             _menu.Items.Add(menuItemCharts);
 
-            foreach (Chart chart in _charts)
+            foreach (var chart in _charts)
             {
-                MenuItem menuItemChart = new MenuItem
+                var menuItemChart = new MenuItem
                 {
                     Header = chart.Title
                 };
@@ -101,7 +101,7 @@ namespace PlantsWpf.ControlsBuilders
                 menuItemCharts.Items.Add(menuItemChart);
             }
 
-            MenuItem menuItemSensors = new MenuItem
+            var menuItemSensors = new MenuItem
             {
                 Header = "Sensors"
             };
@@ -114,7 +114,7 @@ namespace PlantsWpf.ControlsBuilders
 
             //_menu.Items.Add(ExportChartToPdfMenuItem());
 
-            Button refreshButton = new Button
+            var refreshButton = new Button
             {
                 Content = "Refresh",
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -126,10 +126,7 @@ namespace PlantsWpf.ControlsBuilders
                 refreshButton.IsEnabled = false;
                 refreshButton.Content = "Refreshing";
 
-                worker.DoWork += delegate
-                {
-                    statistics = Statistics;
-                };
+                worker.DoWork += delegate { statistics = Statistics; };
 
                 worker.RunWorkerCompleted += delegate
                 {
@@ -141,37 +138,33 @@ namespace PlantsWpf.ControlsBuilders
                     }
                 };
                 if (!worker.IsBusy)
-                {
                     worker.RunWorkerAsync();
-                }
             };
 
             refreshButton.Click += delegate
             {
-                if (_refreshLastMin == false && _autorefresh == false)
-                {
+                if ((_refreshLastMin == false) && (_autorefresh == false))
                     SetChartDescriptor(Chart.Title.ToString(), _chartDescriptor.DateTimeFrom,
                         _chartDescriptor.DateTimeTo,
                         true);
-                }
                 areaSeries = Chart.Series[0] as AreaSeries;
                 Chart.Dispatcher.BeginInvoke(DispatcherPriority.Background, backgroundWork);
             };
 
             SetDispatcherTimer(backgroundWork);
 
-            Label refreshLastMinLabel = new Label {Content = "Refresh only last min"};
-            CheckBox refreshLastMinCheckBox = new CheckBox
+            var refreshLastMinLabel = new Label {Content = "Refresh only last min"};
+            var refreshLastMinCheckBox = new CheckBox
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
             };
-            
-            Label autorefreshLabel = new Label {Content = "Auto refresh"};
-            CheckBox autorefreshCheckBox = new CheckBox
+
+            var autorefreshLabel = new Label {Content = "Auto refresh"};
+            var autorefreshCheckBox = new CheckBox
             {
                 HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
             };
 
             refreshLastMinCheckBox.Checked += delegate
@@ -180,13 +173,13 @@ namespace PlantsWpf.ControlsBuilders
                     false);
 
                 _refreshLastMin = true;
-                
+
                 autorefreshCheckBox.IsEnabled = false;
             };
             refreshLastMinCheckBox.Unchecked += delegate
             {
                 _refreshLastMin = false;
-                
+
                 autorefreshCheckBox.IsEnabled = true;
             };
 
@@ -208,7 +201,7 @@ namespace PlantsWpf.ControlsBuilders
 
                 _dispatcherTimer.Stop();
             };
-            DockPanel buttonsDockPanel = new DockPanel();
+            var buttonsDockPanel = new DockPanel();
             buttonsDockPanel.Children.Add(refreshButton);
             buttonsDockPanel.Children.Add(refreshLastMinLabel);
             buttonsDockPanel.Children.Add(refreshLastMinCheckBox);
@@ -228,29 +221,27 @@ namespace PlantsWpf.ControlsBuilders
                     false);
 
                 if (_autorefresh == false)
-                {
                     return;
-                }
                 Chart.Dispatcher.BeginInvoke(DispatcherPriority.Background, del);
             };
         }
 
         public MenuItem ExportChartToPdfMenuItem()
         {
-            MenuItem exportChartToPdfMenuItem = new MenuItem
+            var exportChartToPdfMenuItem = new MenuItem
             {
                 Margin = new Thickness(0, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
-                Header = "To pdf",
+                Header = "To pdf"
             };
-            exportChartToPdfMenuItem.Click += delegate 
-            {              
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
+            exportChartToPdfMenuItem.Click += delegate
+            {
+                var saveFileDialog = new SaveFileDialog();
 
                 saveFileDialog.FileOk += (sender, args) =>
                 {
-                    PdfDocumentCreator creator = new PdfDocumentCreator();
+                    var creator = new PdfDocumentCreator();
                     creator.CreatePdfDocument(Chart, saveFileDialog.FileName);
                     MessageBox.Show("Pdf document saved!");
                 };

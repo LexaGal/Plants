@@ -13,12 +13,12 @@ namespace MongoDbServer
 
         public static void Start()
         {
-            IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler();
+            var scheduler = StdSchedulerFactory.GetDefaultScheduler();
             scheduler.Start();
 
-            IJobDetail job = JobBuilder.Create<CollectionsUpdator>().Build();
+            var job = JobBuilder.Create<CollectionsUpdator>().Build();
 
-            ITrigger trigger = TriggerBuilder.Create().Build();
+            var trigger = TriggerBuilder.Create().Build();
 
             scheduler.ScheduleJob(job, trigger);
         }

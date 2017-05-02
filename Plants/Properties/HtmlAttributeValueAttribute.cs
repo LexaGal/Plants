@@ -10,6 +10,7 @@ namespace PlantingLib.Properties
             Name = name;
         }
 
-        [NotNull] public string Name { get; private set; }
+        [NotNull]
+        public string Name { get; private set; }
     }
 }

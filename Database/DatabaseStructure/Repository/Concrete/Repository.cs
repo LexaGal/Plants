@@ -6,18 +6,16 @@ using Database.DatabaseStructure.Repository.Abstract;
 
 namespace Database.DatabaseStructure.Repository.Concrete
 {
-    public abstract class Repository<T> : IRepository<T> where T: class
+    public abstract class Repository<T> : IRepository<T> where T : class
     {
         protected PlantingDb Context = new PlantingDb();
-        
+
         public virtual List<T> GetAll(Expression<Func<T, bool>> func = null)
         {
             using (Context = new PlantingDb())
             {
                 if (func != null)
-                {
                     return Context.Set<T>().Where(func).ToList();
-                }
                 return Context.Set<T>().ToList();
             }
         }
@@ -43,14 +41,14 @@ namespace Database.DatabaseStructure.Repository.Concrete
                 return Edit(value);
             }
         }
-        
+
         public abstract bool Edit(T value);
-       
+
         public virtual bool Delete(Guid id)
         {
             using (Context = new PlantingDb())
             {
-                T t = Context.Set<T>().Find(id);
+                var t = Context.Set<T>().Find(id);
                 if (t != null)
                 {
                     Context.Set<T>().Remove(t);
@@ -64,9 +62,7 @@ namespace Database.DatabaseStructure.Repository.Concrete
         public virtual void Dispose()
         {
             if (Context != null)
-            {
                 Context.Dispose();
-            }
         }
     }
 }

@@ -7,12 +7,12 @@ namespace DatabaseCleanerServer
     {
         public static void Start()
         {
-            IScheduler scheduler = StdSchedulerFactory.GetDefaultScheduler();
+            var scheduler = StdSchedulerFactory.GetDefaultScheduler();
             scheduler.Start();
 
-            IJobDetail job = JobBuilder.Create<DatabaseCleaner>().Build();
+            var job = JobBuilder.Create<DatabaseCleaner>().Build();
 
-            ITrigger trigger = TriggerBuilder.Create()
+            var trigger = TriggerBuilder.Create()
                 .WithDailyTimeIntervalSchedule(s =>
                     s.WithIntervalInSeconds(60)
                         .OnEveryDay()

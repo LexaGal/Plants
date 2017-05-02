@@ -2,7 +2,7 @@ using System;
 
 namespace PlantingLib.MeasurableParameters
 {
-    public class CustomParameter: MeasurableParameter
+    public class CustomParameter : MeasurableParameter
     {
         public CustomParameter(Guid id, int optimal, int min, int max, string measurableType)
             : base(id, optimal, min, max)

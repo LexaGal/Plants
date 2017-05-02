@@ -37,39 +37,39 @@ using PlantsWpf.ControlsBuilders;
 using PlantsWpf.DbDataAccessors;
 using PlantsWpf.ObjectsViews;
 using WeatherUtil;
-using Brush = System.Drawing.Brush;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PlantsWpf
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : IReciever
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
-        private SensorsCollection _sensorsCollection;
-        private Observer _observer;
-        //private MongoMessagesListener _mongoMessagesListener;
-        private PlantsAreas _plantsAreas;
-        private SensorsMeasuringsProvider _sensorsMeasuringsProvider;
-        private ServiceProvider _serviceProvider;
-        private DbMapper _dbMapper;
-        private DateTime _beginDateTime;
-        //private DbDataModifier _dbDataModifier;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public static ResourceDictionary ResourceDictionary;
+
+        private readonly Dictionary<Guid, Label> _areaWeatherInfoLabels = new Dictionary<Guid, Label>();        
+        private Dictionary<Guid, IEnumerable<WeatherItem>> _areaWeatherModels =
+            new Dictionary<Guid, IEnumerable<WeatherItem>>();
+
+        private DateTime _beginDateTime;
+        private DbMapper _dbMapper;
         private MongoDbAccessor _mongoDbAccessor;
         private MySqlDbDataModifier _mySqlDbDataModifier;
-
+        private Observer _observer;
+        private PlantsAreas _plantsAreas;
+        private SensorsCollection _sensorsCollection;
+        private SensorsMeasuringsProvider _sensorsMeasuringsProvider;
+        private ServiceProvider _serviceProvider;
         private ApplicationUser _user;
-        //private User _oldUser;
 
-        private Dictionary<Guid, IEnumerable<WeatherItem>> _areaWeatherModels = new Dictionary<Guid, IEnumerable<WeatherItem>>();
-        private Dictionary<Guid, Label> _areaWeatherInfoLabels = new Dictionary<Guid, Label>();
+        //private DbDataModifier _dbDataModifier;
+        //private User _oldUser;
+        //private MongoMessagesListener _mongoMessagesListener;
 
         public MainWindow()
-        {            
+        {
             //
 
             // Retrieve storage account from connection string.
@@ -88,16 +88,16 @@ namespace PlantsWpf
 
             InitializeComponent();
 
-            Logginglabel.SetBinding(Label.VisibilityProperty, new Binding()
+            Logginglabel.SetBinding(VisibilityProperty, new Binding
             {
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
-            Logginglabel.SetBinding(Label.ContentProperty, new Binding()
+            Logginglabel.SetBinding(ContentProperty, new Binding
             {
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
-            Logginglabel.SetValue(Label.ContentProperty, "You are being logged in. Please, wait...");
-            Logginglabel.SetValue(Label.VisibilityProperty, Visibility.Hidden);
+            Logginglabel.SetValue(ContentProperty, "You are being logged in. Please, wait...");
+            Logginglabel.SetValue(VisibilityProperty, Visibility.Hidden);
 
             ResourceDictionary = Application.LoadComponent(
                 new Uri("/PlantsWpf;component/ResDictionary.xaml",
@@ -114,20 +114,81 @@ namespace PlantsWpf
             SetBsonClassMaps();
         }
 
-        public void StartQueueWorker()
+        public void Initialize()
         {
-            var queueWorker = new MessageQueueWorker("StorageConnectionString", "myqueue", "poison-myqueue", 1, 1);
-            queueWorker.MessageSending += RecieveMessage;
-            queueWorker.Start();
-        }
+            //IPlantMappingRepository plantRepository = new PlantMappingRepository();
+            //IPlantsAreaMappingRepository plantsAreaRepository = new PlantsAreaMappingRepository();
+            //IMeasurableParameterMappingRepository measurableParameterRepository =
+            //    new MeasurableParameterMappingRepository();
+            //ISensorMappingRepository sensorRepository = new SensorMappingRepository();
+            //IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
 
-        private void SetBsonClassMaps()
-        {
-            BsonClassMapsSetter.SetMongoSensorMap();
-            BsonClassMapsSetter.SetMongoPlantsArea();
-            BsonClassMapsSetter.SetMongoUserMap();
-            BsonClassMapsSetter.SetMongoMessageMap();
-            BsonClassMapsSetter.SetMongoNotificationMap();
+            var sqlMeasurableParameterMappingRepository =
+                new MySqlMeasurableParameterMappingRepository();
+            var sqlPlantMappingRepository = new MySqlPlantMappingRepository();
+            var sqlPlantsAreaMappingRepository = new MySqlPlantsAreaMappingRepository();
+            var sqlSensorMappingRepository = new MySqlSensorMappingRepository();
+            var sqlServiceScheduleMappingRepository =
+                new MySqlServiceScheduleMappingRepository();
+
+            _dbMapper = new DbMapper(sqlPlantMappingRepository,
+                sqlMeasurableParameterMappingRepository, sqlServiceScheduleMappingRepository);
+
+            _mongoDbAccessor = new MongoDbAccessor();
+
+            var plantsAreaMappings = new List<PlantsAreaMapping>();
+
+            if (_user != null)
+                plantsAreaMappings =
+                    sqlPlantsAreaMappingRepository.GetAll(mapping => mapping.UserId == new Guid(_user.Id));
+
+            _plantsAreas = new PlantsAreas();
+
+            plantsAreaMappings.ForEach(p => _plantsAreas.AddPlantsArea(_dbMapper.RestorePlantArea(p)));
+
+            _sensorsCollection = new SensorsCollection();
+
+            foreach (var area in _plantsAreas.Areas)
+                foreach (
+                    var sensorMapping in sqlSensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id))
+                {
+                    var sensor = _dbMapper.RestoreSensor(sensorMapping, area);
+                    if (sensor != null)
+                    {
+                        _sensorsCollection.AddSensor(sensor);
+                        sensor.IsOn = true;
+                    }
+                }
+
+            foreach (var area in _plantsAreas.Areas)
+                foreach (var source in area.Sensors.Where(s => s.IsCustom))
+                {
+                    var serviceState = new ServiceState(source.MeasurableType, true);
+                    area.PlantServicesStates.AddServiceState(serviceState);
+                }
+
+            _sensorsMeasuringsProvider = new SensorsMeasuringsProvider(_sensorsCollection);
+
+            _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
+
+            //_mongoMessagesListener = new MongoMessagesListener(_observer);
+
+            _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
+
+            //_dbDataModifier = new DbDataModifier(_plantsAreas, _sensorsCollection, measurableParameterRepository,
+            //    plantRepository, sensorRepository, plantsAreaRepository, serviceScheduleMappingRepository);
+
+            _mySqlDbDataModifier = new MySqlDbDataModifier(sqlMeasurableParameterMappingRepository,
+                sqlPlantMappingRepository, sqlPlantsAreaMappingRepository, sqlSensorMappingRepository,
+                sqlServiceScheduleMappingRepository, new MySqlMeasuringMessageMappingRepository(), _sensorsCollection,
+                _plantsAreas);
+            //new MySqlMeasurableParameterMappingRepository(),
+            //               new MySqlPlantMappingRepository(), new MySqlPlantsAreaMappingRepository(),
+            //               new MySqlSensorMappingRepository(), new MySqlServiceScheduleMappingRepository(), new MySqlMeasuringMessageMappingRepository(), new SensorsCollection(), new PlantsAreas());
+
+            _areaWeatherModels = new Dictionary<Guid, IEnumerable<WeatherItem>>();
+            _plantsAreas.Areas.ForEach(a => _areaWeatherModels.Add(a.Id, new List<WeatherItem>()));
+            // => _areaWeatherInfoLabels.Add(a.Id, tem>()));
         }
 
         public void StartMainProcess()
@@ -150,12 +211,85 @@ namespace PlantsWpf
             }
         }
 
+        public void StartQueueWorker()
+        {
+            var queueWorker = new MessageQueueWorker("StorageConnectionString", "myqueue", "poison-myqueue", 1, 1);
+            queueWorker.MessageSending += RecieveMessage;
+            queueWorker.Start();
+        }
+
+        public void RecieveMessage(object sender, EventArgs eventArgs)
+        {
+            try
+            {
+                var messengingEventArgs =
+                    eventArgs as MessengingEventArgs<WeatherModel>;
+                if (messengingEventArgs != null)
+                {
+                    var weatherModel = messengingEventArgs.Object;
+
+                    if (!(Guid.Parse(weatherModel.UserId) == Guid.Parse(_user.Id)))
+                        return;
+
+                    var guids = weatherModel.AreasIds.Select(Guid.Parse).ToList();
+
+                    var areas = new List<string>();
+
+                    var items = weatherModel.WeatherItems.ToList();
+                    var content = WeatherModel.WeatherItemsToString(items);
+
+                    guids.ForEach(g =>
+                    {
+                        if (_areaWeatherModels.ContainsKey(g))
+                        {
+                            _areaWeatherModels[g] = weatherModel.WeatherItems;
+                            // _areaWeatherModels[g];//Custom
+
+                            Dispatcher.Invoke(() => { _areaWeatherInfoLabels[g].Content = content; });
+
+                            var param = items.Single(i => i.Name == "Temperature").Value;
+                            var area = _plantsAreas.Areas.Single(a => a.Id == g);
+                            var paramSensor = area.Sensors.Single(s => s.GetType() == typeof(TemperatureSensor));
+                            paramSensor.Function.SetWeatherValue(double.Parse(param));
+
+                            param = items.Single(i => i.Name == "Humidity").Value;
+                            paramSensor = area.Sensors.Single(s => s.GetType() == typeof(HumiditySensor));
+                            paramSensor.Function.SetWeatherValue(double.Parse(param));
+
+                            areas.Add(area.Plant.Name.ToString());
+                        }
+                    });
+                    var city = items.Single(i => i.Name == "Location").Value;
+                    MessageBox.Show($"{content}From city '{city}'\nWas applied to {string.Join(", ", areas)}");
+                    //Weather ''\n
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e.ToString());
+            }
+        }
+        
+        public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
+        {
+            var plantsArea = e.PlantsArea;
+            plantsArea.UserId = new Guid(_user.Id);
+            AddPlantsArea(plantsArea);
+        }
+
+        private void SetBsonClassMaps()
+        {
+            BsonClassMapsSetter.SetMongoSensorMap();
+            BsonClassMapsSetter.SetMongoPlantsArea();
+            BsonClassMapsSetter.SetMongoUserMap();
+            BsonClassMapsSetter.SetMongoMessageMap();
+            BsonClassMapsSetter.SetMongoNotificationMap();
+        }
+
         private void SetWeatherBox()
         {
-            foreach (string name in Enum.GetNames(typeof(WeatherTypesEnum)))
-            {
+            foreach (var name in Enum.GetNames(typeof(WeatherTypesEnum)))
                 WeatherBox.Items.Add(name);
-            }
             WeatherBox.Text = WeatherBox.Items[0].ToString();
 
             WeatherBox.SelectionChanged += WeatherBox_OnSelectionChanged;
@@ -165,7 +299,7 @@ namespace PlantsWpf
         {
             if (_sensorsMeasuringsProvider != null)
             {
-                TimeSpan timeSpan = args.SignalTime.Subtract(_beginDateTime);
+                var timeSpan = args.SignalTime.Subtract(_beginDateTime);
 
                 if (timeSpan.TotalSeconds > SystemTimer.RestartTimeSpan.TotalSeconds)
                 {
@@ -182,90 +316,7 @@ namespace PlantsWpf
                 _sensorsMeasuringsProvider.SendMessages(timeSpan);
             }
         }
-
-        public void Initialize()
-        {
-            //IPlantMappingRepository plantRepository = new PlantMappingRepository();
-            //IPlantsAreaMappingRepository plantsAreaRepository = new PlantsAreaMappingRepository();
-            //IMeasurableParameterMappingRepository measurableParameterRepository =
-            //    new MeasurableParameterMappingRepository();
-            //ISensorMappingRepository sensorRepository = new SensorMappingRepository();
-            //IServiceScheduleMappingRepository serviceScheduleMappingRepository = new ServiceScheduleMappingRepository();
-
-            MySqlMeasurableParameterMappingRepository sqlMeasurableParameterMappingRepository =
-                new MySqlMeasurableParameterMappingRepository();
-            MySqlPlantMappingRepository sqlPlantMappingRepository = new MySqlPlantMappingRepository();
-            MySqlPlantsAreaMappingRepository sqlPlantsAreaMappingRepository = new MySqlPlantsAreaMappingRepository();
-            MySqlSensorMappingRepository sqlSensorMappingRepository = new MySqlSensorMappingRepository();
-            MySqlServiceScheduleMappingRepository sqlServiceScheduleMappingRepository =
-                new MySqlServiceScheduleMappingRepository();
-
-            _dbMapper = new DbMapper(sqlPlantMappingRepository,
-                sqlMeasurableParameterMappingRepository, sqlServiceScheduleMappingRepository);
-
-            _mongoDbAccessor = new MongoDbAccessor();
-
-            List<PlantsAreaMapping> plantsAreaMappings = new List<PlantsAreaMapping>();
-
-            if (_user != null)
-            {
-                plantsAreaMappings =
-                    sqlPlantsAreaMappingRepository.GetAll(mapping => mapping.UserId == new Guid(_user.Id));
-            }
-
-            _plantsAreas = new PlantsAreas();
-
-            plantsAreaMappings.ForEach(p => _plantsAreas.AddPlantsArea(_dbMapper.RestorePlantArea(p)));
-
-            _sensorsCollection = new SensorsCollection();
-
-            foreach (PlantsArea area in _plantsAreas.Areas)
-            {
-                foreach (
-                    SensorMapping sensorMapping in sqlSensorMappingRepository.GetAll(sm => sm.PlantsAreaId == area.Id))
-                {
-                    Sensor sensor = _dbMapper.RestoreSensor(sensorMapping, area);
-                    if (sensor != null)
-                    {
-                        _sensorsCollection.AddSensor(sensor);
-                        sensor.IsOn = true;
-                    }
-                }
-            }
-
-            foreach (PlantsArea area in _plantsAreas.Areas)
-            {
-                //if custom sensor
-                foreach (Sensor source in area.Sensors.Where(s => s.IsCustom))
-                {
-                    ServiceState serviceState = new ServiceState(source.MeasurableType, true);
-                    area.PlantServicesStates.AddServiceState(serviceState);
-                }
-            }
-
-            _sensorsMeasuringsProvider = new SensorsMeasuringsProvider(_sensorsCollection);
-
-            _observer = new Observer(_sensorsMeasuringsProvider, _plantsAreas);
-
-            //_mongoMessagesListener = new MongoMessagesListener(_observer);
-
-            _serviceProvider = new ServiceProvider(_observer, _plantsAreas);
-
-            //_dbDataModifier = new DbDataModifier(_plantsAreas, _sensorsCollection, measurableParameterRepository,
-            //    plantRepository, sensorRepository, plantsAreaRepository, serviceScheduleMappingRepository);
-
-            _mySqlDbDataModifier = new MySqlDbDataModifier(sqlMeasurableParameterMappingRepository,
-                sqlPlantMappingRepository, sqlPlantsAreaMappingRepository, sqlSensorMappingRepository,
-                sqlServiceScheduleMappingRepository, new MySqlMeasuringMessageMappingRepository(), _sensorsCollection,
-                _plantsAreas);
-            //new MySqlMeasurableParameterMappingRepository(),
-            //               new MySqlPlantMappingRepository(), new MySqlPlantsAreaMappingRepository(),
-            //               new MySqlSensorMappingRepository(), new MySqlServiceScheduleMappingRepository(), new MySqlMeasuringMessageMappingRepository(), new SensorsCollection(), new PlantsAreas());
-
-            _plantsAreas.Areas.ForEach(a => _areaWeatherModels.Add(a.Id, new List<WeatherItem>()));
-            //_plantsAreas.Areas.ForEach(a => _areaWeatherInfoLabels.Add(a.Id, new List<WeatherItem>()));
-        }
-
+        
         private void SetPlantsGrid(int numberInRow)
         {
             const int sizeHorizontal = 1600;
@@ -273,14 +324,14 @@ namespace PlantsWpf
             try
             {
                 PlantsGrid.Children.Clear();
-                int marginLeft = 10;
-                int marginTop = 10;
+                var marginLeft = 10;
+                var marginTop = 10;
 
-                for (int index = 0; index < _plantsAreas.Areas.Count; index++)
+                for (var index = 0; index < _plantsAreas.Areas.Count; index++)
                 {
-                    PlantsArea area = _plantsAreas.Areas[index];
+                    var area = _plantsAreas.Areas[index];
 
-                    Border borderedPlantAreaPanel = CreateFullPlantAreaPanel(area, marginLeft, marginTop);
+                    var borderedPlantAreaPanel = CreateFullPlantAreaPanel(area, marginLeft, marginTop);
                     PlantsGrid.Children.Add(borderedPlantAreaPanel);
 
                     marginLeft += sizeHorizontal/numberInRow;
@@ -300,10 +351,10 @@ namespace PlantsWpf
 
         private Border CreateFullPlantAreaPanel(PlantsArea area, int marginLeft, int marginTop)
         {
-            DataGridsBuilder dataGridsBuilder = new DataGridsBuilder();
-            FrameworkElementFactoriesBuilder frameworkElementFactoriesBuilder = new FrameworkElementFactoriesBuilder();
+            var dataGridsBuilder = new DataGridsBuilder();
+            var frameworkElementFactoriesBuilder = new FrameworkElementFactoriesBuilder();
 
-            StackPanel plantAreaSensorsPanel = new StackPanel
+            var plantAreaSensorsPanel = new StackPanel
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -311,7 +362,7 @@ namespace PlantsWpf
                 Width = 1550,
                 Height = 300,
                 CanVerticallyScroll = true,
-                CanHorizontallyScroll = true,
+                CanHorizontallyScroll = true
             };
 
             plantAreaSensorsPanel.Children.Add(new Label
@@ -337,10 +388,10 @@ namespace PlantsWpf
             };
 
             _areaWeatherInfoLabels.Add(area.Id, weatherInfoLabel);
-            
+
             plantAreaSensorsPanel.Children.Add(weatherInfoLabel);
 
-            BindingList<DataGridSensorView> dataGridSensorViews = new BindingList<DataGridSensorView>(
+            var dataGridSensorViews = new BindingList<DataGridSensorView>(
                 area.Sensors.OrderBy(s => s.IsCustom).ToList().ConvertAll(s => new DataGridSensorView(s)))
             {
                 AllowNew = true,
@@ -348,7 +399,7 @@ namespace PlantsWpf
                 AllowRemove = true
             };
 
-            BindingList<DataGridServiceScheduleView> dataGridServiceScheduleViews =
+            var dataGridServiceScheduleViews =
                 new BindingList<DataGridServiceScheduleView>(
                     area.ServicesSchedulesStates.ServicesSchedules.ToList()
                         .ConvertAll(s => new DataGridServiceScheduleView(s)))
@@ -359,74 +410,74 @@ namespace PlantsWpf
                     AllowEdit = true
                 };
 
-            FrameworkElementFactory removeSensorButtonTemplate =
+            var removeSensorButtonTemplate =
                 frameworkElementFactoriesBuilder.CreateRemoveSensorButtonTemplate(area,
                     dataGridSensorViews, dataGridServiceScheduleViews, RemoveSensor);
 
-            FrameworkElementFactory sensorSaveButtonTemplate =
+            var sensorSaveButtonTemplate =
                 frameworkElementFactoriesBuilder.CreateSensorSaveButtonTemplate(area,
                     dataGridSensorViews, dataGridServiceScheduleViews, SaveSensor);
 
-            FrameworkElementFactory onOffSensorButtonTemplate =
+            var onOffSensorButtonTemplate =
                 frameworkElementFactoriesBuilder.CreateOnOffSensorButtonTemplate();
 
-            DataGrid sensorViewsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews,
+            var sensorViewsDataGrid = dataGridsBuilder.CreateSensorsDataGrid(area, dataGridSensorViews,
                 removeSensorButtonTemplate, sensorSaveButtonTemplate, onOffSensorButtonTemplate);
 
-            DataGrid serviceStatesDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area);
+            var serviceStatesDataGrid = dataGridsBuilder.CreateServiceSystemsDataGrid(area);
 
-            FrameworkElementFactory serviceScheduleSaveButtonTemplate =
+            var serviceScheduleSaveButtonTemplate =
                 frameworkElementFactoriesBuilder.CreateServiceScheduleSaveButtonTemplate(area,
                     dataGridServiceScheduleViews, SaveServiceSchedule);
 
-            FrameworkElementFactory onOffServiceScheduleButtonTemplate =
+            var onOffServiceScheduleButtonTemplate =
                 frameworkElementFactoriesBuilder.CreateOnOffServiceScheduleButtonTemplate();
 
-            DataGrid serviceSchedulesDataGrid = dataGridsBuilder.CreateServicesSchedulesDataGrid(area,
+            var serviceSchedulesDataGrid = dataGridsBuilder.CreateServicesSchedulesDataGrid(area,
                 dataGridServiceScheduleViews, serviceScheduleSaveButtonTemplate, onOffServiceScheduleButtonTemplate);
 
-            Button removePlantsAreaButton =
+            var removePlantsAreaButton =
                 frameworkElementFactoriesBuilder.CreateRemovePlantsAreaButton(RemovePlantsArea, area);
 
             plantAreaSensorsPanel.Children.Add(sensorViewsDataGrid);
             plantAreaSensorsPanel.Children.Add(serviceStatesDataGrid);
             plantAreaSensorsPanel.Children.Add(serviceSchedulesDataGrid);
 
-            StackPanel plantAreaChartsPanel = new StackPanel
+            var plantAreaChartsPanel = new StackPanel
             {
                 Orientation = Orientation.Vertical,
                 Visibility = Visibility.Collapsed
             };
 
-            ChartDescriptor chartDescriptor = new ChartDescriptor(area.Id,
+            var chartDescriptor = new ChartDescriptor(area.Id,
                 area.Plant.MeasurableParameters.First().MeasurableType, 30,
                 DateTime.Now.Subtract(new TimeSpan(0, 0, 30)), DateTime.Now);
 
-            PlantAreaChartsPanelBuilder plantAreaChartsPanelBuilder =
+            var plantAreaChartsPanelBuilder =
                 new PlantAreaChartsPanelBuilder(area.Plant.MeasurableParameters,
                     frameworkElementFactoriesBuilder, plantAreaChartsPanel, chartDescriptor);
             plantAreaChartsPanelBuilder.RebuildChartsPanel();
 
-            Menu menu = new Menu();
+            var menu = new Menu();
 
-            DbMeasuringMessagesRetriever dbMeasuringMessagesRetriever =
+            var dbMeasuringMessagesRetriever =
                 new DbMeasuringMessagesRetriever(new MySqlMeasuringMessageMappingRepository(),
                     _observer.MessagesDictionary);
 
-            PlantAreaMenuBuilder plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
+            var plantAreaMenuBuilder = new PlantAreaMenuBuilder(plantAreaSensorsPanel,
                 plantAreaChartsPanel, menu, frameworkElementFactoriesBuilder, dbMeasuringMessagesRetriever,
                 chartDescriptor);
 
             plantAreaMenuBuilder.RebuildMenu();
 
-            DockPanel plantAreaFullPanel = new DockPanel();
+            var plantAreaFullPanel = new DockPanel();
 
             plantAreaFullPanel.Children.Add(menu);
             plantAreaFullPanel.Children.Add(removePlantsAreaButton);
             plantAreaFullPanel.Children.Add(plantAreaSensorsPanel);
             plantAreaFullPanel.Children.Add(plantAreaChartsPanel);
 
-            ScrollViewer scrollViewer = new ScrollViewer
+            var scrollViewer = new ScrollViewer
             {
                 Height = plantAreaSensorsPanel.Height,
                 CanContentScroll = true,
@@ -434,7 +485,7 @@ namespace PlantsWpf
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto
             };
 
-            Border border = new Border
+            var border = new Border
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -461,7 +512,7 @@ namespace PlantsWpf
                 _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor));
                 _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(sensor.PlantsArea));
                 _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
-                    $"{sensor.MeasurableType} sensor added/updated", _user.Id));
+                    $"'{sensor.MeasurableType}' sensor added/updated.", _user.Id));
 
                 return true;
             }
@@ -476,12 +527,12 @@ namespace PlantsWpf
                 _areaWeatherModels.Add(plantsArea.Id, new List<WeatherItem>());
 
                 SetPlantsGrid(1);
-                MessageBox.Show($"{plantsArea} area added");
+                MessageBox.Show($"{plantsArea}\nArea added.");
 
                 _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(plantsArea));
                 plantsArea.Sensors.ForEach(sensor => _mongoDbAccessor.SaveMongoSensor(new MongoSensor(sensor)));
                 _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
-                    $"{plantsArea} added", _user.Id));
+                    $"{plantsArea}\nArea added.", _user.Id));
 
                 return true;
             }
@@ -492,11 +543,11 @@ namespace PlantsWpf
         {
             _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor));
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(sensor.PlantsAreaId.ToString(),
-                $"{sensor.MeasurableType} sensor removed", _user.Id));
+                $"'{sensor.MeasurableType}' sensor removed.", _user.Id));
 
             if (_mySqlDbDataModifier.RemoveSensor(area, sensor, serviceSchedule))
             {
-                MessageBox.Show($"'{sensor.MeasurableType}': sensor removed");
+                MessageBox.Show($"'{sensor.MeasurableType}' sensor removed.");
 
                 _mongoDbAccessor.SaveMongoPlantsArea(new MongoPlantsArea(area));
 
@@ -510,15 +561,15 @@ namespace PlantsWpf
             plantsArea.Sensors.ForEach(sensor => _mongoDbAccessor.DeleteMongoSensor(new MongoSensor(sensor)));
             _mongoDbAccessor.DeleteMongoPlantsArea(new MongoPlantsArea(plantsArea));
             _mongoDbAccessor.AddMongoNotification(new MongoNotification(plantsArea.Id.ToString(),
-                $"{plantsArea} removed", _user.Id));
+                $"{plantsArea}\nArea removed.", _user.Id));
 
             if (_mySqlDbDataModifier.RemovePlantsArea(plantsArea))
             {
                 _areaWeatherInfoLabels.Clear();
                 _areaWeatherModels.Remove(plantsArea.Id);
-                
+
                 SetPlantsGrid(1);
-                MessageBox.Show($"{plantsArea} area removed");
+                MessageBox.Show($"{plantsArea}\nArea removed.");
 
                 return true;
             }
@@ -536,7 +587,7 @@ namespace PlantsWpf
 
         private void WeatherBox_OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            WeatherTypesEnum weatherTypesEnum =
+            var weatherTypesEnum =
                 (WeatherTypesEnum)
                 Enum.Parse(typeof(WeatherTypesEnum), selectionChangedEventArgs.AddedItems[0].ToString());
             Weather.SetWeather(weatherTypesEnum);
@@ -553,18 +604,11 @@ namespace PlantsWpf
 
         private void AddArea_OnClick(object sender, RoutedEventArgs e)
         {
-            PlantsAreaWindow secondWindow = new PlantsAreaWindow();
+            var secondWindow = new PlantsAreaWindow();
             secondWindow.PlantsAreaEvent += PlantsAreaWindow_GetPlantsArea;
             secondWindow.Show();
         }
-
-        public void PlantsAreaWindow_GetPlantsArea(object sender, PlantsAreaEventArgs e)
-        {
-            PlantsArea plantsArea = e.PlantsArea;
-            plantsArea.UserId = new Guid(_user.Id);
-            AddPlantsArea(plantsArea);
-        }
-
+        
         //MS Sql
         private User GetUser(string fn, string ln, string pass)
         {
@@ -584,14 +628,25 @@ namespace PlantsWpf
         //}
 
         //MS Sql
+
         private string Encrypt(string password)
         {
-            SHA256 sha256 = SHA256.Create();
-            byte[] data = Encoding.UTF8.GetBytes(password);
-            byte[] result = sha256.ComputeHash(data);
+            var sha256 = SHA256.Create();
+            var data = Encoding.UTF8.GetBytes(password);
+            var result = sha256.ComputeHash(data);
 
-            string hashString = result.Aggregate(string.Empty, (current, x) => current + $"{x:x2}");
+            var hashString = result.Aggregate(string.Empty, (current, x) => current + $"{x:x2}");
             return hashString;
+        }
+
+        private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)
+        {
+            RegisterGrid.Visibility = Visibility.Visible;
+        }
+
+        private void CreateAccount_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            RegisterGrid.Visibility = Visibility.Collapsed;
         }
 
         private async void LoginButton_OnClick(object sender, RoutedEventArgs e)
@@ -679,13 +734,13 @@ namespace PlantsWpf
             Logginglabel.Visibility = Visibility.Visible;
             LoginButton.IsEnabled = false;
 
-            string firstName = FirstName.Text;
-            string lastName = LastName.Text;
-            string email = Email.Text;
-            string password = Password.Password;
+            var firstName = FirstName.Text;
+            var lastName = LastName.Text;
+            var email = Email.Text;
+            var password = Password.Password;
 
             HttpResponseMessage response;
-            if (CreateAccount.IsChecked != null && !(bool) CreateAccount.IsChecked)
+            if ((CreateAccount.IsChecked != null) && !(bool)CreateAccount.IsChecked)
             {
                 Logginglabel.Content = @"You are being logged in. Please, wait...";
 
@@ -699,7 +754,7 @@ namespace PlantsWpf
                 //    return;
                 //}
 
-                LoginViewModel loginViewModel = new LoginViewModel
+                var loginViewModel = new LoginViewModel
                 {
                     Email = email,
                     Password = password,
@@ -721,7 +776,7 @@ namespace PlantsWpf
             else
             {
                 Logginglabel.Content = "You are being registered. Please, wait...";
-                string confirmPassword = ConfirmPassword.Password;
+                var confirmPassword = ConfirmPassword.Password;
                 //EmailAddressAttribute addressAttribute = new EmailAddressAttribute();
                 //if (!addressAttribute.IsValid(Email.Text))
                 //{
@@ -738,7 +793,7 @@ namespace PlantsWpf
 
                 string username = $"{firstName} {lastName}";
 
-                RegisterViewModel registerViewModel = new RegisterViewModel
+                var registerViewModel = new RegisterViewModel
                 {
                     Name = username,
                     Email = email,
@@ -788,60 +843,6 @@ namespace PlantsWpf
             LogIn.IsExpanded = false;
 
             StartQueueWorker();
-        }
-
-        private void CreateAccount_OnChecked(object sender, RoutedEventArgs e)
-        {
-            RegisterGrid.Visibility = Visibility.Visible;
-        }
-
-        private void CreateAccount_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            RegisterGrid.Visibility = Visibility.Collapsed;
-        }
-
-        public void RecieveMessage(object sender, EventArgs eventArgs)
-        {
-            try
-            {
-                MessengingEventArgs<WeatherModel> messengingEventArgs =
-                    eventArgs as MessengingEventArgs<WeatherModel>;
-                if (messengingEventArgs != null)
-                {
-                    WeatherModel weatherModel = messengingEventArgs.Object;
-
-                    if (!(Guid.Parse(weatherModel.UserId) == Guid.Parse(_user.Id)))
-                    {
-                        return;
-                    }
-
-                    var guids = weatherModel.AreasIds.Select(Guid.Parse).ToList();
-
-                    guids.ForEach(g =>
-                    {
-                        if (_areaWeatherModels.ContainsKey(g))
-                        {
-                            _areaWeatherModels[g] = weatherModel.WeatherItems;
-                            var items = _areaWeatherModels[g];
-
-                            Dispatcher.Invoke(() =>
-                            {
-                                _areaWeatherInfoLabels[g].Content = WeatherModel.WeatherItemsToString(items);
-                            });
-
-                            var temp = items.Single(i => i.Name == "Temperature").Value;
-
-                            var area = _plantsAreas.Areas.Single(a => a.Id == g);
-                            var tempSensor = area.Sensors.Single(s => s.GetType() == typeof(TemperatureSensor));
-                            tempSensor.Function.SetCurrentValue(double.Parse(temp));
-                        }
-                    });
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.ToString());
-            }
-        }
+        }    
     }
 }

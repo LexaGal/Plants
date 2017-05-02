@@ -2,29 +2,31 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PlantsWpf">
 
-    <LinearGradientBrush x:Key="ChartBackground" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-        <GradientStop Color="CornflowerBlue" Offset="0"/>
-        <GradientStop Color="White" Offset="1"/>
+    <LinearGradientBrush x:Key="ChartBackground" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox"
+                         StartPoint="0.5,0">
+        <GradientStop Color="CornflowerBlue" Offset="0" />
+        <GradientStop Color="White" Offset="1" />
     </LinearGradientBrush>
 
-    <SolidColorBrush x:Key="ServiceBackground" Color="LawnGreen"/>
-    
-    <SolidColorBrush x:Key="ScheduleBackground" Color="Yellow"/>
-    
-    <SolidColorBrush x:Key="SensorOrScheduleIsOff" Color="BurlyWood"/>
-    
-    <SolidColorBrush x:Key="CriticalBackground" Color="Red"/>
+    <SolidColorBrush x:Key="ServiceBackground" Color="LawnGreen" />
 
-    <SolidColorBrush x:Key="Main" Color="White"/>
+    <SolidColorBrush x:Key="ScheduleBackground" Color="Yellow" />
+
+    <SolidColorBrush x:Key="SensorOrScheduleIsOff" Color="BurlyWood" />
+
+    <SolidColorBrush x:Key="CriticalBackground" Color="Red" />
+
+    <SolidColorBrush x:Key="Main" Color="White" />
 
     <LinearGradientBrush x:Key="PlantsAreaBackground">
-        <GradientStop Color="Gray" Offset="0"/>
-        <GradientStop Color="White" Offset="1"/>
+        <GradientStop Color="Gray" Offset="0" />
+        <GradientStop Color="White" Offset="1" />
     </LinearGradientBrush>
-    
-    <LinearGradientBrush x:Key="SensorsSystemBackground" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-        <GradientStop Color="Gray" Offset="0"/>
-        <GradientStop Color="White" Offset="1"/>
+
+    <LinearGradientBrush x:Key="SensorsSystemBackground" EndPoint="0.5,1" MappingMode="RelativeToBoundingBox"
+                         StartPoint="0.5,0">
+        <GradientStop Color="Gray" Offset="0" />
+        <GradientStop Color="White" Offset="1" />
     </LinearGradientBrush>
-    
+
 </ResourceDictionary>

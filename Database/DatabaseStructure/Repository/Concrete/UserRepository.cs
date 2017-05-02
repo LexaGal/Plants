@@ -14,9 +14,9 @@ namespace Database.DatabaseStructure.Repository.Concrete
 
         public User GetUser(string fn, string ln, string passhash)
         {
-            return Context.UsersSet.SingleOrDefault(user => user.FirstName == fn &&
-                                                                user.LastName == ln &&
-                                                                user.PasswordHash == passhash);
+            return Context.UsersSet.SingleOrDefault(user => (user.FirstName == fn) &&
+                                                            (user.LastName == ln) &&
+                                                            (user.PasswordHash == passhash));
         }
     }
 }

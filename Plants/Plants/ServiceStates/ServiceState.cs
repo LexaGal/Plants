@@ -1,14 +1,17 @@
-﻿    using System;
+﻿//using PlantsWpf.Annotations;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-    using PlantingLib.Properties;
-    //using PlantsWpf.Annotations;
-    using static System.String;
+using PlantingLib.Properties;
+using static System.String;
 
 namespace PlantingLib.Plants.ServiceStates
 {
     public class ServiceState : INotifyPropertyChanged, ICloneable
-    {  
+    {
+        private bool _isScheduled;
+        private string _serviceName;
+
         public ServiceState(string serviceName, bool isCustom)
         {
             IsCustom = isCustom;
@@ -20,10 +23,7 @@ namespace PlantingLib.Plants.ServiceStates
 
         public string ServiceName
         {
-            get
-            {
-                return _serviceName;
-            }
+            get { return _serviceName; }
             set
             {
                 _serviceName = IsCustom ? $"*{value}*" : value;
@@ -35,7 +35,7 @@ namespace PlantingLib.Plants.ServiceStates
 
         public string IsOn
         {
-            get { return IsRunning ? Properties.Resources.IsScheduledSign : Empty; }
+            get { return IsRunning ? Resources.IsScheduledSign : Empty; }
             set
             {
                 IsRunning = Convert.ToBoolean(value);
@@ -43,12 +43,9 @@ namespace PlantingLib.Plants.ServiceStates
             }
         }
 
-        private bool _isScheduled;
-        private string _serviceName;
-
         public string IsScheduled
         {
-            get { return _isScheduled ? Properties.Resources.IsScheduledSign : Empty; }
+            get { return _isScheduled ? Resources.IsScheduledSign : Empty; }
             set
             {
                 _isScheduled = Convert.ToBoolean(value);
@@ -56,23 +53,23 @@ namespace PlantingLib.Plants.ServiceStates
             }
         }
 
+        public object Clone()
+        {
+            return new ServiceState(ServiceName, IsCustom);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public bool IsFor(string measurableType)
         {
             return ServiceName == $"*{measurableType}*";
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        
-        public object Clone()
-        {
-            return new ServiceState(ServiceName, IsCustom);
         }
     }
 }

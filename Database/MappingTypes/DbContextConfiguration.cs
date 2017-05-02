@@ -3,7 +3,7 @@ using System.Data.Entity.SqlServer;
 
 namespace Database.MappingTypes
 {
-    class DbContextConfiguration : DbConfiguration
+    internal class DbContextConfiguration : DbConfiguration
     {
         public DbContextConfiguration()
         {

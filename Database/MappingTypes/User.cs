@@ -5,7 +5,10 @@ namespace Database.MappingTypes
 {
     public class User
     {
-        public User() { }
+        public User()
+        {
+        }
+
         public User(string fn, string ln, string em, string passHash)
         {
             Id = Guid.NewGuid();

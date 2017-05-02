@@ -7,26 +7,17 @@ using Microsoft.AspNet.Identity;
 namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
-    /// Class that implements the key ASP.NET Identity role store iterfaces
+    ///     Class that implements the key ASP.NET Identity role store iterfaces
     /// </summary>
     public class RoleStore<TRole> : IQueryableRoleStore<TRole>
         where TRole : IdentityRole
     {
-        private RoleTable roleTable;
-        public MySQLDatabase Database { get; private set; }
-
-        public IQueryable<TRole> Roles
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        private readonly RoleTable roleTable;
 
 
         /// <summary>
-        /// Default constructor that initializes a new MySQLDatabase
-        /// instance using the Default Connection string
+        ///     Default constructor that initializes a new MySQLDatabase
+        ///     instance using the Default Connection string
         /// </summary>
         public RoleStore()
         {
@@ -34,7 +25,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         }
 
         /// <summary>
-        /// Constructor that takes a MySQLDatabase as argument 
+        ///     Constructor that takes a MySQLDatabase as argument
         /// </summary>
         /// <param name="database"></param>
         public RoleStore(MySQLDatabase database)
@@ -43,12 +34,17 @@ namespace AspNet.Identity.MySQL.IdentityUserData
             roleTable = new RoleTable(database);
         }
 
+        public MySQLDatabase Database { get; private set; }
+
+        public IQueryable<TRole> Roles
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public Task CreateAsync(TRole role)
         {
             if (role == null)
-            {
                 throw new ArgumentNullException("role");
-            }
 
             roleTable.Insert(role);
 
@@ -58,39 +54,35 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         public Task DeleteAsync(TRole role)
         {
             if (role == null)
-            {
                 throw new ArgumentNullException("user");
-            }
 
             roleTable.Delete(role.Id);
 
-            return Task.FromResult<Object>(null);
+            return Task.FromResult<object>(null);
         }
 
         public Task<TRole> FindByIdAsync(string roleId)
         {
-            TRole result = roleTable.GetRoleById(roleId) as TRole;
+            var result = roleTable.GetRoleById(roleId) as TRole;
 
-            return Task.FromResult<TRole>(result);
+            return Task.FromResult(result);
         }
 
         public Task<TRole> FindByNameAsync(string roleName)
         {
-            TRole result = roleTable.GetRoleByName(roleName) as TRole;
+            var result = roleTable.GetRoleByName(roleName) as TRole;
 
-            return Task.FromResult<TRole>(result);
+            return Task.FromResult(result);
         }
 
         public Task UpdateAsync(TRole role)
         {
             if (role == null)
-            {
                 throw new ArgumentNullException("user");
-            }
 
             roleTable.Update(role);
 
-            return Task.FromResult<Object>(null);
+            return Task.FromResult<object>(null);
         }
 
         public void Dispose()
@@ -101,6 +93,5 @@ namespace AspNet.Identity.MySQL.IdentityUserData
                 Database = null;
             }
         }
-
     }
 }

@@ -9,48 +9,41 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 {
     public class MySqlMeasuringMessageMappingRepository : MySqlRepository<MeasuringMessageMapping>
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        object _lockObject = new object();
+        private readonly object _lockObject = new object();
 
         public override List<MeasuringMessageMapping> GetAll(
             Expression<Func<MeasuringMessageMapping, bool>> func = null)
         {
-            List<MeasuringMessageMapping> measuringMessageMappings = new List<MeasuringMessageMapping>();
-            string commandText = "Select * from measuringmessage";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var measuringMessageMappings = new List<MeasuringMessageMapping>();
+            var commandText = "Select * from measuringmessage";
+            var parameters = new Dictionary<string, object>();
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {               
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 measuringMessageMappings.Add(CreateMapping(row));
-            }
             if (func != null)
-            {
                 return measuringMessageMappings.AsQueryable().Where(func).ToList();
-            }
             return measuringMessageMappings;
         }
 
         public override MeasuringMessageMapping Get(Guid id)
         {
-            string commandText = "Select * from measuringmessage where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            var commandText = "Select * from measuringmessage where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 return CreateMapping(row);
-            }
             return null;
         }
 
         public override bool Save(MeasuringMessageMapping value, Guid id)
         {
-
             lock (_lockObject)
             {
-                string commandText =
+                var commandText =
                     "Insert into measuringmessage(Id, PlantsAreaId, DateTime, MeasurableType, MessageType, ParameterValue) values(@Id, @PlantsAreaId, @DateTime, @MeasurableType, @MessageType, @ParameterValue) " +
                     "ON DUPLICATE KEY UPDATE " +
                     "Id = values(Id), " +
@@ -60,7 +53,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                     "ParameterValue = values(ParameterValue), " +
                     "MessageType = values(`MessageType`)";
 
-                Dictionary<string, object> parameters = new Dictionary<string, object>
+                var parameters = new Dictionary<string, object>
                 {
                     {"@Id", value.Id.ToString()},
                     {"@PlantsAreaId", value.PlantsAreaId},
@@ -71,7 +64,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 };
 
                 Database.Execute(commandText, parameters);
-            return true;
+                return true;
             }
         }
 
@@ -82,8 +75,8 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         public override bool Delete(Guid id)
         {
-            string commandText = "Delete from measuringmessage where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            var commandText = "Delete from measuringmessage where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
             Database.Execute(commandText, parameters);
             return true;
@@ -91,19 +84,19 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         protected override MeasuringMessageMapping CreateMapping(Dictionary<string, string> row)
         {
-            MeasuringMessageMapping measuringMessageMapping =
-                    (MeasuringMessageMapping) Activator.CreateInstance(typeof(MeasuringMessageMapping));
-                measuringMessageMapping.Id = Guid.Parse(row["Id"]);
-                measuringMessageMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
-                measuringMessageMapping.DateTime = DateTime.Parse(row["DateTime"]);
-                measuringMessageMapping.MeasurableType = string.IsNullOrEmpty(row["MeasurableType"])
-                    ? null
-                    : row["MeasurableType"];
-                measuringMessageMapping.MessageType = string.IsNullOrEmpty(row["MessageType"])
-                    ? null
-                    : row["MessageType"];
-                measuringMessageMapping.ParameterValue = Double.Parse(row["ParameterValue"]);
-                return measuringMessageMapping;
+            var measuringMessageMapping =
+                (MeasuringMessageMapping) Activator.CreateInstance(typeof(MeasuringMessageMapping));
+            measuringMessageMapping.Id = Guid.Parse(row["Id"]);
+            measuringMessageMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
+            measuringMessageMapping.DateTime = DateTime.Parse(row["DateTime"]);
+            measuringMessageMapping.MeasurableType = string.IsNullOrEmpty(row["MeasurableType"])
+                ? null
+                : row["MeasurableType"];
+            measuringMessageMapping.MessageType = string.IsNullOrEmpty(row["MessageType"])
+                ? null
+                : row["MessageType"];
+            measuringMessageMapping.ParameterValue = double.Parse(row["ParameterValue"]);
+            return measuringMessageMapping;
         }
 
         public void SaveMany(List<MeasuringMessageMapping> measuringMessageMappings)
@@ -114,8 +107,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 {
                     //Database.EnsureConnectionClosed();
                     Save(mapping, mapping.Id);
-                });           
-            
+                });
             }
             catch (Exception e)
             {
@@ -123,15 +115,16 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
             }
         }
 
-        //public int DeleteMany(int n = 1000, Expression<Func<MeasuringMessageMapping, bool>> func = null)
-        //{
-        //    using (Context = new PlantingDb())
-        //    {
-        //        IQueryable<MeasuringMessageMapping> measuringMessageMappings;
-        //        if (func != null)
-        //        {
-        //            measuringMessageMappings = Context.MeasuringMessagesSet
         //                .OrderBy(mapping => mapping.DateTime)
+        //            measuringMessageMappings = Context.MeasuringMessagesSet
+        //        {
+        //        if (func != null)
+        //        IQueryable<MeasuringMessageMapping> measuringMessageMappings;
+        //    {
+        //    using (Context = new PlantingDb())
+        //{
+
+        //public int DeleteMany(int n = 1000, Expression<Func<MeasuringMessageMapping, bool>> func = null)
         //                .Where(func)
         //                .Take(Math.Min(n, Context.MeasuringMessagesSet.Count() / 3));
 

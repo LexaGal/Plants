@@ -8,10 +8,10 @@ using MySql.Data.MySqlClient;
 
 namespace AspNet.Identity.MySQL.Database
 {
-     /// <summary>
-     /// Class that encapsulates a MySQL database connections 
-     /// and CRUD operations
-     /// </summary>
+    /// <summary>
+    ///     Class that encapsulates a MySQL database connections
+    ///     and CRUD operations
+    /// </summary>
     public class MySQLDatabase : IDisposable
     {
         private MySqlConnection _connection;
@@ -24,35 +24,42 @@ namespace AspNet.Identity.MySQL.Database
         }
 
         /// <summary>
-        /// Constructor which takes the connection string name
+        ///     Constructor which takes the connection string name
         /// </summary>
         /// <param name="connectionStringName"></param>
         public MySQLDatabase(string connectionStringName)
         {
-            Debug.Write(connectionStringName);
-            string connectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
+            //Debug.Write(connectionStringName);
+            var connectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
             _connection = new MySqlConnection(connectionString);
         }
 
+        public void Dispose()
+        {
+            if (_connection != null)
+            {
+                _connection.Dispose();
+                _connection = null;
+            }
+        }
+
         /// <summary>
-        /// Executes a non-query MySQL statement
+        ///     Executes a non-query MySQL statement
         /// </summary>
         /// <param name="commandText">The MySQL query to execute</param>
         /// <param name="parameters">Optional parameters to pass to the query</param>
         /// <returns>The count of records affected by the MySQL statement</returns>
         public int Execute(string commandText, Dictionary<string, object> parameters)
         {
-            int result = 0;
+            var result = 0;
 
-            if (String.IsNullOrEmpty(commandText))
-            {
+            if (string.IsNullOrEmpty(commandText))
                 throw new ArgumentException("Command text cannot be null or empty.");
-            }
 
             try
             {
                 EnsureConnectionOpen();
-                MySqlCommand command = CreateCommand(commandText, parameters);
+                var command = CreateCommand(commandText, parameters);
                 result = command.ExecuteNonQuery();
             }
             finally
@@ -64,7 +71,7 @@ namespace AspNet.Identity.MySQL.Database
         }
 
         /// <summary>
-        /// Executes a MySQL query that returns a single scalar value as the result.
+        ///     Executes a MySQL query that returns a single scalar value as the result.
         /// </summary>
         /// <param name="commandText">The MySQL query to execute</param>
         /// <param name="parameters">Optional parameters to pass to the query</param>
@@ -73,15 +80,13 @@ namespace AspNet.Identity.MySQL.Database
         {
             object result = null;
 
-            if (String.IsNullOrEmpty(commandText))
-            {
+            if (string.IsNullOrEmpty(commandText))
                 throw new ArgumentException("Command text cannot be null or empty.");
-            }
 
             try
             {
                 EnsureConnectionOpen();
-                MySqlCommand command = CreateCommand(commandText, parameters);
+                var command = CreateCommand(commandText, parameters);
                 result = command.ExecuteScalar();
             }
             finally
@@ -93,34 +98,34 @@ namespace AspNet.Identity.MySQL.Database
         }
 
         /// <summary>
-        /// Executes a SQL query that returns a list of rows as the result.
+        ///     Executes a SQL query that returns a list of rows as the result.
         /// </summary>
         /// <param name="commandText">The MySQL query to execute</param>
         /// <param name="parameters">Parameters to pass to the MySQL query</param>
-        /// <returns>A list of a Dictionary of Key, values pairs representing the 
-        /// ColumnName and corresponding value</returns>
+        /// <returns>
+        ///     A list of a Dictionary of Key, values pairs representing the
+        ///     ColumnName and corresponding value
+        /// </returns>
         public List<Dictionary<string, string>> Query(string commandText, Dictionary<string, object> parameters)
         {
             List<Dictionary<string, string>> rows = null;
-            if (String.IsNullOrEmpty(commandText))
-            {
+            if (string.IsNullOrEmpty(commandText))
                 throw new ArgumentException("Command text cannot be null or empty.");
-            }
 
             try
             {
                 EnsureConnectionOpen();
-                MySqlCommand command = CreateCommand(commandText, parameters);
-                using (MySqlDataReader reader = command.ExecuteReader())
+                var command = CreateCommand(commandText, parameters);
+                using (var reader = command.ExecuteReader())
                 {
                     rows = new List<Dictionary<string, string>>();
                     while (reader.Read())
                     {
-                        Dictionary<string, string> row = new Dictionary<string, string>();
-                        for (int i = 0; i < reader.FieldCount; i++)
+                        var row = new Dictionary<string, string>();
+                        for (var i = 0; i < reader.FieldCount; i++)
                         {
-                            string columnName = reader.GetName(i);
-                            string columnValue = reader.IsDBNull(i) ? null : reader.GetString(i);
+                            var columnName = reader.GetName(i);
+                            var columnValue = reader.IsDBNull(i) ? null : reader.GetString(i);
                             row.Add(columnName, columnValue);
                         }
                         rows.Add(row);
@@ -136,46 +141,39 @@ namespace AspNet.Identity.MySQL.Database
         }
 
         /// <summary>
-        /// Opens a connection if not open
+        ///     Opens a connection if not open
         /// </summary>
         private void EnsureConnectionOpen()
         {
-            int retries = 3;
+            var retries = 3;
             if (_connection.State == ConnectionState.Open)
-            {
                 return;
-            }
-            else
+            while ((retries >= 0) && (_connection.State != ConnectionState.Open))
             {
-                while (retries >= 0 && _connection.State != ConnectionState.Open)
-                {
-                    _connection.Open();
-                    retries--;
-                    Thread.Sleep(30);
-                }
+                _connection.Open();
+                retries--;
+                Thread.Sleep(30);
             }
         }
 
         /// <summary>
-        /// Closes a connection if open
+        ///     Closes a connection if open
         /// </summary>
         public void EnsureConnectionClosed()
         {
             if (_connection.State == ConnectionState.Open)
-            {
                 _connection.Close();
-            }
         }
 
         /// <summary>
-        /// Creates a MySQLCommand with the given parameters
+        ///     Creates a MySQLCommand with the given parameters
         /// </summary>
         /// <param name="commandText">The MySQL query to execute</param>
         /// <param name="parameters">Parameters to pass to the MySQL query</param>
         /// <returns></returns>
         private MySqlCommand CreateCommand(string commandText, Dictionary<string, object> parameters)
         {
-            MySqlCommand command = _connection.CreateCommand();
+            var command = _connection.CreateCommand();
             command.CommandText = commandText;
             AddParameters(command, parameters);
 
@@ -183,20 +181,18 @@ namespace AspNet.Identity.MySQL.Database
         }
 
         /// <summary>
-        /// Adds the parameters to a MySQL command
+        ///     Adds the parameters to a MySQL command
         /// </summary>
         /// <param name="commandText">The MySQL query to execute</param>
         /// <param name="parameters">Parameters to pass to the MySQL query</param>
         private static void AddParameters(MySqlCommand command, Dictionary<string, object> parameters)
         {
             if (parameters == null)
-            {
                 return;
-            }
 
-            foreach (KeyValuePair<string, object> param in parameters)
+            foreach (var param in parameters)
             {
-                MySqlParameter parameter = command.CreateParameter();
+                var parameter = command.CreateParameter();
                 parameter.ParameterName = param.Key;
                 parameter.Value = param.Value ?? DBNull.Value;
                 command.Parameters.Add(parameter);
@@ -204,24 +200,15 @@ namespace AspNet.Identity.MySQL.Database
         }
 
         /// <summary>
-        /// Helper method to return query a string value 
+        ///     Helper method to return query a string value
         /// </summary>
         /// <param name="commandText">The MySQL query to execute</param>
         /// <param name="parameters">Parameters to pass to the MySQL query</param>
         /// <returns>The string value resulting from the query</returns>
         public string GetStrValue(string commandText, Dictionary<string, object> parameters)
         {
-            string value = QueryValue(commandText, parameters) as string;
+            var value = QueryValue(commandText, parameters) as string;
             return value;
-        }
-
-        public void Dispose()
-        {
-            if (_connection != null)
-            {
-                _connection.Dispose();
-                _connection = null;
-            }
         }
     }
 }

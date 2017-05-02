@@ -7,6 +7,22 @@ namespace PlantingLib.Sensors
 {
     public abstract class Sensor
     {
+        protected Sensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout,
+            MeasurableParameter measurableParameter, int numberOfTimes = 0)
+        {
+            Id = id;
+
+            PlantsArea = plantsArea;
+            plantsArea?.AddSensor(this);
+
+            MeasuringTimeout = measuringTimeout;
+            MeasurableParameter = measurableParameter;
+
+            NumberOfTimes = numberOfTimes;
+            IsOn = true;
+            IsOffByUser = false;
+        }
+
         public Guid Id { get; private set; }
 
         public TimeSpan MeasuringTimeout { get; set; }
@@ -22,36 +38,10 @@ namespace PlantingLib.Sensors
         public string MeasurableType => MeasurableParameter.MeasurableType;
 
         public int NumberOfTimes { get; set; }
-    
+
         public bool IsOn { get; set; }
         public bool IsOffByUser { get; set; }
         public bool IsCustom { get; set; }
-
-        protected Sensor(Guid id, PlantsArea plantsArea, TimeSpan measuringTimeout,
-             MeasurableParameter measurableParameter, int numberOfTimes = 0)
-        {
-            Id = id;
-
-            PlantsArea = plantsArea;
-            plantsArea?.AddSensor(this);
-
-            MeasuringTimeout = measuringTimeout;
-            MeasurableParameter = measurableParameter;
-
-            NumberOfTimes = numberOfTimes;
-            IsOn = true;
-            IsOffByUser = false;
-        }
-        
-        public void SetPlantsArea(PlantsArea area)
-        {
-            PlantsArea = area;
-        }
-
-        public void SetFunction(ParameterFunction function)
-        {
-            Function = function;
-        }
 
         public double GetNewMeasuring
         {
@@ -63,11 +53,21 @@ namespace PlantingLib.Sensors
             }
         }
 
+        public void SetPlantsArea(PlantsArea area)
+        {
+            PlantsArea = area;
+        }
+
+        public void SetFunction(ParameterFunction function)
+        {
+            Function = function;
+        }
+
         public event EventHandler NewMeasuring;
-       
+
         protected virtual void OnNewMeasuring()
         {
-            EventHandler handler = NewMeasuring;
+            var handler = NewMeasuring;
             handler?.Invoke(this, EventArgs.Empty);
         }
     }

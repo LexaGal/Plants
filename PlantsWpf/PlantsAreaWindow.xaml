@@ -4,50 +4,85 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         Title="Add plants area" Height="258.532" Width="334.936">
-  
+
     <Grid x:Name="RootGrid" Margin="0,-1" HorizontalAlignment="Left" Width="313">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBox Text="20" MaxLength="3" Name="OptimalTemperature" HorizontalAlignment="Left" Height="23" Margin="80,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
-        <TextBox Text="60" MaxLength="3" Name="OptimalHumidity" HorizontalAlignment="Left" Height="23" Margin="80,98,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <TextBox Text="7"  MaxLength="3" Name="OptimalSoilPh" HorizontalAlignment="Left" Height="23" Margin="80,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <TextBox Text="14" MaxLength="3" Name="OptimalNutrient" HorizontalAlignment="Left" Height="23" Margin="80,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <ComboBox Name="PlantNameBox" HorizontalAlignment="Left" Margin="80,16,0,0" VerticalAlignment="Top" Width="95" Height="22"/>
-        <Label Content="Temperature" HorizontalAlignment="Left" Margin="2,73,0,0" VerticalAlignment="Top" Width="81" Height="26"
+        <TextBox Text="20" MaxLength="3" Name="OptimalTemperature" HorizontalAlignment="Left" Height="23"
+                 Margin="80,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <TextBox Text="60" MaxLength="3" Name="OptimalHumidity" HorizontalAlignment="Left" Height="23"
+                 Margin="80,98,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <TextBox Text="7" MaxLength="3" Name="OptimalSoilPh" HorizontalAlignment="Left" Height="23" Margin="80,124,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <TextBox Text="14" MaxLength="3" Name="OptimalNutrient" HorizontalAlignment="Left" Height="23"
+                 Margin="80,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <ComboBox Name="PlantNameBox" HorizontalAlignment="Left" Margin="80,16,0,0" VerticalAlignment="Top" Width="95"
+                  Height="22" />
+        <Label Content="Temperature" HorizontalAlignment="Left" Margin="2,73,0,0" VerticalAlignment="Top" Width="81"
+               Height="26"
                Grid.Column="0" />
-        <Label Content="Nutrient" HorizontalAlignment="Left" Margin="2,148,0,0" VerticalAlignment="Top" Width="81" Height="24"
+        <Label Content="Nutrient" HorizontalAlignment="Left" Margin="2,148,0,0" VerticalAlignment="Top" Width="81"
+               Height="24"
                Grid.Column="0" />
-        <Label Content="SoilPh" HorizontalAlignment="Left" Margin="4,124,0,0" VerticalAlignment="Top" Width="81" Height="26"
+        <Label Content="SoilPh" HorizontalAlignment="Left" Margin="4,124,0,0" VerticalAlignment="Top" Width="81"
+               Height="26"
                Grid.Column="0" />
-        <Label Content="Humidity" HorizontalAlignment="Left" Margin="2,98,0,0" VerticalAlignment="Top" Width="81" Height="26"
+        <Label Content="Humidity" HorizontalAlignment="Left" Margin="2,98,0,0" VerticalAlignment="Top" Width="81"
+               Height="26"
                Grid.Column="0" />
-        <TextBox Text="10" MaxLength="3" Name="MinTemperature" HorizontalAlignment="Left" Height="23" Margin="120,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40"/>
-        <TextBox Text="50" MaxLength="3" Name="MinHumidity" HorizontalAlignment="Left" Height="23" Margin="120,98,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40"/>
-        <TextBox Text="5"  MaxLength="3" Name="MinSoilPh" HorizontalAlignment="Left" Height="23" Margin="120,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" />
-        <TextBox Text="9"  MaxLength="3" Name="MinNutrient" HorizontalAlignment="Left" Height="23" Margin="120,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40"/>
-        <TextBox Text="30" MaxLength="3" Name="MaxTemperature" HorizontalAlignment="Left" Height="23" Margin="161,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <TextBox Text="70" MaxLength="3" Name="MaxHumidity" HorizontalAlignment="Left" Height="23" Margin="161,98,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <TextBox Text="9"  MaxLength="3" Name="MaxSoilPh" HorizontalAlignment="Left" Height="23" Margin="161,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <TextBox Text="100" MaxLength="3" Name="MaxNutrient" HorizontalAlignment="Left" Height="23" Margin="161,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39"/>
-        <Label Content="Optimal" HorizontalAlignment="Left" Margin="76,48,0,0" VerticalAlignment="Top" Height="26" Width="52"/>
-        <Label Content="Min" HorizontalAlignment="Left" Margin="126,48,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.693,0.474" Height="26" Width="30"/>
-        <Label Content="Max" HorizontalAlignment="Left" Margin="161,48,0,0" VerticalAlignment="Top" Height="26" Width="32"/>
-        <Label Content="Number" HorizontalAlignment="Left" Margin="188,14,0,0" VerticalAlignment="Top" Width="56" Height="26" RenderTransformOrigin="0.976,0.577"/>
-        <TextBox  MaxLength="4" Name="Number" Text="10" HorizontalAlignment="Left" Height="23" Margin="245,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57"/>
-        <Label Grid.Column="0" Name="PlantName" Content="Plant name" HorizontalAlignment="Left" Margin="5,12,0,0" VerticalAlignment="Top" Width="70" Height="26" RenderTransformOrigin="0.976,0.577"/>
-        <Button Grid.Column="0" Name="Save" Content="Save" Click="Save_OnClick" HorizontalAlignment="Left" Height="29" Margin="4,182,0,0" VerticalAlignment="Top" Width="64"/>
-        <Button Name="ClearAll" Content="Clear all" Click="ClearAll_OnClick" HorizontalAlignment="Left" Height="29" Margin="71,182,0,0" VerticalAlignment="Top" Width="64"
+        <TextBox Text="10" MaxLength="3" Name="MinTemperature" HorizontalAlignment="Left" Height="23"
+                 Margin="120,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" />
+        <TextBox Text="50" MaxLength="3" Name="MinHumidity" HorizontalAlignment="Left" Height="23" Margin="120,98,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="40" />
+        <TextBox Text="5" MaxLength="3" Name="MinSoilPh" HorizontalAlignment="Left" Height="23" Margin="120,124,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="40" />
+        <TextBox Text="9" MaxLength="3" Name="MinNutrient" HorizontalAlignment="Left" Height="23" Margin="120,149,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="40" />
+        <TextBox Text="30" MaxLength="3" Name="MaxTemperature" HorizontalAlignment="Left" Height="23"
+                 Margin="161,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <TextBox Text="70" MaxLength="3" Name="MaxHumidity" HorizontalAlignment="Left" Height="23" Margin="161,98,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <TextBox Text="9" MaxLength="3" Name="MaxSoilPh" HorizontalAlignment="Left" Height="23" Margin="161,124,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <TextBox Text="100" MaxLength="3" Name="MaxNutrient" HorizontalAlignment="Left" Height="23"
+                 Margin="161,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="39" />
+        <Label Content="Optimal" HorizontalAlignment="Left" Margin="76,48,0,0" VerticalAlignment="Top" Height="26"
+               Width="52" />
+        <Label Content="Min" HorizontalAlignment="Left" Margin="126,48,0,0" VerticalAlignment="Top"
+               RenderTransformOrigin="1.693,0.474" Height="26" Width="30" />
+        <Label Content="Max" HorizontalAlignment="Left" Margin="161,48,0,0" VerticalAlignment="Top" Height="26"
+               Width="32" />
+        <Label Content="Number" HorizontalAlignment="Left" Margin="188,14,0,0" VerticalAlignment="Top" Width="56"
+               Height="26" RenderTransformOrigin="0.976,0.577" />
+        <TextBox MaxLength="4" Name="Number" Text="10" HorizontalAlignment="Left" Height="23" Margin="245,16,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="57" />
+        <Label Grid.Column="0" Name="PlantName" Content="Plant name" HorizontalAlignment="Left" Margin="5,12,0,0"
+               VerticalAlignment="Top" Width="70" Height="26" RenderTransformOrigin="0.976,0.577" />
+        <Button Grid.Column="0" Name="Save" Content="Save" Click="Save_OnClick" HorizontalAlignment="Left" Height="29"
+                Margin="4,182,0,0" VerticalAlignment="Top" Width="64" />
+        <Button Name="ClearAll" Content="Clear all" Click="ClearAll_OnClick" HorizontalAlignment="Left" Height="29"
+                Margin="71,182,0,0" VerticalAlignment="Top" Width="64"
                 Grid.Column="0" />
-        <Label Content="Is on" HorizontalAlignment="Left" Margin="205,49,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.737,-8.769" Height="26" Width="46"/>
-        <CheckBox IsChecked="True" Name="TemperatureCheckBox" HorizontalAlignment="Left" Margin="213,76,0,0" VerticalAlignment="Top" Height="19" Width="21"/>
-        <CheckBox IsChecked="True" Name="HumidityCheckBox" HorizontalAlignment="Left" Margin="213,102,0,0" VerticalAlignment="Top" Height="18" Width="21"/>
-        <CheckBox IsChecked="True" Name="SoilPhCheckBox" HorizontalAlignment="Left" Margin="213,128,0,0" VerticalAlignment="Top" Height="17" Width="21"/>
-        <CheckBox IsChecked="True" Name="NutrientCheckBox" HorizontalAlignment="Left" Margin="213,153,0,0" VerticalAlignment="Top" Height="18" Width="21"/>
-        <Label Content="Timeout" HorizontalAlignment="Left" Margin="246,50,0,0" VerticalAlignment="Top" Height="26" Width="54"/>
-        <TextBox Name="TemperatureTimeout" HorizontalAlignment="Left" Height="23" Margin="246,71,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" Text="00:00:01"/>
-        <TextBox Name="HumidityTimeout" HorizontalAlignment="Left" Height="23" Margin="246,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" Text="00:00:01"/>
-        <TextBox Name="SoilPhTimeout" HorizontalAlignment="Left" Height="23" Margin="246,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" Text="00:00:01"/>
-        <TextBox Name="NutrientTimeout" HorizontalAlignment="Left" Height="23" Margin="246,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="58" Text="00:00:01"/>
+        <Label Content="Is on" HorizontalAlignment="Left" Margin="205,49,0,0" VerticalAlignment="Top"
+               RenderTransformOrigin="1.737,-8.769" Height="26" Width="46" />
+        <CheckBox IsChecked="True" Name="TemperatureCheckBox" HorizontalAlignment="Left" Margin="213,76,0,0"
+                  VerticalAlignment="Top" Height="19" Width="21" />
+        <CheckBox IsChecked="True" Name="HumidityCheckBox" HorizontalAlignment="Left" Margin="213,102,0,0"
+                  VerticalAlignment="Top" Height="18" Width="21" />
+        <CheckBox IsChecked="True" Name="SoilPhCheckBox" HorizontalAlignment="Left" Margin="213,128,0,0"
+                  VerticalAlignment="Top" Height="17" Width="21" />
+        <CheckBox IsChecked="True" Name="NutrientCheckBox" HorizontalAlignment="Left" Margin="213,153,0,0"
+                  VerticalAlignment="Top" Height="18" Width="21" />
+        <Label Content="Timeout" HorizontalAlignment="Left" Margin="246,50,0,0" VerticalAlignment="Top" Height="26"
+               Width="54" />
+        <TextBox Name="TemperatureTimeout" HorizontalAlignment="Left" Height="23" Margin="246,71,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="58" Text="00:00:01" />
+        <TextBox Name="HumidityTimeout" HorizontalAlignment="Left" Height="23" Margin="246,97,0,0" TextWrapping="Wrap"
+                 VerticalAlignment="Top" Width="58" Text="00:00:01" />
+        <TextBox Name="SoilPhTimeout" HorizontalAlignment="Left" Height="23" Margin="246,123,0,0" TextWrapping="Wrap"
+                 VerticalAlignment="Top" Width="58" Text="00:00:01" />
+        <TextBox Name="NutrientTimeout" HorizontalAlignment="Left" Height="23" Margin="246,149,0,0" TextWrapping="Wrap"
+                 VerticalAlignment="Top" Width="58" Text="00:00:01" />
     </Grid>
 </Window>

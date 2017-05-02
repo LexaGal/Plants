@@ -6,7 +6,7 @@ namespace MongoDbServer
     {
         public void Execute(IJobExecutionContext context)
         {
-            MongoDbAccessor mongoDbAccessor = new MongoDbAccessor();
+            var mongoDbAccessor = new MongoDbAccessor();
             mongoDbAccessor.UpdateCollections();
         }
     }

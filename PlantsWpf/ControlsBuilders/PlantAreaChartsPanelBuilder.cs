@@ -14,8 +14,8 @@ namespace PlantsWpf.ControlsBuilders
 {
     public class PlantAreaChartsPanelBuilder
     {
-        private readonly List<MeasurableParameter> _measurableParameters;
         private readonly ChartDescriptor _chartDescriptor;
+        private readonly List<MeasurableParameter> _measurableParameters;
         private readonly StackPanel _plantAreaChartsPanel;
 
         public PlantAreaChartsPanelBuilder(List<MeasurableParameter> measurableParameters,
@@ -35,40 +35,38 @@ namespace PlantsWpf.ControlsBuilders
         public void RebuildChartsPanel()
         {
             _plantAreaChartsPanel.Children.Clear();
-            foreach (MeasurableParameter measurableParameter in _measurableParameters)
-            {
+            foreach (var measurableParameter in _measurableParameters)
                 if (measurableParameter != null)
                 {
-                    Chart chart = new Chart
+                    var chart = new Chart
                     {
                         HorizontalAlignment = HorizontalAlignment.Left,
                         Width = 1100,
                         Height = 225,
                         BorderBrush = Brushes.Black,
-                        Background = (LinearGradientBrush)MainWindow.ResourceDictionary["ChartBackground"],
-                        Title = measurableParameter.MeasurableType,
+                        Background = (LinearGradientBrush) MainWindow.ResourceDictionary["ChartBackground"],
+                        Title = measurableParameter.MeasurableType
                     };
 
-                    AreaSeries areaSeries = new AreaSeries
+                    var areaSeries = new AreaSeries
                     {
                         IndependentValueBinding = new Binding("Key"),
                         DependentValueBinding = new Binding("Value"),
-                        Title = measurableParameter.MeasurableType,
+                        Title = measurableParameter.MeasurableType
                     };
                     chart.Series.Add(areaSeries);
                     _plantAreaChartsPanel.Children.Add(chart);
                 }
-            }
 
-            DockPanel chartDescriptorPanel = CreateChartDescriptorPanel();
+            var chartDescriptorPanel = CreateChartDescriptorPanel();
 
             _plantAreaChartsPanel.Children.Add(chartDescriptorPanel);
         }
 
         public DockPanel CreateChartDescriptorPanel()
         {
-            Label dateTimeFromLabel = new Label { Content = "DateTime from:" };
-            DateTimePicker dateTimePickerFrom = new DateTimePicker
+            var dateTimeFromLabel = new Label {Content = "DateTime from:"};
+            var dateTimePickerFrom = new DateTimePicker
             {
                 DataContext = _chartDescriptor.DateTimeFrom,
                 Value = _chartDescriptor.DateTimeFrom
@@ -81,13 +79,11 @@ namespace PlantsWpf.ControlsBuilders
             dateTimePickerFrom.ValueChanged += delegate
             {
                 if (dateTimePickerFrom.Value != null)
-                {
-                    _chartDescriptor.DateTimeFrom = (DateTime)dateTimePickerFrom.Value;
-                }
+                    _chartDescriptor.DateTimeFrom = (DateTime) dateTimePickerFrom.Value;
             };
 
-            Label dateTimeToLabel = new Label { Content = "DateTime to:" };
-            DateTimePicker dateTimePickerTo = new DateTimePicker
+            var dateTimeToLabel = new Label {Content = "DateTime to:"};
+            var dateTimePickerTo = new DateTimePicker
             {
                 DataContext = _chartDescriptor.DateTimeTo,
                 Value = _chartDescriptor.DateTimeFrom
@@ -100,13 +96,11 @@ namespace PlantsWpf.ControlsBuilders
             dateTimePickerTo.ValueChanged += delegate
             {
                 if (dateTimePickerTo.Value != null)
-                {
-                    _chartDescriptor.DateTimeTo = (DateTime)dateTimePickerTo.Value;
-                }
+                    _chartDescriptor.DateTimeTo = (DateTime) dateTimePickerTo.Value;
             };
 
-            Label numberTextBoxLabel = new Label { Content = "Number of points" };
-            TextBox numberTextBox = new TextBox
+            var numberTextBoxLabel = new Label {Content = "Number of points"};
+            var numberTextBox = new TextBox
             {
                 DataContext = _chartDescriptor.Number,
                 Text = _chartDescriptor.Number.ToString(),
@@ -124,28 +118,24 @@ namespace PlantsWpf.ControlsBuilders
                 }
             };
 
-            Label onlyCriticalCheckBoxLabel = new Label { Content = "Show only critical" };
-            CheckBox onlyCriticalCheckBox = new CheckBox
+            var onlyCriticalCheckBoxLabel = new Label {Content = "Show only critical"};
+            var onlyCriticalCheckBox = new CheckBox
             {
                 DataContext = _chartDescriptor.OnlyCritical,
                 VerticalAlignment = VerticalAlignment.Center
             };
             onlyCriticalCheckBox.Checked += delegate
             {
-                if (onlyCriticalCheckBox.IsChecked != null && onlyCriticalCheckBox.IsChecked.Value)
-                {
+                if ((onlyCriticalCheckBox.IsChecked != null) && onlyCriticalCheckBox.IsChecked.Value)
                     _chartDescriptor.OnlyCritical = true;
-                }
             };
             onlyCriticalCheckBox.Unchecked += delegate
             {
-                if (onlyCriticalCheckBox.IsChecked != null && !onlyCriticalCheckBox.IsChecked.Value)
-                {
+                if ((onlyCriticalCheckBox.IsChecked != null) && !onlyCriticalCheckBox.IsChecked.Value)
                     _chartDescriptor.OnlyCritical = false;
-                }
             };
 
-            DockPanel chartDescriptorPanel = new DockPanel
+            var chartDescriptorPanel = new DockPanel
             {
                 Name = _chartDescriptor.MeasurableType,
                 Margin = new Thickness(0, 10, 0, 0)

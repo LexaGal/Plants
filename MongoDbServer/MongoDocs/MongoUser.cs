@@ -5,15 +5,7 @@ namespace MongoDbServer.MongoDocs
 {
     public class MongoUser
     {
-        public string objId { get; set; }
-        public string first_name { get; set; }
-        public string last_name { get; set; }
-        public string email { get; set; }
-        public string passwordToken { get; set; }
-        public DateTime dateTime { get; set; }
-        public string name { get; set; }
-
-        public MongoUser(//ApplicationUser user)
+        public MongoUser( //ApplicationUser user)
             User user)
         {
             objId = user.Id.ToString();
@@ -24,5 +16,13 @@ namespace MongoDbServer.MongoDocs
             dateTime = DateTime.Now;
             name = $"{first_name} {last_name}";
         }
+
+        public string objId { get; set; }
+        public string first_name { get; set; }
+        public string last_name { get; set; }
+        public string email { get; set; }
+        public string passwordToken { get; set; }
+        public DateTime dateTime { get; set; }
+        public string name { get; set; }
     }
 }

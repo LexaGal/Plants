@@ -10,7 +10,7 @@ namespace MongoDbServer.BsonClassMaps
             return BsonClassMap.RegisterClassMap<MongoPlantsArea>(a =>
             {
                 a.AutoMap();
-                a.MapIdMember(area => area.objId); 
+                a.MapIdMember(area => area.objId);
             });
         }
 
@@ -19,7 +19,7 @@ namespace MongoDbServer.BsonClassMaps
             return BsonClassMap.RegisterClassMap<MongoSensor>(s =>
             {
                 s.AutoMap();
-                s.MapIdMember(sensor => sensor.objId); 
+                s.MapIdMember(sensor => sensor.objId);
             });
         }
 
@@ -50,4 +50,4 @@ namespace MongoDbServer.BsonClassMaps
             });
         }
     }
-    }
+}

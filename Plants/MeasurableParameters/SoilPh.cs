@@ -9,5 +9,4 @@ namespace PlantingLib.MeasurableParameters
             MeasurableType = ParameterEnum.SoilPh.ToString();
         }
     }
-
 }

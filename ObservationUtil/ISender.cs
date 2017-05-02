@@ -2,9 +2,9 @@
 
 namespace ObservationUtil
 {
-    public interface ISender<in T> where T: class 
+    public interface ISender<in T> where T : class
     {
-        event EventHandler MessageSending;    
+        event EventHandler MessageSending;
         void OnMessageSending(T message);
     }
 }

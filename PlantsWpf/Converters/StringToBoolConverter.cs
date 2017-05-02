@@ -8,14 +8,14 @@ namespace PlantsWpf.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string itemCode = (string)value;
+            var itemCode = (string) value;
 
-            return (itemCode == "yes");
+            return itemCode == "yes";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool toBeInvoiced = (bool)value;
+            var toBeInvoiced = (bool) value;
 
             return toBeInvoiced ? "yes" : "no";
         }

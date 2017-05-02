@@ -13,12 +13,33 @@ namespace PlantsWpf.ObjectsViews
     public class DataGridServiceScheduleView : INotifyPropertyChanged
     {
         private readonly ServiceSchedule _serviceSchedule;
-        private string _servicingSpan;
-        private string _servicingPauseSpan;
-        private string _serviceName;
-        private string _parameters;
         private string _isModified;
         private string _isOn;
+        private string _parameters;
+        private string _serviceName;
+        private string _servicingPauseSpan;
+        private string _servicingSpan;
+
+        public DataGridServiceScheduleView()
+        {
+        }
+
+        public DataGridServiceScheduleView(ServiceSchedule serviceSchedule)
+        {
+            _serviceSchedule = serviceSchedule;
+            _serviceSchedule.NewServiceName += GetNewServiceName;
+
+            ServiceName = _serviceSchedule.ServiceName;
+
+            Parameters = MeasurableParametersToStringView();
+
+            ServicingSpan = _serviceSchedule.ServicingSpan.ToString();
+            ServicingPauseSpan = _serviceSchedule.ServicingPauseSpan.ToString();
+
+            IsOn = true.ToString();
+
+            IsModified = false.ToString();
+        }
 
         public string IsOn
         {
@@ -87,26 +108,7 @@ namespace PlantsWpf.ObjectsViews
             }
         }
 
-        public DataGridServiceScheduleView()
-        {
-        }
-
-        public DataGridServiceScheduleView(ServiceSchedule serviceSchedule)
-        {
-            _serviceSchedule = serviceSchedule;
-            _serviceSchedule.NewServiceName += GetNewServiceName;
-
-            ServiceName = _serviceSchedule.ServiceName;
-
-            Parameters = MeasurableParametersToStringView();
-
-            ServicingSpan = _serviceSchedule.ServicingSpan.ToString();
-            ServicingPauseSpan = _serviceSchedule.ServicingPauseSpan.ToString();
-
-            IsOn = true.ToString();
-
-            IsModified = false.ToString();
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void GetNewServiceName(object sender, EventArgs eventArgs)
         {
@@ -121,23 +123,19 @@ namespace PlantsWpf.ObjectsViews
 
         public string MeasurableParametersToStringView()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             _serviceSchedule.MeasurableParameters.ToList()
                 .ForEach(m => builder.Append($"{m.MeasurableType}, "));
             if (builder.Length > 2)
-            {
                 builder.Remove(builder.Length - 2, 2);
-            }
 
-            return builder.ToString();   
+            return builder.ToString();
         }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            var handler = PropertyChanged;
             handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

@@ -3,5 +3,7 @@
 namespace PlantingLib.Properties
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class RazorWriteLiteralMethodAttribute : Attribute { }
+    public sealed class RazorWriteLiteralMethodAttribute : Attribute
+    {
+    }
 }

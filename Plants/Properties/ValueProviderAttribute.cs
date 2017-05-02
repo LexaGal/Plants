@@ -3,8 +3,8 @@
 namespace PlantingLib.Properties
 {
     /// <summary>
-    /// For a parameter that is expected to be one of the limited set of values.
-    /// Specify fields of which type should be used as values for this parameter.
+    ///     For a parameter that is expected to be one of the limited set of values.
+    ///     Specify fields of which type should be used as values for this parameter.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Field)]
     public sealed class ValueProviderAttribute : Attribute
@@ -14,6 +14,7 @@ namespace PlantingLib.Properties
             Name = name;
         }
 
-        [NotNull] public string Name { get; private set; }
+        [NotNull]
+        public string Name { get; private set; }
     }
 }

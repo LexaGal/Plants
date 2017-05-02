@@ -1,5 +1,3 @@
-
-
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,14 +5,6 @@ namespace Database.MappingTypes
 {
     public class SensorMapping
     {
-        [Key]
-        public Guid Id { get; set; }
-
-        public Guid PlantsAreaId { get; set; }
-        public int MeasuringTimeout { get; set; }
-        public Guid MeasurableParameterId { get; set; }
-        public string Type { get; set; }
-
         public SensorMapping()
         {
         }
@@ -27,6 +17,14 @@ namespace Database.MappingTypes
             MeasurableParameterId = measurableParameterId;
             Type = type;
         }
+
+        [Key]
+        public Guid Id { get; set; }
+
+        public Guid PlantsAreaId { get; set; }
+        public int MeasuringTimeout { get; set; }
+        public Guid MeasurableParameterId { get; set; }
+        public string Type { get; set; }
 
         public void CopyTo(SensorMapping sensorMapping)
         {

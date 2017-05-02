@@ -1,11 +1,13 @@
 ﻿using System.Net;
 using System.Web.Http;
 using System.Web.Mvc;
-using Microsoft.Azure; // Namespace for CloudConfigurationManager
-using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
+using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using WeatherUtil;
+// Namespace for CloudConfigurationManager
+// Namespace for CloudStorageAccount
 
 // Namespace for Queue storage types
 
@@ -17,20 +19,20 @@ namespace WebApi.Controllers
         [System.Web.Http.Route("api/weather/set")]
         public JsonResult Set(WeatherModel weather)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+            var storageAccount = CloudStorageAccount.Parse(
                 CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
-            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+            var queueClient = storageAccount.CreateCloudQueueClient();
 
-            CloudQueue queue = queueClient.GetQueueReference("myqueue");
+            var queue = queueClient.GetQueueReference("myqueue");
 
             queue.CreateIfNotExists();
 
             var w = JsonConvert.SerializeObject(weather);
 
-            CloudQueueMessage message = new CloudQueueMessage(w);
+            var message = new CloudQueueMessage(w);
             queue.AddMessage(message);
-            
+
             return new JsonResult
             {
                 Data = new
@@ -41,20 +43,14 @@ namespace WebApi.Controllers
         }
     }
 
-                //, new List<WeatherItem>());
-
-    //            //do something
-
-    //            dest.ProceedData(data.Select(i => i as IInfoData).ToList()); // as List<IInfoData>//new List<object> {data});
-    //        }
-    //    }
-
-    //    class Destination
     //    {
-    //        internal void ProceedData(List<IInfoData> data) //List<Object> data) //ValueType> data)
+    // var        internal void ProceedData(List<IInfoData> data) //List<Object> data) //ValueType> data)
+
+
+                            //area = _plantsAreas.Areas.Single(a => a.Id == g);
     //        {
-    //            foreach (var item in data)
-    //            {
+    // var            foreach (var item in data)
+    // var            {
     //                //do something
     //            }
     //        }

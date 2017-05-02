@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using Image = iTextSharp.text.Image;
+using Image = System.Drawing.Image;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace PlantsWpf.PdfDocuments
@@ -16,7 +16,7 @@ namespace PlantsWpf.PdfDocuments
     {
         public Document CreatePdfDocument(Chart chart, string path)
         {
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
+            var renderBitmap = new RenderTargetBitmap(
                 (int) chart.ActualWidth,
                 (int) chart.ActualHeight,
                 96d,
@@ -25,33 +25,34 @@ namespace PlantsWpf.PdfDocuments
 
             renderBitmap.Render(chart);
 
-            MemoryStream stream = new MemoryStream();
+            var stream = new MemoryStream();
             BitmapEncoder encoder = new BmpBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
             encoder.Save(stream);
 
-            Bitmap bitmap = new Bitmap(stream);
-            System.Drawing.Image image = bitmap;
+            var bitmap = new Bitmap(stream);
+            Image image = bitmap;
 
-            System.Drawing.Image resizedImage = ResizeImage(image, image.Width*2, image.Height);
+            Image resizedImage = ResizeImage(image, image.Width*2, image.Height);
 
-            Document doc = new Document(PageSize.A4);
+            var doc = new Document(PageSize.A4);
             PdfWriter.GetInstance(doc, new FileStream(path, FileMode.OpenOrCreate));
             doc.Open();
-            Image pdfImage = Image.GetInstance(resizedImage, ImageFormat.Jpeg);
+            var pdfImage = iTextSharp.text.Image.GetInstance(resizedImage, ImageFormat.Jpeg);
             doc.Add(pdfImage);
             doc.Close();
-            
+
             return doc;
         }
-        public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
+
+        public static Bitmap ResizeImage(Image image, int width, int height)
         {
-            Rectangle destRect = new Rectangle(0, 0, width, height);
-            Bitmap destImage = new Bitmap(width, height);
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
 
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
-            using (Graphics graphics = Graphics.FromImage(destImage))
+            using (var graphics = Graphics.FromImage(destImage))
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
                 graphics.CompositingQuality = CompositingQuality.HighQuality;
@@ -59,7 +60,7 @@ namespace PlantsWpf.PdfDocuments
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                using (ImageAttributes wrapMode = new ImageAttributes())
+                using (var wrapMode = new ImageAttributes())
                 {
                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
                     graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);

@@ -4,11 +4,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using PlantingLib.Plants;
+using PlantingLib.Properties;
 using PlantsWpf.ObjectsViews;
-using Binding = System.Windows.Data.Binding;
-using DataGrid = System.Windows.Controls.DataGrid;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace PlantsWpf.ControlsBuilders
 {
@@ -16,7 +13,7 @@ namespace PlantsWpf.ControlsBuilders
     {
         public DataGrid CreateServiceSystemsDataGrid(PlantsArea area)
         {
-            DataGrid dataGrid = new DataGrid
+            var dataGrid = new DataGrid
             {
                 Margin = new Thickness(20, 10, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -28,7 +25,7 @@ namespace PlantsWpf.ControlsBuilders
                 ColumnWidth = DataGridLength.Auto
             };
 
-            DataGridTextColumn columnServiceName = new DataGridTextColumn
+            var columnServiceName = new DataGridTextColumn
             {
                 Header = "Service",
                 Binding = new Binding("ServiceName")
@@ -38,7 +35,7 @@ namespace PlantsWpf.ControlsBuilders
                 },
                 IsReadOnly = true
             };
-            DataGridTextColumn columnIsOn = new DataGridTextColumn
+            var columnIsOn = new DataGridTextColumn
             {
                 Header = "On",
                 Binding = new Binding("IsOn")
@@ -57,10 +54,11 @@ namespace PlantsWpf.ControlsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = PlantingLib.Properties.Resources.IsScheduledSign,
+                            Value = Resources.IsScheduledSign,
                             Setters =
                             {
-                                 new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["ServiceBackground"])
+                                new Setter(Control.BackgroundProperty,
+                                    (SolidColorBrush) MainWindow.ResourceDictionary["ServiceBackground"])
                             }
                         }
                     }
@@ -68,7 +66,7 @@ namespace PlantsWpf.ControlsBuilders
                 IsReadOnly = true
             };
 
-            DataGridTextColumn columnIsScheduled = new DataGridTextColumn
+            var columnIsScheduled = new DataGridTextColumn
             {
                 Header = "Scheduled",
                 Binding = new Binding("IsScheduled")
@@ -87,10 +85,11 @@ namespace PlantsWpf.ControlsBuilders
                             {
                                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                             },
-                            Value = PlantingLib.Properties.Resources.IsScheduledSign,
+                            Value = Resources.IsScheduledSign,
                             Setters =
                             {
-                                new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["ScheduleBackground"])
+                                new Setter(Control.BackgroundProperty,
+                                    (SolidColorBrush) MainWindow.ResourceDictionary["ScheduleBackground"])
                             }
                         }
                     }
@@ -108,7 +107,7 @@ namespace PlantsWpf.ControlsBuilders
             FrameworkElementFactory removeSensorButtonTemplate, FrameworkElementFactory sensorSaveButtonTemplate,
             FrameworkElementFactory onOffSensorButtonTemplate)
         {
-            DataGrid dataGrid = new DataGrid
+            var dataGrid = new DataGrid
             {
                 Margin = new Thickness(10, 10, 0, 10),
                 HorizontalAlignment = HorizontalAlignment.Left,
@@ -128,7 +127,7 @@ namespace PlantsWpf.ControlsBuilders
                     new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Center)
                 }
             };
-            DataGridTextColumn measurableType = new DataGridTextColumn
+            var measurableType = new DataGridTextColumn
             {
                 Header = "Measurable",
                 Binding = new Binding("Measurable")
@@ -136,9 +135,8 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
-                    ValidatesOnExceptions = true,
+                    ValidatesOnExceptions = true
                 },
-
                 CellStyle = new Style(typeof(TextBox))
                 {
                     TargetType = typeof(DataGridCell),
@@ -156,7 +154,7 @@ namespace PlantsWpf.ControlsBuilders
                     }
                 }
             };
-            DataGridTextColumn timeout = new DataGridTextColumn
+            var timeout = new DataGridTextColumn
             {
                 Header = "Timeout",
                 Binding = new Binding("Timeout")
@@ -164,11 +162,11 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
-                    ValidatesOnExceptions = true,
+                    ValidatesOnExceptions = true
                 },
                 CellStyle = style
             };
-            DataGridTextColumn optimal = new DataGridTextColumn
+            var optimal = new DataGridTextColumn
             {
                 Header = "Optimal",
                 Binding = new Binding("Optimal")
@@ -176,11 +174,11 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
-                    ValidatesOnExceptions = true,
+                    ValidatesOnExceptions = true
                 },
                 CellStyle = style
             };
-            DataGridTextColumn min = new DataGridTextColumn
+            var min = new DataGridTextColumn
             {
                 Header = "Min",
                 Binding = new Binding("Min")
@@ -188,11 +186,11 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
-                    ValidatesOnExceptions = true,
+                    ValidatesOnExceptions = true
                 },
                 CellStyle = style
             };
-            DataGridTextColumn max = new DataGridTextColumn
+            var max = new DataGridTextColumn
             {
                 Header = "Max",
                 Binding = new Binding("Max")
@@ -200,11 +198,11 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
-                    ValidatesOnExceptions = true,
+                    ValidatesOnExceptions = true
                 },
                 CellStyle = style
             };
-            DataGridTextColumn value = new DataGridTextColumn
+            var value = new DataGridTextColumn
             {
                 Header = "Value",
                 Binding = new Binding("Value")
@@ -216,7 +214,7 @@ namespace PlantsWpf.ControlsBuilders
                 CellStyle = style
             };
 
-            DataGridTextColumn numberOfTimes = new DataGridTextColumn
+            var numberOfTimes = new DataGridTextColumn
             {
                 Header = "Messages",
                 Binding = new Binding("N")
@@ -227,7 +225,7 @@ namespace PlantsWpf.ControlsBuilders
                 IsReadOnly = true,
                 CellStyle = style
             };
-            DataGridTemplateColumn remove = new DataGridTemplateColumn
+            var remove = new DataGridTemplateColumn
             {
                 Header = "X",
                 CellTemplate = new DataTemplate
@@ -251,7 +249,7 @@ namespace PlantsWpf.ControlsBuilders
                     }
                 }
             };
-            DataGridTemplateColumn save = new DataGridTemplateColumn
+            var save = new DataGridTemplateColumn
             {
                 Header = "Save",
                 CellTemplate = new DataTemplate
@@ -284,19 +282,19 @@ namespace PlantsWpf.ControlsBuilders
                             Value = true.ToString(),
                             Setters =
                             {
-                                new Setter(UIElement.IsEnabledProperty, true),
+                                new Setter(UIElement.IsEnabledProperty, true)
                             }
                         }
                     }
                 }
             };
 
-            DataGridTemplateColumn onOff = new DataGridTemplateColumn
+            var onOff = new DataGridTemplateColumn
             {
                 Header = "Off",
                 CellTemplate = new DataTemplate
                 {
-                    VisualTree = onOffSensorButtonTemplate,
+                    VisualTree = onOffSensorButtonTemplate
                 }
                 ,
                 CellStyle = style
@@ -327,7 +325,8 @@ namespace PlantsWpf.ControlsBuilders
                         Value = true.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["SensorOrScheduleIsOff"]),
+                            new Setter(Control.BackgroundProperty,
+                                (SolidColorBrush) MainWindow.ResourceDictionary["SensorOrScheduleIsOff"])
                         }
                     },
                     new DataTrigger
@@ -339,7 +338,8 @@ namespace PlantsWpf.ControlsBuilders
                         Value = false.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["Main"]),
+                            new Setter(Control.BackgroundProperty,
+                                (SolidColorBrush) MainWindow.ResourceDictionary["Main"])
                         }
                     },
                     new DataTrigger
@@ -351,9 +351,10 @@ namespace PlantsWpf.ControlsBuilders
                         Value = true.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty,(SolidColorBrush)MainWindow.ResourceDictionary["CriticalBackground"])
+                            new Setter(Control.BackgroundProperty,
+                                (SolidColorBrush) MainWindow.ResourceDictionary["CriticalBackground"])
                         }
-                    },
+                    }
                 }
             };
 
@@ -365,7 +366,7 @@ namespace PlantsWpf.ControlsBuilders
             BindingList<DataGridServiceScheduleView> serviceScheduleViews,
             FrameworkElementFactory serviceScheduleSaveButtonTemplate, FrameworkElementFactory onOffSensorButtonTemplate)
         {
-            DataGrid dataGrid = new DataGrid
+            var dataGrid = new DataGrid
             {
                 Margin = new Thickness(20, 10, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -378,7 +379,7 @@ namespace PlantsWpf.ControlsBuilders
                 ColumnWidth = DataGridLength.Auto
             };
 
-            DataGridTextColumn serviceName = new DataGridTextColumn
+            var serviceName = new DataGridTextColumn
             {
                 Header = "Service",
                 Binding = new Binding("ServiceName")
@@ -389,7 +390,7 @@ namespace PlantsWpf.ControlsBuilders
                 IsReadOnly = true
             };
 
-            DataGridTextColumn parameters = new DataGridTextColumn
+            var parameters = new DataGridTextColumn
             {
                 Header = "Parameters",
                 Binding = new Binding("Parameters")
@@ -398,7 +399,7 @@ namespace PlantsWpf.ControlsBuilders
                 },
                 IsReadOnly = true
             };
-            DataGridTextColumn servicingSpan = new DataGridTextColumn
+            var servicingSpan = new DataGridTextColumn
             {
                 Header = "Duration",
                 Binding = new Binding("ServicingSpan")
@@ -406,10 +407,10 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
-                    ValidatesOnExceptions = true,
+                    ValidatesOnExceptions = true
                 }
             };
-            DataGridTextColumn servicingPauseSpan = new DataGridTextColumn
+            var servicingPauseSpan = new DataGridTextColumn
             {
                 Header = "Pause",
                 Binding = new Binding("ServicingPauseSpan")
@@ -417,11 +418,11 @@ namespace PlantsWpf.ControlsBuilders
                     UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
                     Mode = BindingMode.TwoWay,
                     NotifyOnValidationError = true,
-                    ValidatesOnExceptions = true,
+                    ValidatesOnExceptions = true
                 }
             };
 
-            DataGridTemplateColumn save = new DataGridTemplateColumn
+            var save = new DataGridTemplateColumn
             {
                 Header = "Save",
                 CellTemplate = new DataTemplate
@@ -460,7 +461,7 @@ namespace PlantsWpf.ControlsBuilders
                     }
                 }
             };
-            DataGridTemplateColumn onOff = new DataGridTemplateColumn
+            var onOff = new DataGridTemplateColumn
             {
                 Header = "On",
                 CellTemplate = new DataTemplate
@@ -491,7 +492,8 @@ namespace PlantsWpf.ControlsBuilders
                         Value = false.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["SensorOrScheduleIsOff"]),
+                            new Setter(Control.BackgroundProperty,
+                                (SolidColorBrush) MainWindow.ResourceDictionary["SensorOrScheduleIsOff"])
                         }
                     },
                     new DataTrigger
@@ -503,7 +505,8 @@ namespace PlantsWpf.ControlsBuilders
                         Value = true.ToString(),
                         Setters =
                         {
-                            new Setter(Control.BackgroundProperty, (SolidColorBrush)MainWindow.ResourceDictionary["Main"]),
+                            new Setter(Control.BackgroundProperty,
+                                (SolidColorBrush) MainWindow.ResourceDictionary["Main"])
                         }
                     }
                 }

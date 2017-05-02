@@ -5,14 +5,6 @@ namespace MongoDbServer.MongoDocs
 {
     public class MongoMessage
     {
-        public string objId { get; set; }
-        public string plantsareaId { get; set; }
-        public DateTime dateTime { get; set; }
-        public string messageType { get; set; }
-        public string measurableType { get; set; }
-        public double parameterValue { get; set; }
-        public string read { get; set; }
-
         public MongoMessage(MeasuringMessage measuringMessage)
         {
             objId = measuringMessage.Id.ToString();
@@ -23,5 +15,13 @@ namespace MongoDbServer.MongoDocs
             parameterValue = measuringMessage.ParameterValue;
             read = false.ToString();
         }
+
+        public string objId { get; set; }
+        public string plantsareaId { get; set; }
+        public DateTime dateTime { get; set; }
+        public string messageType { get; set; }
+        public string measurableType { get; set; }
+        public double parameterValue { get; set; }
+        public string read { get; set; }
     }
 }

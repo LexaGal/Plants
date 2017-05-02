@@ -9,17 +9,44 @@ namespace PlantsWpf.ObjectsViews
 {
     public class DataGridSensorView : INotifyPropertyChanged
     {
-        private Sensor _sensor;
-        private string _n;
-        private string _value;
         private string _isCritical;
-        private string _optimal;
-        private string _min;
-        private string _max;
-        private string _timeout;
         private string _isModified;
-        private string _measurable;
         private string _isOffByUser;
+        private string _max;
+        private string _measurable;
+        private string _min;
+        private string _n;
+        private string _optimal;
+        private Sensor _sensor;
+        private string _timeout;
+        private string _value;
+
+        public DataGridSensorView()
+        {
+        }
+
+        public DataGridSensorView(Sensor sensor)
+        {
+            _sensor = sensor;
+            _sensor.NewMeasuring += GetNewMeasuring;
+
+            Measurable = _sensor.MeasurableType;
+            Optimal = _sensor.MeasurableParameter.Optimal.ToString();
+            Min = _sensor.MeasurableParameter.Min.ToString();
+            Max = _sensor.MeasurableParameter.Max.ToString();
+            Value = _sensor.Function.CurrentFunctionValue.ToString("F2");
+            Timeout = _sensor.MeasuringTimeout.ToString();
+            IsCustom = _sensor.IsCustom.ToString();
+            N = _sensor.NumberOfTimes.ToString();
+
+            IsModified = false.ToString();
+
+            IsOffByUser = _sensor.IsOffByUser.ToString();
+
+            MeasurableIsModified = false;
+
+            UpdateView();
+        }
 
         public string IsOffByUser
         {
@@ -53,13 +80,11 @@ namespace PlantsWpf.ObjectsViews
                 OnPropertyChanged();
                 _sensor.MeasurableParameter.Optimal = Convert.ToInt32(Optimal);
                 if (!_sensor.MeasurableParameter.HasValidParameters())
-                {
                     throw new ArgumentException();
-                }
                 IsModified = true.ToString();
             }
         }
-            
+
         public string Min
         {
             get { return _min; }
@@ -67,12 +92,10 @@ namespace PlantsWpf.ObjectsViews
             {
                 _min = value;
                 OnPropertyChanged();
-               _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
-               if (!_sensor.MeasurableParameter.HasValidParameters())
-               {
-                   throw new ArgumentException();
-               } 
-               IsModified = true.ToString();
+                _sensor.MeasurableParameter.Min = Convert.ToInt32(Min);
+                if (!_sensor.MeasurableParameter.HasValidParameters())
+                    throw new ArgumentException();
+                IsModified = true.ToString();
             }
         }
 
@@ -85,9 +108,7 @@ namespace PlantsWpf.ObjectsViews
                 OnPropertyChanged();
                 _sensor.MeasurableParameter.Max = Convert.ToInt32(Max);
                 if (!_sensor.MeasurableParameter.HasValidParameters())
-                {
                     throw new ArgumentException();
-                }
                 IsModified = true.ToString();
             }
         }
@@ -121,7 +142,7 @@ namespace PlantsWpf.ObjectsViews
                 OnPropertyChanged();
             }
         }
-        
+
         public Sensor Sensor
         {
             get { return _sensor; }
@@ -154,7 +175,7 @@ namespace PlantsWpf.ObjectsViews
 
                 // do not: _sensor.MeasurableParameter.MeasurableType = Measurable;
                 // oldMeasurable will overwrite
-                if (Regex.Match(Measurable, PlantingLib.Properties.Resources.MeasurablePattern).Success)
+                if (Regex.Match(Measurable, Resources.MeasurablePattern).Success)
                 {
                     IsModified = false.ToString();
                     throw new FormatException();
@@ -167,42 +188,17 @@ namespace PlantsWpf.ObjectsViews
         public bool MeasurableIsModified { get; set; }
 
         public string IsCustom { get; set; }
-        
-        public DataGridSensorView()
-        {
-        }
 
-        public DataGridSensorView(Sensor sensor)
-        {
-            _sensor = sensor;
-            _sensor.NewMeasuring += GetNewMeasuring;
-
-            Measurable = _sensor.MeasurableType;
-            Optimal = _sensor.MeasurableParameter.Optimal.ToString();
-            Min = _sensor.MeasurableParameter.Min.ToString();
-            Max = _sensor.MeasurableParameter.Max.ToString();
-            Value = _sensor.Function.CurrentFunctionValue.ToString("F2");
-            Timeout = _sensor.MeasuringTimeout.ToString();
-            IsCustom = _sensor.IsCustom.ToString();
-            N = _sensor.NumberOfTimes.ToString();
-           
-            IsModified = false.ToString();
-
-            IsOffByUser = _sensor.IsOffByUser.ToString();
-
-            MeasurableIsModified = false;
-
-            UpdateView(); 
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public void UpdateView()
         {
             Value = _sensor.Function.CurrentFunctionValue.ToString("F2");
             N = _sensor.NumberOfTimes.ToString();
-            IsCritical = _sensor.Function.CurrentFunctionValue >
-                         _sensor.MeasurableParameter.Max ||
-                         _sensor.Function.CurrentFunctionValue <
-                         _sensor.MeasurableParameter.Min
+            IsCritical = (_sensor.Function.CurrentFunctionValue >
+                          _sensor.MeasurableParameter.Max) ||
+                         (_sensor.Function.CurrentFunctionValue <
+                          _sensor.MeasurableParameter.Min)
                 ? true.ToString()
                 : false.ToString();
         }
@@ -212,13 +208,10 @@ namespace PlantsWpf.ObjectsViews
             UpdateView();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

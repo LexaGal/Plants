@@ -5,14 +5,14 @@ using Microsoft.AspNet.Identity;
 namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
-    /// Class that represents the UserLogins table in the MySQL Database
+    ///     Class that represents the UserLogins table in the MySQL Database
     /// </summary>
     public class UserLoginsTable
     {
-        private MySQLDatabase _database;
+        private readonly MySQLDatabase _database;
 
         /// <summary>
-        /// Constructor that takes a MySQLDatabase instance 
+        ///     Constructor that takes a MySQLDatabase instance
         /// </summary>
         /// <param name="database"></param>
         public UserLoginsTable(MySQLDatabase database)
@@ -21,15 +21,16 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         }
 
         /// <summary>
-        /// Deletes a login from a user in the UserLogins table
+        ///     Deletes a login from a user in the UserLogins table
         /// </summary>
         /// <param name="user">User to have login deleted</param>
         /// <param name="login">Login to be deleted from user</param>
         /// <returns></returns>
         public int Delete(IdentityUser user, UserLoginInfo login)
         {
-            string commandText = "Delete from UserLogins where UserId = @userId and LoginProvider = @loginProvider and ProviderKey = @providerKey";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var commandText =
+                "Delete from UserLogins where UserId = @userId and LoginProvider = @loginProvider and ProviderKey = @providerKey";
+            var parameters = new Dictionary<string, object>();
             parameters.Add("UserId", user.Id);
             parameters.Add("loginProvider", login.LoginProvider);
             parameters.Add("providerKey", login.ProviderKey);
@@ -38,29 +39,30 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         }
 
         /// <summary>
-        /// Deletes all Logins from a user in the UserLogins table
+        ///     Deletes all Logins from a user in the UserLogins table
         /// </summary>
         /// <param name="userId">The user's id</param>
         /// <returns></returns>
         public int Delete(string userId)
         {
-            string commandText = "Delete from UserLogins where UserId = @userId";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var commandText = "Delete from UserLogins where UserId = @userId";
+            var parameters = new Dictionary<string, object>();
             parameters.Add("UserId", userId);
 
             return _database.Execute(commandText, parameters);
         }
 
         /// <summary>
-        /// Inserts a new login in the UserLogins table
+        ///     Inserts a new login in the UserLogins table
         /// </summary>
         /// <param name="user">User to have new login added</param>
         /// <param name="login">Login to be added</param>
         /// <returns></returns>
         public int Insert(IdentityUser user, UserLoginInfo login)
         {
-            string commandText = "Insert into UserLogins (LoginProvider, ProviderKey, UserId) values (@loginProvider, @providerKey, @userId)";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var commandText =
+                "Insert into UserLogins (LoginProvider, ProviderKey, UserId) values (@loginProvider, @providerKey, @userId)";
+            var parameters = new Dictionary<string, object>();
             parameters.Add("loginProvider", login.LoginProvider);
             parameters.Add("providerKey", login.ProviderKey);
             parameters.Add("userId", user.Id);
@@ -69,14 +71,15 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         }
 
         /// <summary>
-        /// Return a userId given a user's login
+        ///     Return a userId given a user's login
         /// </summary>
         /// <param name="userLogin">The user's login info</param>
         /// <returns></returns>
         public string FindUserIdByLogin(UserLoginInfo userLogin)
         {
-            string commandText = "Select UserId from UserLogins where LoginProvider = @loginProvider and ProviderKey = @providerKey";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var commandText =
+                "Select UserId from UserLogins where LoginProvider = @loginProvider and ProviderKey = @providerKey";
+            var parameters = new Dictionary<string, object>();
             parameters.Add("loginProvider", userLogin.LoginProvider);
             parameters.Add("providerKey", userLogin.ProviderKey);
 
@@ -84,20 +87,20 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         }
 
         /// <summary>
-        /// Returns a list of user's logins
+        ///     Returns a list of user's logins
         /// </summary>
         /// <param name="userId">The user's id</param>
         /// <returns></returns>
         public List<UserLoginInfo> FindByUserId(string userId)
         {
-            List<UserLoginInfo> logins = new List<UserLoginInfo>();
-            string commandText = "Select * from UserLogins where UserId = @userId";
-            Dictionary<string, object> parameters = new Dictionary<string, object>() { { "@userId", userId } };
+            var logins = new List<UserLoginInfo>();
+            var commandText = "Select * from UserLogins where UserId = @userId";
+            var parameters = new Dictionary<string, object> {{"@userId", userId}};
 
-            List<Dictionary<string, string>> rows = _database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
+            var rows = _database.Query(commandText, parameters);
+            foreach (var row in rows)
             {
-                UserLoginInfo login = new UserLoginInfo(row["LoginProvider"], row["ProviderKey"]);
+                var login = new UserLoginInfo(row["LoginProvider"], row["ProviderKey"]);
                 logins.Add(login);
             }
 

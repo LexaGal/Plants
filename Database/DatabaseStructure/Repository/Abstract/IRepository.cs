@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Database.DatabaseStructure.Repository.Abstract
 {
-    public interface IRepository<T> : IDisposable where T: class
+    public interface IRepository<T> : IDisposable where T : class
     {
         List<T> GetAll(Expression<Func<T, bool>> func = null);
         T Get(Guid id);

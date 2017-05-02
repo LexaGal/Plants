@@ -15,7 +15,7 @@ namespace PlantingLib.Messenging
             PlantsAreaId = plantsAreaId;
             ParameterValue = parameterValue;
         }
-       
+
         [Key]
         public Guid Id { get; private set; }
 
@@ -29,9 +29,6 @@ namespace PlantingLib.Messenging
         {
             return
                 $"[{DateTime.ToLongTimeString()}] Level: {MessageType}, {MeasurableType} at {PlantsAreaId} PlantsArea: {ParameterValue.ToString("F2")}.";
-
         }
-
-      
     }
 }

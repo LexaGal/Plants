@@ -12,14 +12,11 @@ namespace WeatherUtil
 
         public static string WeatherItemsToString(IEnumerable<WeatherItem> wi)
         {
-            StringBuilder builder = new StringBuilder().AppendLine("Weather Info");
+            var builder = new StringBuilder().AppendLine("Weather Info");
             var list = wi.ToList();
             if (list.Any())
             {
-                list.Take(7).ToList().ForEach(i =>
-                {
-                    builder.AppendLine($"{i.Name}: {i.Value}");
-                });
+                list.Take(7).ToList().ForEach(i => { builder.AppendLine($"{i.Name}: {i.Value} {i.Ext}"); });
             }
             else
             {

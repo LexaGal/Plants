@@ -5,14 +5,6 @@ namespace Database.MappingTypes
 {
     public class MeasurableParameterMapping
     {
-        [Key]
-        public Guid Id { get; set; }
-
-        public int Optimal { get; set; }
-        public int Min { get; set; }
-        public int Max { get; set; }
-        public string Type { get; set; }
-
         public MeasurableParameterMapping(Guid id, int optimal, int min, int max, string type)
         {
             Id = id;
@@ -23,7 +15,16 @@ namespace Database.MappingTypes
         }
 
         public MeasurableParameterMapping()
-        {}
+        {
+        }
+
+        [Key]
+        public Guid Id { get; set; }
+
+        public int Optimal { get; set; }
+        public int Min { get; set; }
+        public int Max { get; set; }
+        public string Type { get; set; }
 
         public void CopyTo(MeasurableParameterMapping measurableParameterMapping)
         {

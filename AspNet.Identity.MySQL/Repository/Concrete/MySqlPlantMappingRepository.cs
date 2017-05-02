@@ -8,42 +8,35 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 {
     public class MySqlPlantMappingRepository : MySqlRepository<PlantMapping>
     {
-
         public override List<PlantMapping> GetAll(
-              Expression<Func<PlantMapping, bool>> func = null)
+            Expression<Func<PlantMapping, bool>> func = null)
         {
-            List<PlantMapping> plantMappings = new List<PlantMapping>();
-            string commandText = "Select * from plant";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var plantMappings = new List<PlantMapping>();
+            var commandText = "Select * from plant";
+            var parameters = new Dictionary<string, object>();
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 plantMappings.Add(CreateMapping(row));
-            }
             if (func != null)
-            {
                 return plantMappings.AsQueryable().Where(func).ToList();
-            }
             return plantMappings;
         }
 
         public override PlantMapping Get(Guid id)
         {
-            string commandText = "Select * from plant where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
+            var commandText = "Select * from plant where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 return CreateMapping(row);
-            }
             return null;
         }
 
         public override bool Save(PlantMapping value, Guid id)
         {
-            string commandText =
+            var commandText =
                 "Insert into plant(Id, TemperatureId, HumidityId, SoilPhId, NutrientId, Name, CustomParametersIds) values(@Id, @TemperatureId, @HumidityId, @SoilPhId, @NutrientId, @Name, @CustomParametersIds) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "Id = values(Id), " +
@@ -54,15 +47,15 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 "Name = values(`Name`)," +
                 "CustomParametersIds = values(CustomParametersIds)";
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 {"@Id", value.Id.ToString()},
-                {"@TemperatureId", value.TemperatureId },
-                {"@HumidityId", value.HumidityId },
+                {"@TemperatureId", value.TemperatureId},
+                {"@HumidityId", value.HumidityId},
                 {"@SoilPhId", value.SoilPhId},
-                {"@NutrientId", value.NutrientId },
-                {"@Name", value.Name },
-                {"@CustomParametersIds", value.CustomParametersIds }
+                {"@NutrientId", value.NutrientId},
+                {"@Name", value.Name},
+                {"@CustomParametersIds", value.CustomParametersIds}
             };
 
             Database.Execute(commandText, parameters);
@@ -76,8 +69,8 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         public override bool Delete(Guid id)
         {
-            string commandText = "Delete from plant where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
+            var commandText = "Delete from plant where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
             Database.Execute(commandText, parameters);
             return true;
@@ -85,7 +78,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         protected override PlantMapping CreateMapping(Dictionary<string, string> row)
         {
-            PlantMapping plantMapping = (PlantMapping)Activator.CreateInstance(typeof(PlantMapping));
+            var plantMapping = (PlantMapping) Activator.CreateInstance(typeof(PlantMapping));
             plantMapping.Id = Guid.Parse(row["Id"]);
             plantMapping.TemperatureId = Guid.Parse(row["TemperatureId"]);
             plantMapping.HumidityId = Guid.Parse(row["HumidityId"]);
@@ -97,6 +90,5 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 : row["CustomParametersIds"];
             return plantMapping;
         }
-
     }
 }

@@ -4,13 +4,13 @@ using Microsoft.AspNet.Identity;
 namespace AspNet.Identity.MySQL.IdentityUserData
 {
     /// <summary>
-    /// Class that implements the ASP.NET Identity
-    /// IUser interface 
+    ///     Class that implements the ASP.NET Identity
+    ///     IUser interface
     /// </summary>
     public class IdentityUser : IUser
     {
         /// <summary>
-        /// Default constructor 
+        ///     Default constructor
         /// </summary>
         public IdentityUser()
         {
@@ -18,7 +18,7 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         }
 
         /// <summary>
-        /// Constructor that takes user name as argument
+        ///     Constructor that takes user name as argument
         /// </summary>
         /// <param name="userName"></param>
         public IdentityUser(string userName)
@@ -26,16 +26,6 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         {
             UserName = userName;
         }
-
-        /// <summary>
-        /// User ID
-        /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// User's name
-        /// </summary>
-        public string UserName { get; set; }
 
         /// <summary>
         ///     Email
@@ -86,5 +76,15 @@ namespace AspNet.Identity.MySQL.IdentityUserData
         ///     Used to record failures for the purposes of lockout
         /// </summary>
         public virtual int AccessFailedCount { get; set; }
+
+        /// <summary>
+        ///     User ID
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        ///     User's name
+        /// </summary>
+        public string UserName { get; set; }
     }
 }

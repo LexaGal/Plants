@@ -1,4 +1,4 @@
-﻿using SensorMapping = Database.MappingTypes.SensorMapping;
+﻿using Database.MappingTypes;
 
 namespace Database.DatabaseStructure.Repository.Abstract
 {

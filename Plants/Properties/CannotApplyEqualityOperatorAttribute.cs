@@ -3,12 +3,13 @@
 namespace PlantingLib.Properties
 {
     /// <summary>
-    /// Indicates that the value of the marked type (or its derivatives)
-    /// cannot be compared using '==' or '!=' operators and <c>Equals()</c>
-    /// should be used instead. However, using '==' or '!=' for comparison
-    /// with <c>null</c> is always permitted.
+    ///     Indicates that the value of the marked type (or its derivatives)
+    ///     cannot be compared using '==' or '!=' operators and <c>Equals()</c>
+    ///     should be used instead. However, using '==' or '!=' for comparison
+    ///     with <c>null</c> is always permitted.
     /// </summary>
-    /// <example><code>
+    /// <example>
+    ///     <code>
     /// [CannotApplyEqualityOperator]
     /// class NoEquality { }
     /// class UsesNoEquality {
@@ -20,7 +21,10 @@ namespace PlantingLib.Properties
     ///     }
     ///   }
     /// }
-    /// </code></example>
+    /// </code>
+    /// </example>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
-    public sealed class CannotApplyEqualityOperatorAttribute : Attribute { }
+    public sealed class CannotApplyEqualityOperatorAttribute : Attribute
+    {
+    }
 }

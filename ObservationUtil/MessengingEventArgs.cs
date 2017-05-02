@@ -2,7 +2,7 @@
 
 namespace ObservationUtil
 {
-    public class MessengingEventArgs<T> : EventArgs where T: class
+    public class MessengingEventArgs<T> : EventArgs where T : class
     {
         public MessengingEventArgs(T obj)
         {

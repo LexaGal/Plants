@@ -3,5 +3,7 @@
 namespace PlantingLib.Properties
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public sealed class RazorHelperCommonAttribute : Attribute { }
+    public sealed class RazorHelperCommonAttribute : Attribute
+    {
+    }
 }

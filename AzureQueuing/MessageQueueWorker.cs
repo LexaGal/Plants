@@ -23,14 +23,23 @@ namespace AzureQueuing
         {
         }
 
+        public event EventHandler MessageSending;
+
+        public void OnMessageSending(WeatherModel message)
+        {
+            var handler = MessageSending;
+            handler?.Invoke(this, new MessengingEventArgs<WeatherModel>(message));
+        }
+
         protected override void Report(string message)
         {
             Console.WriteLine(message);
+            ResetAttempts();
+            Thread.Sleep(TimeSpan.FromSeconds(10));
         }
 
         //protected override ICollection<CloudQueueMessage> TryGetWork()
         //{
-        //    throw new NotImplementedException();
         //}
 
         protected override void OnExecuting(CloudQueueMessage workItem)
@@ -41,19 +50,13 @@ namespace AzureQueuing
 
             //Used for testing the poison queue
             if (message == "fail")
+            {
                 throw new Exception(message);
+            }
 
             OnMessageSending(JsonConvert.DeserializeObject<WeatherModel>(message));
 
             Thread.Sleep(TimeSpan.FromSeconds(10));
-        }
-
-        public event EventHandler MessageSending;
-
-        public void OnMessageSending(WeatherModel message)
-        {
-            EventHandler handler = MessageSending;
-            handler?.Invoke(this, new MessengingEventArgs<WeatherModel>(message));
         }
     }
 }

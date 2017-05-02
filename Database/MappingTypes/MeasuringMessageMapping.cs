@@ -5,15 +5,6 @@ namespace Database.MappingTypes
 {
     public class MeasuringMessageMapping
     {
-        [Key]
-        public Guid Id { get; set; }
-
-        public DateTime DateTime { get; set; }
-        public string MessageType { get; set; }
-        public string MeasurableType { get; set; }
-        public Guid PlantsAreaId { get; set; }
-        public double ParameterValue { get; set; }
-
         public MeasuringMessageMapping()
         {
         }
@@ -28,5 +19,14 @@ namespace Database.MappingTypes
             PlantsAreaId = plantsAreaId;
             ParameterValue = parameterValue;
         }
+
+        [Key]
+        public Guid Id { get; set; }
+
+        public DateTime DateTime { get; set; }
+        public string MessageType { get; set; }
+        public string MeasurableType { get; set; }
+        public Guid PlantsAreaId { get; set; }
+        public double ParameterValue { get; set; }
     }
 }

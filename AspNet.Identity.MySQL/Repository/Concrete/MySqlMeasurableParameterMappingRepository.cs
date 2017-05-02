@@ -8,42 +8,35 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 {
     public class MySqlMeasurableParameterMappingRepository : MySqlRepository<MeasurableParameterMapping>
     {
-
-      public override List<MeasurableParameterMapping> GetAll(
+        public override List<MeasurableParameterMapping> GetAll(
             Expression<Func<MeasurableParameterMapping, bool>> func = null)
         {
-            List<MeasurableParameterMapping> measurableParameterMappings = new List<MeasurableParameterMapping>();
-            string commandText = "Select * from measurableparameter";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var measurableParameterMappings = new List<MeasurableParameterMapping>();
+            var commandText = "Select * from measurableparameter";
+            var parameters = new Dictionary<string, object>();
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {                
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 measurableParameterMappings.Add(CreateMapping(row));
-            }
             if (func != null)
-            {
                 return measurableParameterMappings.AsQueryable().Where(func).ToList();
-            }
             return measurableParameterMappings;
         }
 
         public override MeasurableParameterMapping Get(Guid id)
         {
-            string commandText = "Select * from measurableparameter where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            var commandText = "Select * from measurableparameter where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 return CreateMapping(row);
-            }
             return null;
         }
 
         public override bool Save(MeasurableParameterMapping value, Guid id)
         {
-            string commandText =
+            var commandText =
                 "Insert into measurableparameter(Id, Optimal, Min, Max, Type) values(@Id, @Optimal, @Min, @Max, @Type) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "Id = values(Id), " +
@@ -52,13 +45,13 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 "Max = values(Max), " +
                 "Type = values(`Type`)";
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 {"@Id", value.Id.ToString()},
-                {"@Optimal", value.Optimal },
-                {"@Min", value.Min },
+                {"@Optimal", value.Optimal},
+                {"@Min", value.Min},
                 {"@Max", value.Max},
-                {"@Type", value.Type }
+                {"@Type", value.Type}
             };
 
             Database.Execute(commandText, parameters);
@@ -72,8 +65,8 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         public override bool Delete(Guid id)
         {
-            string commandText = "Delete from measurableparameter where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
+            var commandText = "Delete from measurableparameter where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
             Database.Execute(commandText, parameters);
             return true;
@@ -81,7 +74,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         protected override MeasurableParameterMapping CreateMapping(Dictionary<string, string> row)
         {
-            MeasurableParameterMapping measurableParameterMapping =
+            var measurableParameterMapping =
                 (MeasurableParameterMapping) Activator.CreateInstance(typeof(MeasurableParameterMapping));
             measurableParameterMapping.Id = Guid.Parse(row["Id"]);
             measurableParameterMapping.Optimal = Convert.ToInt32(row["Optimal"]);

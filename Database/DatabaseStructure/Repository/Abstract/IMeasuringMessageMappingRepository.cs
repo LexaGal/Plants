@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using MeasuringMessageMapping = Database.MappingTypes.MeasuringMessageMapping;
+using Database.MappingTypes;
 
 namespace Database.DatabaseStructure.Repository.Abstract
 {
@@ -10,5 +10,4 @@ namespace Database.DatabaseStructure.Repository.Abstract
         int SaveMany(List<MeasuringMessageMapping> measuringMessageMappings);
         int DeleteMany(int n = 1000, Expression<Func<MeasuringMessageMapping, bool>> func = null);
     }
-
 }

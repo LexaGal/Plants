@@ -4,23 +4,20 @@ using System.Timers;
 using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServiceStates;
-using PlantingLib.Sensors;
 using PlantingLib.Timers;
 
 namespace PlantingLib.ServiceSystems
 {
     public abstract class ServiceSystem
     {
-        public PlantsArea PlantsArea { get; }
-        public string MeasurableType { get; }
-        public double ParameterValue { get; }
-        
-        private Timer _timer;
-        protected TimeSpan ServiceTimeSpan;
         private MeasurableParameter _measurableParameter;
         private ServiceMessage _serviceMessage;
-        
-        protected ServiceSystem(string measurableType, double parameterValue, PlantsArea plantsArea, TimeSpan serviceTimeSpan)
+
+        private Timer _timer;
+        protected TimeSpan ServiceTimeSpan;
+
+        protected ServiceSystem(string measurableType, double parameterValue, PlantsArea plantsArea,
+            TimeSpan serviceTimeSpan)
         {
             PlantsArea = plantsArea;
             MeasurableType = measurableType;
@@ -28,19 +25,21 @@ namespace PlantingLib.ServiceSystems
             ServiceTimeSpan = serviceTimeSpan;
         }
 
+        public PlantsArea PlantsArea { get; }
+        public string MeasurableType { get; }
+        public double ParameterValue { get; }
+
         public void SetServiceStateToOn(bool serviceIsOn)
         {
-            Sensor sensor =
+            var sensor =
                 PlantsArea.Sensors
                     .SingleOrDefault(s => s.MeasurableParameter.MeasurableType == MeasurableType);
-            
+
             if (sensor != null)
-            {
-                 sensor.IsOn = !serviceIsOn;
-            }
+                sensor.IsOn = !serviceIsOn;
 
             ParameterEnum parameter;
-            bool parsed = Enum.TryParse(MeasurableType, out parameter);
+            var parsed = Enum.TryParse(MeasurableType, out parameter);
 
             ServiceState serviceState = null;
 
@@ -71,11 +70,11 @@ namespace PlantingLib.ServiceSystems
                             s => s.ServiceName == ServiceStateEnum.Nutrienting.ToString());
                         break;
                 }
-                
+
                 if (serviceState != null)
                 {
                     serviceState.IsOn = serviceIsOn.ToString();
-                    serviceState.IsScheduled = (ServiceTimeSpan != TimeSpan.Zero && serviceIsOn).ToString();
+                    serviceState.IsScheduled = ((ServiceTimeSpan != TimeSpan.Zero) && serviceIsOn).ToString();
                     return;
                 }
             }
@@ -86,17 +85,15 @@ namespace PlantingLib.ServiceSystems
             if (serviceState != null)
             {
                 serviceState.IsOn = serviceIsOn.ToString();
-                serviceState.IsScheduled = (ServiceTimeSpan != TimeSpan.Zero && serviceIsOn).ToString();
+                serviceState.IsScheduled = ((ServiceTimeSpan != TimeSpan.Zero) && serviceIsOn).ToString();
             }
         }
 
         public void ResetSensorFunction(double newFunctionValue)
         {
-            Sensor sensor = PlantsArea.Sensors.SingleOrDefault(s => s.MeasurableParameter.MeasurableType == MeasurableType);
+            var sensor = PlantsArea.Sensors.SingleOrDefault(s => s.MeasurableParameter.MeasurableType == MeasurableType);
             if (sensor != null)
-            {
                 sensor.Function.SetCurrentValue(newFunctionValue);
-            }
         }
 
         public abstract TimeSpan ComputeTimeForService();
@@ -111,8 +108,7 @@ namespace PlantingLib.ServiceSystems
                     // TimeSpan.Zero is for service of message SOS, not of schedule
                     if (ServiceTimeSpan == TimeSpan.Zero)
                     {
-
-                        ServiceMessage serviceMessage = new ServiceMessage(PlantsArea.Id, MeasurableType,
+                        var serviceMessage = new ServiceMessage(PlantsArea.Id, MeasurableType,
                             _measurableParameter.Optimal, new TimeSpan((int) _timer.Interval));
 
                         _serviceMessage = serviceMessage;
@@ -123,13 +119,9 @@ namespace PlantingLib.ServiceSystems
                 else
                 {
                     if (ParameterValue > _measurableParameter.Optimal)
-                    {
                         ResetSensorFunction(ParameterValue - ServiceTimeSpan.TotalSeconds);
-                    }
                     else
-                    {
                         ResetSensorFunction(ParameterValue + ServiceTimeSpan.TotalSeconds);
-                    }
                 }
                 SetServiceStateToOn(false);
             }

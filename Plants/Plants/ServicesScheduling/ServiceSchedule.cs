@@ -8,6 +8,22 @@ namespace PlantingLib.Plants.ServicesScheduling
     public class ServiceSchedule
     {
         private string _serviceName;
+
+        public ServiceSchedule(Guid id, Guid plantsAreaId, string serviceName, TimeSpan servicingSpan,
+            TimeSpan servicingPauseSpan, List<MeasurableParameter> measurableParameters)
+        {
+            Id = id;
+            PlantsAreaId = plantsAreaId;
+            ServiceName = serviceName;
+            ServicingSpan = servicingSpan;
+            ServicingPauseSpan = servicingPauseSpan;
+            LastServicingTime = DateTime.Now;
+
+            IsOn = true;
+
+            MeasurableParameters = measurableParameters;
+        }
+
         public Guid Id { get; private set; }
 
         public Guid PlantsAreaId { get; private set; }
@@ -30,22 +46,6 @@ namespace PlantingLib.Plants.ServicesScheduling
 
         public List<MeasurableParameter> MeasurableParameters { get; set; }
 
-        public ServiceSchedule(Guid id, Guid plantsAreaId, string serviceName, TimeSpan servicingSpan,
-
-            TimeSpan servicingPauseSpan, List<MeasurableParameter> measurableParameters)
-        {
-            Id = id;
-            PlantsAreaId = plantsAreaId;
-            ServiceName = serviceName;
-            ServicingSpan = servicingSpan;
-            ServicingPauseSpan = servicingPauseSpan;
-            LastServicingTime = DateTime.Now;
-
-            IsOn = true;
-
-            MeasurableParameters = measurableParameters;
-        }
-
         public bool IsFor(string serviceName)
         {
             return ServiceName == serviceName;
@@ -54,23 +54,24 @@ namespace PlantingLib.Plants.ServicesScheduling
         public bool AddMeasurableParameter(MeasurableParameter measurableParameter)
         {
             if (MeasurableParameters == null)
-            {
                 MeasurableParameters = new List<MeasurableParameter>();
-            }
-            if (MeasurableParameters.Any(parameter => measurableParameter != null && parameter.Id == measurableParameter.Id))
+            if (
+                MeasurableParameters.Any(
+                    parameter => (measurableParameter != null) && (parameter.Id == measurableParameter.Id)))
             {
-                MeasurableParameter old = MeasurableParameters.First(mp => mp.Id == measurableParameter.Id);
+                var old = MeasurableParameters.First(mp => mp.Id == measurableParameter.Id);
                 old = measurableParameter;
                 return true;
             }
             MeasurableParameters.Add(measurableParameter);
             return true;
         }
+
         public event EventHandler NewServiceName;
 
         protected virtual void OnNewServiceName()
         {
-            EventHandler handler = NewServiceName;
+            var handler = NewServiceName;
             handler?.Invoke(this, EventArgs.Empty);
         }
     }

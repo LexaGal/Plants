@@ -8,42 +8,35 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 {
     public class MySqlServiceScheduleMappingRepository : MySqlRepository<ServiceScheduleMapping>
     {
-
         public override List<ServiceScheduleMapping> GetAll(
             Expression<Func<ServiceScheduleMapping, bool>> func = null)
         {
-            List<ServiceScheduleMapping> serviceScheduleMappings = new List<ServiceScheduleMapping>();
-            string commandText = "Select * from serviceschedule";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var serviceScheduleMappings = new List<ServiceScheduleMapping>();
+            var commandText = "Select * from serviceschedule";
+            var parameters = new Dictionary<string, object>();
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 serviceScheduleMappings.Add(CreateMapping(row));
-            }
-           if (func != null)
-            {
+            if (func != null)
                 return serviceScheduleMappings.AsQueryable().Where(func).ToList();
-            }
             return serviceScheduleMappings;
         }
 
         public override ServiceScheduleMapping Get(Guid id)
         {
-            string commandText = "Select * from serviceschedule where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
+            var commandText = "Select * from serviceschedule where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 return CreateMapping(row);
-            }
             return null;
         }
 
         public override bool Save(ServiceScheduleMapping value, Guid id)
         {
-            string commandText =
+            var commandText =
                 "Insert into serviceschedule(Id, PlantsAreaId, MeasurableParametersIds, ServicingSpan, ServicingPauseSpan, ServiceState) values(@Id, @PlantsAreaId, @MeasurableParametersIds, @ServicingSpan, @ServicingPauseSpan, @ServiceState) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "Id = values(Id), " +
@@ -53,7 +46,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 "ServicingPauseSpan = values(ServicingPauseSpan), " +
                 "ServiceState = values(ServiceState)";
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 {"@Id", value.Id.ToString()},
                 {"@PlantsAreaId", value.PlantsAreaId},
@@ -74,8 +67,8 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         public override bool Delete(Guid id)
         {
-            string commandText = "Delete from serviceschedule where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
+            var commandText = "Delete from serviceschedule where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
             Database.Execute(commandText, parameters);
             return true;
@@ -83,8 +76,8 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         protected override ServiceScheduleMapping CreateMapping(Dictionary<string, string> row)
         {
-            ServiceScheduleMapping serviceScheduleMapping =
-                                (ServiceScheduleMapping)Activator.CreateInstance(typeof(ServiceScheduleMapping));
+            var serviceScheduleMapping =
+                (ServiceScheduleMapping) Activator.CreateInstance(typeof(ServiceScheduleMapping));
             serviceScheduleMapping.Id = Guid.Parse(row["Id"]);
             serviceScheduleMapping.PlantsAreaId = Guid.Parse(row["PlantsAreaId"]);
             serviceScheduleMapping.MeasurableParametersIds = string.IsNullOrEmpty(row["MeasurableParametersIds"])
@@ -97,6 +90,5 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 : row["ServiceState"];
             return serviceScheduleMapping;
         }
-
     }
 }

@@ -11,10 +11,10 @@ namespace AzureQueuing
     public abstract class QueueWorker : PollingTask<CloudQueueMessage>
     {
         private readonly CloudQueueClient _client;
+        private readonly int _maxAttempts;
         private readonly CloudQueue _poisonQueue;
         private readonly CloudQueue _queue;
         private readonly TimeSpan _visibilityTimeout;
-        private readonly int _maxAttempts;
 
         protected QueueWorker(string connectionString,
             string queueName,
@@ -23,7 +23,7 @@ namespace AzureQueuing
             int visibilityTimeoutInMinutes = 10)
         {
             _maxAttempts = maxAttempts;
-
+            
             var cs = CloudConfigurationManager.GetSetting(connectionString);
             var account = CloudStorageAccount.Parse(cs);
 
@@ -59,7 +59,7 @@ namespace AzureQueuing
 
             OnExecuting(workItem);
         }
-        
+
         protected override void Completed(CloudQueueMessage workItem)
         {
             try
@@ -72,11 +72,10 @@ namespace AzureQueuing
             }
         }
 
-        protected override  ICollection<CloudQueueMessage> TryGetWork()
+        protected override ICollection<CloudQueueMessage> TryGetWork()
         {
             return _queue.GetMessages(32, _visibilityTimeout)
                 .ToList();
         }
     }
 }
-

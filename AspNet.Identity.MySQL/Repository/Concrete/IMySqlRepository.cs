@@ -2,5 +2,7 @@
 
 namespace AspNet.Identity.MySQL.Repository.Concrete
 {
-    public interface IMySqlRepository<T> : IRepository<T> where T : class { }
+    public interface IMySqlRepository<T> : IRepository<T> where T : class
+    {
+    }
 }

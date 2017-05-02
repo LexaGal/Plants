@@ -8,43 +8,36 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 {
     public class MySqlPlantsAreaMappingRepository : MySqlRepository<PlantsAreaMapping>
     {
-
         public override List<PlantsAreaMapping> GetAll(
-              Expression<Func<PlantsAreaMapping, bool>> func = null)
+            Expression<Func<PlantsAreaMapping, bool>> func = null)
         {
-            List<PlantsAreaMapping> plantsAreaMappings = new List<PlantsAreaMapping>();
-            string commandText = "Select * from plantsarea";
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            var plantsAreaMappings = new List<PlantsAreaMapping>();
+            var commandText = "Select * from plantsarea";
+            var parameters = new Dictionary<string, object>();
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 plantsAreaMappings.Add(CreateMapping(row));
-            }
-           if (func != null)
-            {
-                return plantsAreaMappings//.AsQueryable()
+            if (func != null)
+                return plantsAreaMappings //.AsQueryable()
                     .Where(func.Compile()).ToList();
-            }
             return plantsAreaMappings;
         }
 
         public override PlantsAreaMapping Get(Guid id)
         {
-            string commandText = "Select * from plantsarea where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
+            var commandText = "Select * from plantsarea where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
-            List<Dictionary<string, string>> rows = Database.Query(commandText, parameters);
-            foreach (Dictionary<string, string> row in rows)
-            {
+            var rows = Database.Query(commandText, parameters);
+            foreach (var row in rows)
                 return CreateMapping(row);
-            }
             return null;
         }
 
         public override bool Save(PlantsAreaMapping value, Guid id)
         {
-            string commandText =
+            var commandText =
                 "Insert into plantsarea(Id, PlantId, UserId, Number) values(@Id, @PlantId, @UserId, @Number)" +
                 "ON DUPLICATE KEY UPDATE " +
                 "Id = values(Id), " +
@@ -52,7 +45,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
                 "UserId = values(UserId), " +
                 "Number = values(Number)";
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
                 {"@Id", value.Id.ToString()},
                 {"@PlantId", value.PlantId},
@@ -71,8 +64,8 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         public override bool Delete(Guid id)
         {
-            string commandText = "Delete from plantsarea where Id = @Id";
-            Dictionary<string, object> parameters = new Dictionary<string, object> { { "@Id", id.ToString() } };
+            var commandText = "Delete from plantsarea where Id = @Id";
+            var parameters = new Dictionary<string, object> {{"@Id", id.ToString()}};
 
             Database.Execute(commandText, parameters);
             return true;
@@ -80,7 +73,7 @@ namespace AspNet.Identity.MySQL.Repository.Concrete
 
         protected override PlantsAreaMapping CreateMapping(Dictionary<string, string> row)
         {
-            PlantsAreaMapping plantsAreaMapping =
+            var plantsAreaMapping =
                 (PlantsAreaMapping) Activator.CreateInstance(typeof(PlantsAreaMapping));
             plantsAreaMapping.Id = Guid.Parse(row["Id"]);
             plantsAreaMapping.PlantId = Guid.Parse(row["PlantId"]);

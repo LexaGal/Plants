@@ -5,7 +5,6 @@ using System.Net.Http.Formatting;
 using System.Web;
 using System.Web.Http;
 using AspNet.Identity.MySQL.WebApiModels;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
 namespace WebApi.Controllers
@@ -44,10 +43,10 @@ namespace WebApi.Controllers
         [Route("api/identity/login")]
         public HttpResponseMessage Login(LoginViewModel model)
         {
-            ApplicationUser applicationUser = UserManager.FindByEmailAsync(model.Email).Result;
+            var applicationUser = UserManager.FindByEmailAsync(model.Email).Result;
             if (applicationUser != null)
             {
-                SignInStatus result = SignInManager.PasswordSignIn(applicationUser.UserName, model.Password, model.RememberMe,
+                var result = SignInManager.PasswordSignIn(applicationUser.UserName, model.Password, model.RememberMe,
                     true);
                 switch (result)
                 {
@@ -58,7 +57,7 @@ namespace WebApi.Controllers
                             Content = new ObjectContent<ApplicationUser>(applicationUser, new JsonMediaTypeFormatter())
                         };
                     case SignInStatus.LockedOut:
-                        return new HttpResponseMessage(HttpStatusCode.Forbidden) { ReasonPhrase = "Locked out." };
+                        return new HttpResponseMessage(HttpStatusCode.Forbidden) {ReasonPhrase = "Locked out."};
                     case SignInStatus.Failure:
                         return new HttpResponseMessage(HttpStatusCode.Forbidden)
                         {
@@ -81,14 +80,12 @@ namespace WebApi.Controllers
         public HttpResponseMessage Register(RegisterViewModel model)
         {
             if (model.Password != model.ConfirmPassword)
-            {
                 return new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
                     ReasonPhrase = "The password and confirmation password do not match."
                 };
-            }
-            ApplicationUser user = new ApplicationUser { UserName = model.Name, Email = model.Email };
-            IdentityResult result = UserManager.CreateAsync(user, model.Password).Result;
+            var user = new ApplicationUser {UserName = model.Name, Email = model.Email};
+            var result = UserManager.CreateAsync(user, model.Password).Result;
             if (result.Succeeded)
             {
                 SignInManager.SignIn(user, false, false);

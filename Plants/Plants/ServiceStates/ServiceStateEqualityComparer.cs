@@ -7,9 +7,7 @@ namespace PlantingLib.Plants.ServiceStates
         public bool Equals(ServiceState ss1, ServiceState ss2)
         {
             if (ss1.ServiceName == ss2.ServiceName)
-            {
                 return true;
-            }
             return false;
         }
 

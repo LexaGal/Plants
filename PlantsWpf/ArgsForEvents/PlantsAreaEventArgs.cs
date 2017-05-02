@@ -1,8 +1,9 @@
+using System;
 using PlantingLib.Plants;
 
 namespace PlantsWpf.ArgsForEvents
 {
-    public class PlantsAreaEventArgs : System.EventArgs
+    public class PlantsAreaEventArgs : EventArgs
     {
         public PlantsAreaEventArgs(PlantsArea plantsArea)
         {

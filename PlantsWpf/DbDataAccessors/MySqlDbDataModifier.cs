@@ -5,51 +5,30 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AspNet.Identity.MySQL.Repository.Concrete;
 using AspNet.Identity.MySQL.WebApiModels;
-using Database.MappingTypes;
 using Mapper.MapperContext;
 using NLog;
-using PlantingLib.MeasurableParameters;
 using PlantingLib.Plants;
 using PlantingLib.Plants.ServicesScheduling;
-using PlantingLib.Plants.ServiceStates;
 using PlantingLib.Sensors;
 using PlantingLib.Timers;
 
 namespace PlantsWpf.DbDataAccessors
 {
-    class MySqlDbDataModifier
+    internal class MySqlDbDataModifier
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
-        public MySqlMeasurableParameterMappingRepository SqlMeasurableParameterMappingRepository =>
-            _sqlMeasurableParameterMappingRepository ?? new MySqlMeasurableParameterMappingRepository();
-
-        public MySqlPlantMappingRepository SqlPlantMappingRepository =>
-            _sqlPlantMappingRepository ?? new MySqlPlantMappingRepository();
-
-        public MySqlPlantsAreaMappingRepository SqlPlantsAreaMappingRepository =>
-            _sqlPlantsAreaMappingRepository ?? new MySqlPlantsAreaMappingRepository();
-
-        public MySqlSensorMappingRepository SqlSensorMappingRepository =>
-            _sqlSensorMappingRepository ?? new MySqlSensorMappingRepository();
-
-        public MySqlServiceScheduleMappingRepository SqlServiceScheduleMappingRepository =>
-            _sqlServiceScheduleMappingRepository ?? new MySqlServiceScheduleMappingRepository();
-
-        public MySqlMeasuringMessageMappingRepository SqlMeasuringMessageMappingRepository =>
-            _sqlMeasuringMessageMappingRepository ?? new MySqlMeasuringMessageMappingRepository();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly DbMapper _dbMapper;
+        private readonly PlantsAreas _plantsAreas;
+        private readonly SensorsCollection _sensorsCollection;
+        private readonly MySqlMeasurableParameterMappingRepository _sqlMeasurableParameterMappingRepository;
 
         private readonly MySqlMeasuringMessageMappingRepository _sqlMeasuringMessageMappingRepository;
-        private readonly MySqlServiceScheduleMappingRepository _sqlServiceScheduleMappingRepository;
-        private readonly MySqlSensorMappingRepository _sqlSensorMappingRepository;
-        private readonly MySqlMeasurableParameterMappingRepository _sqlMeasurableParameterMappingRepository;
         private readonly MySqlPlantMappingRepository _sqlPlantMappingRepository;
         private readonly MySqlPlantsAreaMappingRepository _sqlPlantsAreaMappingRepository;
+        private readonly MySqlSensorMappingRepository _sqlSensorMappingRepository;
+        private readonly MySqlServiceScheduleMappingRepository _sqlServiceScheduleMappingRepository;
 
-        private string _baseServerUr = "http://qwertyuiop1.azurewebsites.net/";
-        private readonly DbMapper _dbMapper;
-        private readonly SensorsCollection _sensorsCollection;
-        private readonly PlantsAreas _plantsAreas;
+        private readonly string _baseServerUr = "http://qwertyuiop1.azurewebsites.net/";
 
         public MySqlDbDataModifier(MySqlMeasurableParameterMappingRepository sqlMeasurableParameterMappingRepository,
             MySqlPlantMappingRepository sqlPlantMappingRepository,
@@ -72,50 +51,57 @@ namespace PlantsWpf.DbDataAccessors
         }
 
         public MySqlDbDataModifier()
-        {}
+        {
+        }
+
+        public MySqlMeasurableParameterMappingRepository SqlMeasurableParameterMappingRepository =>
+            _sqlMeasurableParameterMappingRepository ?? new MySqlMeasurableParameterMappingRepository();
+
+        public MySqlPlantMappingRepository SqlPlantMappingRepository =>
+            _sqlPlantMappingRepository ?? new MySqlPlantMappingRepository();
+
+        public MySqlPlantsAreaMappingRepository SqlPlantsAreaMappingRepository =>
+            _sqlPlantsAreaMappingRepository ?? new MySqlPlantsAreaMappingRepository();
+
+        public MySqlSensorMappingRepository SqlSensorMappingRepository =>
+            _sqlSensorMappingRepository ?? new MySqlSensorMappingRepository();
+
+        public MySqlServiceScheduleMappingRepository SqlServiceScheduleMappingRepository =>
+            _sqlServiceScheduleMappingRepository ?? new MySqlServiceScheduleMappingRepository();
+
+        public MySqlMeasuringMessageMappingRepository SqlMeasuringMessageMappingRepository =>
+            _sqlMeasuringMessageMappingRepository ?? new MySqlMeasuringMessageMappingRepository();
 
         public bool SaveSensor(PlantsArea area, Sensor sensor, ServiceSchedule serviceSchedule)
         {
             try
             {
-                MeasurableParameterMapping measurableParameterMapping =
+                var measurableParameterMapping =
                     _dbMapper.GetMeasurableParameterMapping(sensor.MeasurableParameter);
 
                 if (!(_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping,
                           measurableParameterMapping.Id) &&
                       area.Plant.AddMeasurableParameter(sensor.MeasurableParameter)))
-                {
                     return false;
-                }
 
                 if (!area.AddSensor(sensor))
-                {
                     return false;
-                }
 
-                SensorMapping sensorMapping = _dbMapper.GetSensorMapping(sensor);
+                var sensorMapping = _dbMapper.GetSensorMapping(sensor);
                 if (!(_sqlSensorMappingRepository.Save(sensorMapping, sensorMapping.Id) &&
                       _sensorsCollection.AddSensor(sensor)))
-                {
                     return false;
-                }
 
                 if (serviceSchedule != null)
-                {
                     if (!SaveServiceSchedule(area, serviceSchedule))
-                    {
                         return false;
-                    }
-                }
 
                 //if custom sensor
                 if (sensor.IsCustom)
                 {
-                    PlantMapping plantMapping = _dbMapper.GetPlantMapping(area.Plant);
+                    var plantMapping = _dbMapper.GetPlantMapping(area.Plant);
                     if (!_sqlPlantMappingRepository.Save(plantMapping, plantMapping.Id))
-                    {
                         return false;
-                    }
                 }
 
                 return true;
@@ -137,69 +123,57 @@ namespace PlantsWpf.DbDataAccessors
                 //    new MeasurableParameterMappingRepository();
                 //ISensorMappingRepository sensorMappingRepository = new SensorMappingRepository();
 
-                Temperature temperature = plantsArea.Plant.Temperature;
-                MeasurableParameterMapping measurableParameterMapping =
+                var temperature = plantsArea.Plant.Temperature;
+                var measurableParameterMapping =
                     _dbMapper.GetMeasurableParameterMapping(temperature);
                 if (
-                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping, measurableParameterMapping.Id))
-                {
+                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping,
+                        measurableParameterMapping.Id))
                     return false;
-                }
 
-                Humidity humidity = plantsArea.Plant.Humidity;
+                var humidity = plantsArea.Plant.Humidity;
                 measurableParameterMapping = _dbMapper.GetMeasurableParameterMapping(humidity);
                 if (
-                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping, measurableParameterMapping.Id))
-                {
+                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping,
+                        measurableParameterMapping.Id))
                     return false;
-                }
 
-                SoilPh soilPh = plantsArea.Plant.SoilPh;
+                var soilPh = plantsArea.Plant.SoilPh;
                 measurableParameterMapping = _dbMapper.GetMeasurableParameterMapping(soilPh);
                 if (
-                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping, measurableParameterMapping.Id))
-                {
+                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping,
+                        measurableParameterMapping.Id))
                     return false;
-                }
 
-                Nutrient nutrient = plantsArea.Plant.Nutrient;
+                var nutrient = plantsArea.Plant.Nutrient;
                 measurableParameterMapping = _dbMapper.GetMeasurableParameterMapping(nutrient);
                 if (
-                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping, measurableParameterMapping.Id))
-                {
+                    !_sqlMeasurableParameterMappingRepository.Save(measurableParameterMapping,
+                        measurableParameterMapping.Id))
                     return false;
-                }
 
-                Plant plant = plantsArea.Plant;
-                PlantMapping plantMapping = _dbMapper.GetPlantMapping(plant);
+                var plant = plantsArea.Plant;
+                var plantMapping = _dbMapper.GetPlantMapping(plant);
                 if (!_sqlPlantMappingRepository.Save(plantMapping, plantMapping.Id))
-                {
                     return false;
-                }
 
-                PlantsAreaMapping plantsAreaMapping = _dbMapper.GetPlantsAreaMapping(plantsArea);
+                var plantsAreaMapping = _dbMapper.GetPlantsAreaMapping(plantsArea);
                 if (!_sqlPlantsAreaMappingRepository.Save(plantsAreaMapping, plantsAreaMapping.Id))
-                {
                     return false;
-                }
 
                 if ((from sensor in plantsArea.Sensors
-                     let sensorMapping = _dbMapper.GetSensorMapping(sensor)
-                     where !(_sqlSensorMappingRepository.Save(sensorMapping, sensorMapping.Id) &&
-                             _sensorsCollection.AddSensor(sensor))
-                     select sensor).Any())
-                {
+                    let sensorMapping = _dbMapper.GetSensorMapping(sensor)
+                    where !(_sqlSensorMappingRepository.Save(sensorMapping, sensorMapping.Id) &&
+                            _sensorsCollection.AddSensor(sensor))
+                    select sensor).Any())
                     return false;
-                }
 
                 if (plantsArea.ServicesSchedulesStates.ServicesSchedules
                     .Select(serviceSchedule =>
                             _dbMapper.GetServiceScheduleMapping(serviceSchedule))
                     .Any(serviceScheduleMapping =>
                             !_sqlServiceScheduleMappingRepository.Save(serviceScheduleMapping, serviceScheduleMapping.Id)))
-                {
                     return false;
-                }
 
                 _plantsAreas.AddPlantsArea(plantsArea);
 
@@ -216,14 +190,10 @@ namespace PlantsWpf.DbDataAccessors
         {
             try
             {
-                ServiceScheduleMapping serviceScheduleMapping = _dbMapper.GetServiceScheduleMapping(serviceSchedule);
+                var serviceScheduleMapping = _dbMapper.GetServiceScheduleMapping(serviceSchedule);
                 if (serviceScheduleMapping != null)
-                {
                     if (_sqlServiceScheduleMappingRepository.Save(serviceScheduleMapping, serviceScheduleMapping.Id))
-                    {
                         return true;
-                    }
-                }
                 return false;
             }
             catch (Exception e)
@@ -242,39 +212,29 @@ namespace PlantsWpf.DbDataAccessors
                     area.RemoveSensor(sensor))
                 {
                     //if custom sensor
-                    ServiceState serviceState =
+                    var serviceState =
                         area.PlantServicesStates.ServicesStates.FirstOrDefault(
                             s => s.IsFor(sensor.MeasurableType));
 
                     if (serviceState != null)
-                    {
                         if (area.PlantServicesStates.RemoveServiceState(serviceState))
-                        {
                             if (area.Plant.RemoveMeasurableParameter(sensor.MeasurableParameter))
                             {
-                                PlantMapping plantMapping = _dbMapper.GetPlantMapping(area.Plant);
+                                var plantMapping = _dbMapper.GetPlantMapping(area.Plant);
                                 if (_sqlPlantMappingRepository.Save(plantMapping, plantMapping.Id))
-                                {
                                     if (_sqlMeasurableParameterMappingRepository.Delete(sensor.MeasurableParameter.Id))
                                     {
                                         if (serviceSchedule != null)
-                                        {
                                             return _sqlServiceScheduleMappingRepository.Delete(serviceSchedule.Id);
-                                        }
 
                                         serviceSchedule = area.ServicesSchedulesStates.ServicesSchedules.SingleOrDefault
                                         (
                                             s => s.ServiceName == serviceState.ServiceName);
 
                                         if (serviceSchedule != null)
-                                        {
                                             return _sqlServiceScheduleMappingRepository.Delete(serviceSchedule.Id);
-                                        }
                                     }
-                                }
                             }
-                        }
-                    }
                 }
                 return false;
             }
@@ -295,21 +255,17 @@ namespace PlantsWpf.DbDataAccessors
                     if (plantsArea.ServicesSchedulesStates.ServicesSchedules
                         .Any(servicesSchedule => !_sqlServiceScheduleMappingRepository
                             .Delete(servicesSchedule.Id)))
-                    {
                         return false;
-                    }
                     plantsArea.ServicesSchedulesStates.ServicesSchedules.Clear();
 
                     if (plantsArea.Sensors.Any(sensor =>
 
-                            //del. by cascade 
-                            //!(sqlSensorMappingRepository
-                            //    .Delete(sensor.Id)
+                        //del. by cascade 
+                        //!(sqlSensorMappingRepository
+                        //    .Delete(sensor.Id)
                             !_sqlMeasurableParameterMappingRepository
                                 .Delete(sensor.MeasurableParameter.Id)))
-                    {
                         return false;
-                    }
 
                     plantsArea.Sensors.ToList().ForEach(s => _sensorsCollection.RemoveSensor(s));
                     plantsArea.Sensors.Clear();
@@ -326,26 +282,26 @@ namespace PlantsWpf.DbDataAccessors
 
         public async Task<HttpResponseMessage> RegisterUser(RegisterViewModel registerViewModel)
         {
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_baseServerUr);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                Task<HttpResponseMessage> response = client.PostAsJsonAsync("api/identity/register", registerViewModel);
+                var response = client.PostAsJsonAsync("api/identity/register", registerViewModel);
                 //.Result;
                 return await
-                response;
+                    response;
             }
         }
 
         public async Task<HttpResponseMessage> LoginUser(LoginViewModel loginViewModel)
         {
-            using (HttpClient client = new HttpClient())
+            using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_baseServerUr);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                Task<HttpResponseMessage> response = client.PostAsJsonAsync("api/identity/login", loginViewModel);
+                var response = client.PostAsJsonAsync("api/identity/login", loginViewModel);
                 //Result;
                 return await response;
             }

@@ -1,6 +1,6 @@
 ﻿using System;
 using Database.DatabaseStructure.Repository.Abstract;
-using PlantMapping = Database.MappingTypes.PlantMapping;
+using Database.MappingTypes;
 
 namespace Database.DatabaseStructure.Repository.Concrete
 {
@@ -10,11 +10,9 @@ namespace Database.DatabaseStructure.Repository.Concrete
         {
             using (Context = new PlantingDb())
             {
-                PlantMapping plantMapping = Context.PlantsSet.Find(value.Id);
+                var plantMapping = Context.PlantsSet.Find(value.Id);
                 if (plantMapping == null)
-                {
                     throw new ArgumentNullException("value", "Can't find plantMapping with such id");
-                }
                 value.CopyTo(plantMapping);
                 Context.SaveChanges();
                 return true;
