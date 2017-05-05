@@ -33,10 +33,17 @@ namespace PlantingLib.ParametersFunctions
 
         public virtual double NewFunctionValue()
         {
-            return CurrentFunctionValue += (CurrentWeatherValue - MeasurableParameter.Optimal)/
+            //if ((CurrentFunctionValue > MeasurableParameter.Min &&
+            //     CurrentFunctionValue < CurrentWeatherValue) ||
+            //    (CurrentFunctionValue < MeasurableParameter.Max &&
+            //     CurrentFunctionValue > CurrentWeatherValue))
+            //{
+            //    return CurrentWeatherValue;
+            //}
+            return CurrentFunctionValue += (CurrentWeatherValue - MeasurableParameter.Optimal) /
                                            (CurrentWeatherValue > MeasurableParameter.Optimal
-                                               ? CurrentWeatherValue/MeasurableParameter.Optimal
-                                               : MeasurableParameter.Optimal/CurrentWeatherValue);
+                                               ? CurrentWeatherValue / MeasurableParameter.Optimal
+                                               : MeasurableParameter.Optimal / CurrentWeatherValue) / 6;
         }
 
         public void SetWeatherValue(double newWeatherValue)
@@ -46,6 +53,7 @@ namespace PlantingLib.ParametersFunctions
 
         public void SetCurrentValue(double newFunctionValue)
         {
+            // = newFunctionValue;
             CurrentFunctionValue = newFunctionValue;
         }
     }
